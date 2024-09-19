@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="vd2">
+      <UniqueIdentifier>{67aeec2d-203b-405e-b5c1-d01f4ce5daf0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="accel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AVSViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CAvisynth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="prefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\bitmath.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\debug.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\Error.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\log.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\protscope.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\registry.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\stdaccel.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\text.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\thread.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\tls.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\vdstl.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vd2\system\source\VDString.cpp">
+      <Filter>vd2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="accel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="api.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avisynth.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AVSViewer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CAvisynth.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prefs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tdll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripted.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="External.xpm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Internal.xpm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Keywords.xpm">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ico00002.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

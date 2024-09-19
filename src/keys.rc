@@ -1,0 +1,99 @@
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5008                    "Backspace"
+    5009                    "Tab"
+    5013                    "Enter"
+    5016                    "Shift"
+    5017                    "Ctrl"
+    5018                    "Alt"
+    5019                    "Pause"
+    5020                    "Caps Lock"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5027                    "Escape"
+    5032                    "Space"
+    5033                    "PgUp"
+    5034                    "PgDown"
+    5035                    "End"
+    5036                    "Home"
+    5037                    "Left"
+    5038                    "Up"
+    5039                    "Right"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5040                    "Down"
+    5045                    "Ins"
+    5046                    "Del"
+    5048                    "0"
+    5049                    "1"
+    5050                    "2"
+    5051                    "3"
+    5052                    "4"
+    5053                    "5"
+    5054                    "6"
+    5055                    "7"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5112                    "F1"
+    5113                    "F2"
+    5114                    "F3"
+    5115                    "F4"
+    5116                    "F5"
+    5117                    "F6"
+    5118                    "F7"
+    5119                    "F8"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5120                    "F9"
+    5121                    "F10"
+    5122                    "F11"
+    5123                    "F12"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5056                    "8"
+    5057                    "9"
+    5065                    "A"
+    5066                    "B"
+    5067                    "C"
+    5068                    "D"
+    5069                    "E"
+    5070                    "F"
+    5071                    "G"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5072                    "H"
+    5073                    "I"
+    5074                    "J"
+    5075                    "K"
+    5076                    "L"
+    5077                    "M"
+    5078                    "N"
+    5079                    "O"
+    5080                    "P"
+    5081                    "Q"
+    5082                    "R"
+    5083                    "S"
+    5084                    "T"
+    5085                    "U"
+    5086                    "V"
+    5087                    "W"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    5088                    "X"
+    5089                    "Y"
+    5090                    "Z"
+END

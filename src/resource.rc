@@ -1,0 +1,248 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#ifndef IDC_STATIC\r\n"
+    "#define IDC_STATIC (-1)\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#include ""keys.rc""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// STUFF
+//
+
+IDR_SCI_INTERNAL        STUFF                   "Internal.xpm"
+IDR_SCI_EXTERNAL        STUFF                   "External.xpm"
+IDR_SCI_KEYWORDS        STUFF                   "Keywords.xpm"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_AVSEDIT             ICON                    "ico00002.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_FIND DIALOG  30, 73, 275, 84
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Find"
+FONT 9, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Fi&nd what:",-1,5,7,45,8
+    EDITTEXT        ID_FIND_FINDWHAT,50,5,145,14,ES_AUTOHSCROLL
+    CONTROL         "Match &whole word only",ID_FIND_WHOLEWORD,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,22,120,10
+    CONTROL         "Match &case",ID_FIND_MATCHCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,34,130,10
+    CONTROL         "Regular &expression",ID_FIND_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,46,120,10
+    CONTROL         "Wrap ar&ound",ID_FIND_WRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,58,120,10
+    CONTROL         "Transform &backslash expressions",ID_FIND_UNSLASH,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,70,160,10
+    GROUPBOX        "Direction",-1,135,22,60,34,WS_GROUP
+    CONTROL         "&Up",ID_FIND_DIRECTIONUP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,140,30,45,12
+    CONTROL         "&Down",ID_FIND_DIRECTIONDOWN,"Button",BS_AUTORADIOBUTTON,140,42,45,12
+    DEFPUSHBUTTON   "&Find Next",IDOK,205,5,65,14,WS_GROUP
+    PUSHBUTTON      "&Mark All",ID_FIND_MARKALL,205,23,65,14,WS_DISABLED
+    PUSHBUTTON      "Close",IDCANCEL,205,41,65,14
+END
+
+IDD_OPTIONS DIALOGEX 0, 0, 282, 142
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,162,121,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,225,121,50,14
+    CONTROL         "Single Instance Mode",IDC_SINGLEINSTANCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,84,10
+    CONTROL         "Autopopup",IDC_AUTOPOPUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,51,10
+    PUSHBUTTON      "Font",IDC_FONT,7,93,50,14
+    LTEXT           "Font",IDC_FONT_TEXT,68,95,207,8
+    LTEXT           "Allow only one open script editor window.",IDC_SINGLEINSTANCE_TIP,22,20,134,8
+    LTEXT           "Automatically popup script editor when an AviSynth script is loaded into the main window. In single instance mode if there is already an open script editor window, the newly opened script is loaded into that.",IDC_AUTOPOPUP_TIP,22,51,253,30
+    CONTROL         "Wrap Lines",IDC_WRAPLINES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,116,51,10
+END
+
+IDD_JUMPTO DIALOGEX 0, 0, 164, 68
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Jump to"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Jump to frame &number:",IDC_JUMPTOFRAME,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,7,87,12
+    CONTROL         "Jump to &line:",IDC_JUMPTOLINE,"Button",BS_AUTORADIOBUTTON,7,23,85,12
+    EDITTEXT        IDC_FRAMENUMBER,107,7,50,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_LINENUMBER,107,23,50,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,54,47,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,107,47,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_AVSVIEWER_MENU MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New...",                     ID_FILE_NEW
+        MENUITEM "&Open...",                    ID_FILE_OPEN
+        MENUITEM "&Save...",                    ID_AVS_FILE_SAVE
+        MENUITEM "Save && &Refresh...",         ID_REFRESH
+        MENUITEM "Save && Open as &AVI...",     ID_AVS_SAVE_OPEN
+        MENUITEM "Re&vert",                     ID_FILE_REVERT
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit...",                    ID_FILE_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo...",                    ID_EDIT_UNDO
+        MENUITEM "&Redo...",                    ID_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "Goto...",                     ID_EDIT_GOTO
+        MENUITEM "&Find...",                    ID_EDIT_FIND
+        MENUITEM "Find next...",                ID_EDIT_FINDNEXT
+        MENUITEM "Find prev...",                ID_EDIT_FINDPREV
+        MENUITEM SEPARATOR
+        MENUITEM "Insert &Position...",         ID_AVS_INSERT_POS
+        MENUITEM "Insert R&ange...",            ID_AVS_INSERT_RANGE
+        MENUITEM "Insert &Trim With Range...",  ID_AVS_INSERT_TRIM
+        MENUITEM "Import &Frameset as Trims...", ID_AVS_INSERT_FRAMESET
+        MENUITEM "Insert Filename...",          ID_AVS_INSERT_FILENAME
+        MENUITEM "Insert Crop",                 ID_AVS_INSERT_CROP, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Comment Selected Lines...",  ID_AVS_COMMENT_LINES
+        MENUITEM "U&ncomment Selected Lines...", ID_AVS_UNCOMMENT_LINES
+        MENUITEM SEPARATOR
+        MENUITEM "&Line Numbers",               ID_AVS_EDIT_LINE, CHECKED
+        POPUP "&Script Handling"
+        BEGIN
+            MENUITEM "&None...",                    ID_AVS_SCRIPT_NONE
+            MENUITEM "&AviSynth...",                ID_AVS_SCRIPT_AVS, CHECKED
+            MENUITEM "&Decomb...",                  ID_AVS_SCRIPT_DECOMB
+            MENUITEM "&VapourSynth...",             ID_AVS_SCRIPT_VPS
+            MENUITEM "VirtualDub...",               ID_AVS_SCRIPT_VDSCRIPT
+        END
+        MENUITEM "&Options",                    ID_AVS_EDIT_OPTIONS
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Keyboard commands...",        ID_HELP_KEYS
+        MENUITEM "[Toff]s Tweaking Mod",        ID_HELP_TOFF
+        MENUITEM SEPARATOR
+        MENUITEM "&AviSynth Information",       ID_HELP_AVISYNTH
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        VERTGUIDE, 22
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 135
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_SHORTCUT_NOMENU     "Shortcut"
+    IDS_ERR_AVS_NOTFOUND    "AviSynth not found"
+    IDS_INFO_AVSEDITOR_KEY  "Ctrl-N: New File\nCtrl-O: Open File\nF2, Ctrl-S: Save File\nF5: Save File & Refresh\nF7: Save File & Loads it as movie into the main window\nCtrl-P: Inserts current position in the main window\nCtrl-R: Inserts current range in the main window (from,to)\nCtrl-T: Inserts Trim to the current range in the main window\nCtrl-Fx (x = 1-12): [Toff]s Tweaking Mod (see special help)"
+    IDS_INFO_AVSEDITOR_KEY_CAP "Keyboard commands"
+    IDS_INFO_AVSEDITOR_TOFF "In your avs code you can add #StartTweaking and #StopTweaking line to delimitate the line you want to work on, like this:\n\n mpeg2source(\\""darkcity.d2v\\"",0)\n\n #StartTweaking\n #Convolution3d (preset=\\""movieLQ\\"")\n Convolution3d (preset=\\""movieHQ\\"")\n #StopTweaking\n\n #StartTweaking\n #SimpleResize(512,384)\n BicubicResize(512,384)\n #BilinearResize(512,384)\n #LanczosResize(512,384)\n #StopTweaking\n\nThen you have to place the text cursor between the 2 marker lines and press Ctrl-F1 to uncomment the first line and comment all other lines, Ctrl-F2 to uncomment the second line and comment all other lines...\nThis way you can quickly see differences."
+    IDS_WARN_AVS_DISCARD_CHANGE "Discard all changes?"
+    IDS_WARN_AVS_DISCARD_CHANGE_CAP "Script editor warning"
+    IDS_INFO_AVSEDITOR_TOFF_CAP "[Toff]s Tweaking Mod"
+    IDS_INFO_AVS_VERSION_CAP "AviSynth Version"
+    IDS_ERR_AVS_NOFRAMESET  "No frameset"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_CAPTION         "Error"
+    IDS_ERR_AVS_NORANGE     "No range"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "keys.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
