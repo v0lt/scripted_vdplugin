@@ -332,8 +332,8 @@ CAviSynth::CAviSynth(const char *path)
 	env = NULL;
 	avisynth = NULL;
 	Version = NULL;
-	coKeywords = strdup(coKeywordsDefault);
-	coInternal = strdup(coInternalDefault);
+	coKeywords = _strdup(coKeywordsDefault);
+	coInternal = _strdup(coInternalDefault);
 	coExternal = NULL;
 	coAll = NULL;
 	coAllScintilla = NULL;
@@ -373,13 +373,13 @@ void CAviSynth::LoadDll(const char *path)
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
 				s = r.AsString();
 			} catch (...) {s = "Version < 2.07; VersionString() not implemented";}
-			Version = strdup(s.c_str());
+			Version = _strdup(s.c_str());
 
 			if (coExternal) delete coExternal;
 			coExternal=NULL;
 			try {
 				AVSValue p = env->GetVar("$PluginFunctions$");
-				coExternal = strdup(p.AsString());
+				coExternal = _strdup(p.AsString());
 			} catch (...) {;}
 
 			if (coAll) delete coAll;
@@ -487,8 +487,10 @@ void CAviSynth::LoadDll(const char *path)
 		} */
 	}
 
-	strlwr(coInternal);
-	if(coExternal) strlwr(coExternal);
+	_strlwr(coInternal);
+	if (coExternal) {
+		_strlwr(coExternal);
+	}
 }
 
 CAviSynth::~CAviSynth()
