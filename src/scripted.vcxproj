@@ -81,12 +81,12 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>scripted.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
       <Command>..\update_revision.cmd</Command>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <ModuleDefinitionFile>scripted.def</ModuleDefinitionFile>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
