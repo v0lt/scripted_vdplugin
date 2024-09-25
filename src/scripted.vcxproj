@@ -23,7 +23,6 @@
     <ProjectGuid>{6C41CD68-89D4-4EA4-8CEC-D3F70A8EB278}</ProjectGuid>
     <RootNamespace>scripted</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetExt>.vdplugin</TargetExt>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -64,25 +63,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>17.0.35004.147</_ProjectFileVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)_bin\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)_obj\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
+    <TargetExt>.vdplugin</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)_bin\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)_obj\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)_bin\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)_obj\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)_bin\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)_obj\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -97,7 +85,7 @@
     </Link>
     <PreBuildEvent>
       <Command>..\update_revision.cmd</Command>
-      <OutputFile>$(OutDir)$(TargetName).vdplugin</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>scripted.def</ModuleDefinitionFile>
     </PreBuildEvent>
   </ItemDefinitionGroup>
