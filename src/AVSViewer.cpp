@@ -431,6 +431,7 @@ void AVSEditor::Init() {
 
 //	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), 11, "Courier New");
 //	SendMessageSci(SCI_STYLECLEARALL);	// Copies global style to all others
+	SendMessageSci(SCI_SETCODEPAGE, SC_CP_UTF8);
 	SetScriptType(SCRIPTTYPE_NONE);
 //	SetScriptType(SCRIPTTYPE_AVS);
 
@@ -485,11 +486,10 @@ void AVSEditor::Open(const wchar_t* path) {
 	fclose(f);
 //    SendMessage(hwndView, WM_SETTEXT, 0, (LPARAM) lpszBuf);
 	SendMessageSci(SCI_CLEARALL, 0, 0);
+	SendMessageSci(SCI_SETCODEPAGE, SC_CP_UTF8);
 	if (lpszBuf[0]==0xef && lpszBuf[1]==0xbb && lpszBuf[2]==0xbf) {
-		SendMessageSci(SCI_SETCODEPAGE, SC_CP_UTF8);
 		SendMessageSci(SCI_SETTEXT, 0, (LPARAM) lpszBuf+3);
 	} else {
-		SendMessageSci(SCI_SETCODEPAGE, 0);
 		SendMessageSci(SCI_SETTEXT, 0, (LPARAM) lpszBuf);
 	}
 	free(lpszBuf);
@@ -638,29 +638,20 @@ bool AVSEditor::Commit() {
 //	GETTEXTEX gt;
 
 	if (lpszFileName[0] == 0) {
-		char szName[MAX_PATH];
-		OPENFILENAME ofn;
-
+		wchar_t szName[MAX_PATH];
 		szName[0] = 0;
+		OPENFILENAMEW ofn = {};
 
-		memset(&ofn, 0, sizeof ofn);
-
-		ofn.lStructSize			= sizeof(OPENFILENAME);
+		ofn.lStructSize			= sizeof(OPENFILENAMEW);
 		ofn.hwndOwner			= hwnd;
-		ofn.lpstrFilter			= "All files (*.*)\0*.*\0";
-		ofn.lpstrCustomFilter	= NULL;
+		ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
 		ofn.nFilterIndex		= 1;
 		ofn.lpstrFile			= szName;
-		ofn.nMaxFile			= sizeof szName;
-		ofn.lpstrFileTitle		= NULL;
-		ofn.lpstrInitialDir		= NULL;
-		ofn.lpstrTitle			= NULL;
+		ofn.nMaxFile			= std::size(szName);
 		ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
-		ofn.lpstrDefExt			= NULL;
 
-		if (GetSaveFileName(&ofn)) {
-			VDTextAToW(lpszFileName, MAX_PATH, szName, MAX_PATH);
-			//wcscpy(lpszFileName, VDTextAToW(szName).c_str());
+		if (GetSaveFileNameW(&ofn)) {
+			wcscpy_s(lpszFileName, szName);
 		} else {
 			return false;
 		}
@@ -680,9 +671,6 @@ bool AVSEditor::Commit() {
 	SendMessageSci(SCI_GETTEXT, s+1, (LPARAM) lpszBuf);
 	f = _wfopen(lpszFileName, L"wb");
 	if (f) {
-		if (cp == SC_CP_UTF8) {
-			fwrite("\xef\xbb\xbf", 1, 3, f);
-		}
 		fwrite(lpszBuf, sizeof(char), s, f);
 		fclose(f);
 	}
@@ -931,33 +919,26 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 
 	case ID_AVS_INSERT_FILENAME:
 		{
-			char szName[MAX_PATH];
-			char buf[MAX_PATH+2];
-			OPENFILENAME ofn;
-
+			wchar_t szName[MAX_PATH];
 			szName[0] = 0;
+			OPENFILENAMEW ofn = {};
 
-			memset(&ofn, 0, sizeof ofn);
-
-			ofn.lStructSize			= sizeof(OPENFILENAME);
+			ofn.lStructSize			= sizeof(OPENFILENAMEW);
 			ofn.hwndOwner			= hwnd;
-			ofn.lpstrFilter			= "All files (*.*)\0*.*\0";
-			ofn.lpstrCustomFilter	= NULL;
+			ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
 			ofn.nFilterIndex		= 1;
 			ofn.lpstrFile			= szName;
-			ofn.nMaxFile			= sizeof szName;
-			ofn.lpstrFileTitle		= NULL;
-			ofn.lpstrInitialDir		= NULL;
-			ofn.lpstrTitle			= NULL;
+			ofn.nMaxFile			= std::size(szName);
 			ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
-			ofn.lpstrDefExt			= NULL;
 
-			if (GetOpenFileName(&ofn)) {
-				if (scriptType == SCRIPTTYPE_NONE)
-					wsprintfA(buf, "%s", szName);
-				else
-					wsprintfA(buf, "\"%s\"", szName);
-				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) &buf);
+			if (GetOpenFileNameW(&ofn)) {
+				VDStringA filepath_utf8;
+				if (scriptType == SCRIPTTYPE_NONE) {
+					filepath_utf8 = VDTextWToU8(szName, -1);
+				} else {
+					filepath_utf8.sprintf("\"%s\"", VDTextWToU8(szName, -1));
+				}
+				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) (char*)(filepath_utf8.c_str()));
 			}
 		}
 		break;
