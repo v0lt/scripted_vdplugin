@@ -94,7 +94,7 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////////
 
-extern const char szAVSEditorClassName[]="birdyAVSEditor";
+extern const wchar_t szAVSEditorClassName[]=L"birdyAVSEditor";
 extern const char szAVSViewerClassName[]="birdyAVSViewer";
 static const char g_szAVSWarning[]="Script editor warning";
 
@@ -118,7 +118,7 @@ LPVOID imKeywords, imInternal, imExternal;
 //////////////////////////////////////////////////////////////////////////////
 
 struct FindTextOption {
-	char szFindString[1024];
+	wchar_t szFindString[1024];
 	bool bFindReverse;
 	bool bWholeWord;
 	bool bMatchCase;
@@ -132,11 +132,11 @@ int guiMessageBox(HWND hwnd, UINT idText, UINT idCaption, UINT uType) {
 	bool error = false;
 
 	// get caption
-	if (LoadString(g_hInst, idCaption, (LPTSTR)caption, sizeof caption) == 0)
+	if (LoadStringA(g_hInst, idCaption, (LPSTR)caption, sizeof caption) == 0)
 		error = true;
 
 	// get message body
-	if (LoadString(g_hInst, idText, (LPTSTR)text, sizeof text) == 0)
+	if (LoadStringA(g_hInst, idText, (LPSTR)text, sizeof text) == 0)
 		error = true;
 
 	if (error) {
@@ -194,7 +194,7 @@ private:
 	void SetStatus(const char *format, ...) throw();
 	void UpdateStatus() throw();
 	void UpdateLineNumbers();
-	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const char *face = NULL);
+	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const wchar_t *face = NULL);
 
 	LRESULT Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw();
 	LRESULT Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw();
@@ -384,8 +384,8 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 
 LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw()
 {
-	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtr(
-		(HWND)GetWindowLongPtr(hwnd, GWLP_HWNDPARENT), 0);
+	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtrW(
+		(HWND)GetWindowLongPtrW(hwnd, GWLP_HWNDPARENT), 0);
 
 	switch (msg)
 	{
@@ -402,18 +402,18 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			break;
 	}
 
-	return CallWindowProc(pcd->OldAVSViewWinProc, hwnd, msg, wParam, lParam); 
+	return CallWindowProcW(pcd->OldAVSViewWinProc, hwnd, msg, wParam, lParam); 
 }
 
 // <----- Toff
 
 void AVSEditor::Init() {
-	hwndStatus = CreateStatusWindow(WS_CHILD|WS_VISIBLE|SBARS_SIZEGRIP, "", hwnd, 501);
+	hwndStatus = CreateStatusWindowW(WS_CHILD|WS_VISIBLE|SBARS_SIZEGRIP, L"", hwnd, 501);
 
-	hwndView = CreateWindowEx(
+	hwndView = CreateWindowExW(
 		WS_EX_CLIENTEDGE,
-		"Scintilla",
-		"",
+		L"Scintilla",
+		L"",
 		WS_VISIBLE|WS_CHILD|WS_VSCROLL|WS_HSCROLL|ES_MULTILINE,
 		0,0,50,50,
 		hwnd,
@@ -423,8 +423,8 @@ void AVSEditor::Init() {
 
 	lpszFileName[0] = 0;
 
-	fnScintilla = (SciFnDirect)SendMessage(hwndView,SCI_GETDIRECTFUNCTION,0,0);
-	ptrScintilla = (sptr_t)SendMessage(hwndView,SCI_GETDIRECTPOINTER,0,0);
+	fnScintilla = (SciFnDirect)SendMessageW(hwndView,SCI_GETDIRECTFUNCTION,0,0);
+	ptrScintilla = (sptr_t)SendMessageW(hwndView,SCI_GETDIRECTPOINTER,0,0);
 
 	bLineNumbers = TRUE;
 	UpdateLineNumbers();	
@@ -436,7 +436,7 @@ void AVSEditor::Init() {
 //	SetScriptType(SCRIPTTYPE_AVS);
 
 	// Toff ----->
-	OldAVSViewWinProc = (WNDPROC)SetWindowLongPtr(hwndView, GWLP_WNDPROC,	(LPARAM)SubAVSEditorWndProc);
+	OldAVSViewWinProc = (WNDPROC)SetWindowLongPtrW(hwndView, GWLP_WNDPROC, (LPARAM)SubAVSEditorWndProc);
 	// <----- Toff
 
 	//if (lpszFileName[0] != 0) Open();
@@ -513,7 +513,7 @@ void AVSEditor::Open(const wchar_t* path) {
 void AVSEditor::HandleError(const char* s, int line){
 	SendMessageSci(SCI_GOTOLINE, line-1);
 	char* s1 = _strdup(s);
-	PostMessage(hwnd,WM_DEFER_ERROR,0,(LPARAM)s1);
+	PostMessageW(hwnd,WM_DEFER_ERROR,0,(LPARAM)s1);
 }
 
 void AVSEditor::SetScriptType(int type){
@@ -712,13 +712,16 @@ void AVSEditor::UpdateStatus() throw() {
 	SendMessageA(hwndStatus, SB_SETTEXT, 1, (LPARAM) scripttypeName[scriptType]);
 }
 
-void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const char *face) {
+void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face) {
 	SendMessageSci(SCI_STYLESETFORE, style, fore);
 	SendMessageSci(SCI_STYLESETBACK, style, back);
-	if (size >= 1)
+	if (size >= 1) {
 		SendMessageSci(SCI_STYLESETSIZE, style, size);
-	if (face) 
-		SendMessageSci(SCI_STYLESETFONT, style, (LPARAM)face);
+	}
+	if (face) {
+		VDStringA font_u8 = VDTextWToU8(face, -1);
+		SendMessageSci(SCI_STYLESETFONT, style, (LPARAM)font_u8.c_str());
+	}
 }
 
 
@@ -935,9 +938,11 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 				if (scriptType == SCRIPTTYPE_NONE) {
 					filepath_u8 = VDTextWToU8(szName, -1);
 				} else {
-					filepath_u8.sprintf("\"%s\"", VDTextWToU8(szName, -1));
+					filepath_u8.assign("\"");
+					filepath_u8.append(VDTextWToU8(szName, -1));
+					filepath_u8.append("\"");
 				}
-				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) (char*)(filepath_u8.c_str()));
+				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM)filepath_u8.c_str());
 			}
 		}
 		break;
@@ -1066,7 +1071,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 					v += g_dllAviSynth->coExternal;
 				}
 				char caption[256];
-				LoadString(g_hInst, IDS_INFO_AVS_VERSION_CAP, (LPTSTR)caption, sizeof caption);
+				LoadStringA(g_hInst, IDS_INFO_AVS_VERSION_CAP, (LPSTR)caption, sizeof caption);
 				MessageBoxA(hwnd, v.c_str(), caption, MB_OK|MB_ICONINFORMATION);
 			} else {
 				guiMessageBox(hwnd, IDS_ERR_AVS_NOTFOUND, IDS_INFO_AVS_VERSION_CAP, MB_OK|MB_ICONSTOP);
@@ -1096,7 +1101,7 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw() {
 	st[0] = r.right-150;
 	st[1] = r.right-75;
 	st[2] = -1;
-	SendMessage(hwndStatus, SB_SETPARTS, 3, (LPARAM) &st);
+	SendMessageW(hwndStatus, SB_SETPARTS, 3, (LPARAM) &st);
 	UpdateStatus();
 	
 	return 0;
@@ -1182,7 +1187,7 @@ void AVSEditor::DoCalltip() {
 ////////////////////////////
 
 LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw() {
-	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtr(hwnd, 0);
+	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtrW(hwnd, 0);
 
 	switch(msg) {
 
@@ -1190,8 +1195,8 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 		if (!(pcd = new AVSEditor(hwnd)))
 			return FALSE;
 
-		SetWindowLongPtr(hwnd, 0, (LPARAM)pcd);
-		return DefWindowProc(hwnd, msg, wParam, lParam);
+		SetWindowLongPtrW(hwnd, 0, (LPARAM)pcd);
+		return DefWindowProcW(hwnd, msg, wParam, lParam);
 
 	case WM_CREATE:
 		CREATESTRUCT *cs;
@@ -1205,12 +1210,12 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 		return pcd->Handle_WM_SIZE(wParam, lParam);
 
 	case WM_DESTROY:
-		SetWindowLongPtr(pcd->hwndView, GWLP_WNDPROC, (LPARAM)pcd->OldAVSViewWinProc);	
+		SetWindowLongPtrW(pcd->hwndView, GWLP_WNDPROC, (LPARAM)pcd->OldAVSViewWinProc);	
 
 		g_windows.erase(find(g_windows.begin(),g_windows.end(),pcd));
 		AVSViewerSaveSettings(hwnd,REG_WINDOW_MAIN);
 		delete pcd;
-		SetWindowLongPtr(hwnd, 0, 0);
+		SetWindowLongPtrW(hwnd, 0, 0);
 		g_ScriptEditor = (HWND) -1;
 		if (g_windows.empty()) clear_avs();
 		break;
@@ -1231,10 +1236,10 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			HMENU hMenu = (HMENU)wParam;
 			DWORD dwEnableFlags;
 
-			dwEnableFlags = (SendMessage(pcd->hwndView, SCI_CANUNDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
+			dwEnableFlags = (SendMessageW(pcd->hwndView, SCI_CANUNDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_EDIT_UNDO, dwEnableFlags);
 			
-			dwEnableFlags = (SendMessage(pcd->hwndView, SCI_CANREDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
+			dwEnableFlags = (SendMessageW(pcd->hwndView, SCI_CANREDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_EDIT_REDO, dwEnableFlags);
 
 			dwEnableFlags = (!(pcd->lpszFileName[0] == 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
@@ -1393,7 +1398,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 		*/
 
 	default:
-		return DefWindowProc(hwnd, msg, wParam, lParam);
+		return DefWindowProcW(hwnd, msg, wParam, lParam);
 	}
 	return 0;
 }
@@ -1407,12 +1412,12 @@ void AVSEditor::UpdatePreferences() {
 ///////////////////////////////////////////////////////////////////////////
 
 INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtr(hwnd, DWLP_USER);
+	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtrW(hwnd, DWLP_USER);
 
 	switch (msg) {
 	case WM_INITDIALOG:
 		{
-			SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+			SetWindowLongPtrW(hwnd, DWLP_USER, lParam);
 			pcd = (AVSEditor*) lParam;
 			pcd->hwndFind = hwnd;
 			g_dialogs.push_back(hwnd);
@@ -1421,7 +1426,7 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 
 			FindTextOption* opt = &pcd->mFind;
 
-			SetDlgItemTextA(hwnd, ID_FIND_FINDWHAT, pcd->mFind.szFindString);
+			SetDlgItemTextW(hwnd, ID_FIND_FINDWHAT, pcd->mFind.szFindString);
 
 			CheckDlgButton(hwnd, ID_FIND_WHOLEWORD, (opt->bWholeWord) ? BST_CHECKED : BST_UNCHECKED);
 			CheckDlgButton(hwnd, ID_FIND_MATCHCASE, (opt->bMatchCase) ? BST_CHECKED : BST_UNCHECKED);
@@ -1448,7 +1453,7 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			{
 				FindTextOption* opt = &pcd->mFind;
 
-				GetDlgItemTextA(hwnd, ID_FIND_FINDWHAT, opt->szFindString, sizeof(opt->szFindString));
+				GetDlgItemTextW(hwnd, ID_FIND_FINDWHAT, opt->szFindString, std::size(opt->szFindString));
 
 				opt->bWholeWord   = (IsDlgButtonChecked(hwnd, ID_FIND_WHOLEWORD  ) == BST_CHECKED);
 				opt->bMatchCase   = (IsDlgButtonChecked(hwnd, ID_FIND_MATCHCASE  ) == BST_CHECKED);
@@ -1473,12 +1478,12 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 }
 
 INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtr(hwnd, DWLP_USER);
+	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtrW(hwnd, DWLP_USER);
 
 	switch (msg) {
 	case WM_INITDIALOG:
 		{
-			SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+			SetWindowLongPtrW(hwnd, DWLP_USER, lParam);
 			pcd = (AVSEditor*) lParam;
 			g_dialogs.push_back(hwnd);
 			AVSViewerLoadSettings(hwnd,REG_WINDOW_JUMPTO);
@@ -1538,11 +1543,11 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			break;
 		case IDC_JUMPTOFRAME:
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
-			SendDlgItemMessage(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
+			SendDlgItemMessageW(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
 			break;
 		case IDC_JUMPTOLINE:
 			SetFocus(GetDlgItem(hwnd, IDC_LINENUMBER));
-			SendDlgItemMessage(hwnd, IDC_LINENUMBER, EM_SETSEL, 0, -1);
+			SendDlgItemMessageW(hwnd, IDC_LINENUMBER, EM_SETSEL, 0, -1);
 			break;
 		}
 		break;
@@ -1560,26 +1565,30 @@ void AVSEditor::Find() {
 	if (hwndFind)
 		SetForegroundWindow(hwndFind);
 	else
-		CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_FIND), hwndView, FindDlgProc, (LPARAM) this);
+		CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_FIND), hwndView, FindDlgProc, (LPARAM) this);
 }
 
 void AVSEditor::Jumpto() {
-	CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_JUMPTO), hwndView, JumpDlgProc, (LPARAM) this);
+	CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_JUMPTO), hwndView, JumpDlgProc, (LPARAM) this);
 }
 
 void AVSEditor::FindNext(bool reverse) {
-	if (mFind.szFindString[0] == 0) return;
+	if (mFind.szFindString[0] == 0) {
+		return;
+	}
 
 	int len = SendMessageSci(SCI_GETLENGTH);
 	int pos = SendMessageSci(SCI_GETCURRENTPOS);
 
+	VDStringA findstr_u8 = VDTextWToU8(mFind.szFindString, -1);
+
 	TextToFind ft = {{0, 0}, 0, {0, 0}};
-	ft.lpstrText = mFind.szFindString;
+	ft.lpstrText = findstr_u8.c_str();
 
 	int flags = 0;
 
 	if	(reverse) {
-		ft.chrg.cpMin = pos-1-strlen(mFind.szFindString);
+		ft.chrg.cpMin = pos-1-findstr_u8.length();
 		ft.chrg.cpMax = 0;
 		flags = 0;
 	} else {
@@ -1635,40 +1644,39 @@ void LoadAVSEditorIcons() {
 	HRSRC hrsrc;
 	HGLOBAL hGlob;
 
-	hrsrc = FindResource(g_hInst,(LPCTSTR)IDR_SCI_KEYWORDS,_T("STUFF"));
+	hrsrc = FindResourceW(g_hInst,(LPCWSTR)IDR_SCI_KEYWORDS,L"STUFF");
 	hGlob = LoadResource(g_hInst,hrsrc);
 	imKeywords = LockResource(hGlob);
-	hrsrc = FindResource(g_hInst,(LPCTSTR)IDR_SCI_INTERNAL,_T("STUFF"));
+	hrsrc = FindResourceW(g_hInst,(LPCWSTR)IDR_SCI_INTERNAL,L"STUFF");
 	hGlob = LoadResource(g_hInst,hrsrc);
 	imInternal = LockResource(hGlob);
-	hrsrc = FindResource(g_hInst,(LPCTSTR)IDR_SCI_EXTERNAL,_T("STUFF"));
+	hrsrc = FindResourceW(g_hInst,(LPCWSTR)IDR_SCI_EXTERNAL,L"STUFF");
 	hGlob = LoadResource(g_hInst,hrsrc);
 	imExternal = LockResource(hGlob);
 }
 
 ATOM RegisterAVSEditorClass() {
-	WNDCLASS wc1;
+	WNDCLASSW wc1;
 
 	wc1.style			= 0;
 	wc1.lpfnWndProc		= AVSEditor::AVSEditorWndProc;
 	wc1.cbClsExtra		= 0;
 	wc1.cbWndExtra		= sizeof(AVSEditor *);
 	wc1.hInstance		= g_hInst;
-//	wc1.hIcon			= NULL;
-	wc1.hIcon			= LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_AVSEDIT));
-		wc1.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc1.hIcon			= LoadIconW(g_hInst, MAKEINTRESOURCEW(IDI_AVSEDIT));
+	wc1.hCursor			= LoadCursor(NULL, IDC_ARROW);
 	wc1.hbrBackground	= NULL; //(HBRUSH)(COLOR_WINDOW+1);
-	wc1.lpszMenuName	= MAKEINTRESOURCE(IDR_AVSVIEWER_MENU);
+	wc1.lpszMenuName	= MAKEINTRESOURCEW(IDR_AVSVIEWER_MENU);
 	wc1.lpszClassName	= AVSEDITORCLASS;	
 
-	return RegisterClass(&wc1);
+	return RegisterClassW(&wc1);
 }
 
 AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront) {
 	if (!g_VDMPrefs.m_bScriptEditorSingleInstance || (g_ScriptEditor == (HWND) -1)) {
-		HWND wnd = CreateWindow(
+		HWND wnd = CreateWindowW(
 			AVSEDITORCLASS,
-			"VirtualDub2 Script Editor",
+			L"VirtualDub2 Script Editor",
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
@@ -1689,7 +1697,7 @@ AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront) {
 
 	SetFocus(g_ScriptEditor);
 
-	AVSEditor* pcd = (AVSEditor *)GetWindowLongPtr(g_ScriptEditor, 0);
+	AVSEditor* pcd = (AVSEditor *)GetWindowLongPtrW(g_ScriptEditor, 0);
 
 	return pcd;
 }
@@ -1718,7 +1726,7 @@ bool HandleFilename(HWND hwnd, const wchar_t* path) {
 	if (!g_VDMPrefs.m_bScriptEditorAutoPopup) return true;
 
 	if (g_VDMPrefs.m_bScriptEditorSingleInstance && g_ScriptEditor!=(HWND)-1)
-		SendMessage(g_ScriptEditor,WM_CLOSE,0,0);
+		SendMessageW(g_ScriptEditor,WM_CLOSE,0,0);
 
 	AVSEditor* obj = CreateEditor(NULL, hwnd, false);
 	obj->Open(path);
@@ -1742,7 +1750,7 @@ bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line
 	if (!handle) return false;
 
 	if (g_VDMPrefs.m_bScriptEditorSingleInstance && g_ScriptEditor!=(HWND)-1)
-		SendMessage(g_ScriptEditor,WM_CLOSE,0,0);
+		SendMessageW(g_ScriptEditor,WM_CLOSE,0,0);
 
 	AVSEditor* obj = CreateEditor(NULL, hwnd, false);
 	obj->Open(path);
@@ -1751,8 +1759,11 @@ bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line
 }
 
 bool ProcessDialogs(MSG& msg) {
-	for(int i=0; i<(int)g_dialogs.size(); i++)
-		if (IsDialogMessage(g_dialogs[i],&msg)) return true;
+	for (int i = 0; i < (int)g_dialogs.size(); i++) {
+		if (IsDialogMessageW(g_dialogs[i], &msg)) {
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -1762,7 +1773,7 @@ bool ProcessHotkeys(MSG& msg) {
 	for(int i=0; i<(int)g_windows.size(); i++) {
 		AVSEditor* obj = g_windows[i];
 		if (obj->GetHwnd()==hwnd) {
-			if (TranslateAccelerator(hwnd, g_hAccelAVS, &msg)) return true;
+			if (TranslateAcceleratorW(hwnd, g_hAccelAVS, &msg)) return true;
 		}
 	}
 	return false;

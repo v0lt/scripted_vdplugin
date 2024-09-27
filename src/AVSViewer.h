@@ -21,14 +21,14 @@
 #include <windows.h>
 
 #define AVSEDITORCLASS (szAVSEditorClassName)
-#define DEFAULT_EDITOR_FONT	"FixedSys"
+#define DEFAULT_EDITOR_FONT	"Consolas"
 
 #define REG_WINDOW_MAIN "Main"
 #define REG_WINDOW_FIND "Find"
 #define REG_WINDOW_JUMPTO "Jumpto"
 
 #ifndef f_AVSVIEWER_CPP
-extern const char szAVSEditorClassName[];
+extern const wchar_t szAVSEditorClassName[];
 #endif
 
 const int SCRIPTTYPE_NONE = 0;

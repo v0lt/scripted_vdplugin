@@ -239,39 +239,39 @@ HACCEL CreateAVSAccelerators() {
 	return CreateAcceleratorTable(avsAccel, c+1);
 }
 
-void GetKeyString(BYTE fVirt, WORD key, char *buffer, int len) {
+void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 	bool bRem = false;
 	*buffer = 0;
-	char buf[255];
-	char b[2] = "\0";
+	wchar_t buf[255];
+	wchar_t b[2] = L"\0";
 	if (fVirt & FALT) {
-		if (LoadString(g_hInst, 5018, (char *) &buf, 255)>0) {
-			strncat(buffer, buf, len);
-			strncat(buffer, "+", len-strlen(buffer));
+		if (LoadStringW(g_hInst, 5018, (wchar_t*) &buf, 255)>0) {
+			wcsncat(buffer, buf, len);
+			wcsncat(buffer, L"+", len-wcslen(buffer));
 			bRem = true;
 		}
 	}
 	if (fVirt & FCONTROL) {
-		if (LoadString(g_hInst, 5017, (char *) &buf, 255)>0) {
-			strncat(buffer, buf, len-strlen(buffer));
-			strncat(buffer, "+", len-strlen(buffer));
+		if (LoadStringW(g_hInst, 5017, (wchar_t*) &buf, 255)>0) {
+			wcsncat(buffer, buf, len-wcslen(buffer));
+			wcsncat(buffer, L"+", len-wcslen(buffer));
 			bRem = true;
 		}
 	}
 	if (fVirt & FSHIFT) {
-		if (LoadString(g_hInst, 5016, (char *) &buf, 255)>0) {
-			strncat(buffer, buf, len-strlen(buffer));
-			strncat(buffer, "+", len-strlen(buffer));
+		if (LoadStringW(g_hInst, 5016, (wchar_t*) &buf, 255)>0) {
+			wcsncat(buffer, buf, len-wcslen(buffer));
+			wcsncat(buffer, L"+", len-wcslen(buffer));
 			bRem = true;
 		}
 	}
-	if (bRem) *(buffer + (strlen(buffer)-1)) = '-';
+	if (bRem) *(buffer + (wcslen(buffer)-1)) = '-';
 	if (fVirt & FVIRTKEY) {
-		if (LoadString(g_hInst, 5000+key, (char *) &buf, 255)>0)
-			strncat(buffer, buf, len-strlen(buffer));
+		if (LoadStringW(g_hInst, 5000+key, (wchar_t*) &buf, 255)>0)
+			wcsncat(buffer, buf, len-wcslen(buffer));
 	} else {
-		b[0] = (char)key;
-		if (key!=0) strcat(buffer, b);
+		b[0] = (wchar_t)key;
+		if (key!=0) wcscat(buffer, b);
 	}
 }
 
@@ -280,26 +280,26 @@ void GetKeyString(BYTE fVirt, WORD key, char *buffer, int len) {
 
 
 HMENU CreateAVSMenu() {
-	HMENU menu = LoadMenu(g_hInst, MAKEINTRESOURCE(IDR_AVSVIEWER_MENU));
-	char buffer[255];
-	char buf[255];
-	MENUITEMINFO mi = {sizeof(MENUITEMINFO)};
+	HMENU menu = LoadMenuW(g_hInst, MAKEINTRESOURCEW(IDR_AVSVIEWER_MENU));
+	wchar_t buffer[255];
+	wchar_t buf[255];
+	MENUITEMINFOW mi = {sizeof(MENUITEMINFOW)};
 	mi.fMask = MIIM_TYPE;
 	mi.dwTypeData = buffer;
 
 	for(int i=0; i<VDM_ACCEL_AVS_COUNT; i++) {
 		if (g_accelAVS.command[i].altkey[0].key>0) {
 			mi.cch = 255;
-			GetMenuItemInfo(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
-			strcat(buffer, "\t");
-			GetKeyString(g_accelAVS.command[i].altkey[0].fVirt, g_accelAVS.command[i].altkey[0].key, (char *) &buf, 255);
-			strcat(buffer, buf);
+			GetMenuItemInfoW(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
+			wcscat(buffer, L"\t");
+			GetKeyString(g_accelAVS.command[i].altkey[0].fVirt, g_accelAVS.command[i].altkey[0].key, (wchar_t*) &buf, 255);
+			wcscat(buffer, buf);
 			if (g_accelAVS.command[i].altkey[1].key>0) {
-				strcat(buffer, ", ");
-				GetKeyString(g_accelAVS.command[i].altkey[1].fVirt, g_accelAVS.command[i].altkey[1].key, (char *) &buf, 255);
-				strcat(buffer, buf);
+				wcscat(buffer, L", ");
+				GetKeyString(g_accelAVS.command[i].altkey[1].fVirt, g_accelAVS.command[i].altkey[1].key, (wchar_t*) &buf, 255);
+				wcscat(buffer, buf);
 			}
-			SetMenuItemInfo(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
+			SetMenuItemInfoW(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
 		}
 	}
 	return menu;

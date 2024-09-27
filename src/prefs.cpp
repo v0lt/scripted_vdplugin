@@ -16,8 +16,9 @@ void LoadPrefs() {
 
 	g_VDMPrefs.mAVSViewerFontSize = key.getInt("fontsize", 14);
 
-	if (!key.getString("fontface", g_VDMPrefs.mAVSViewerFontFace))
-		g_VDMPrefs.mAVSViewerFontFace = "FixedSys";
+	if (!key.getString("fontface", g_VDMPrefs.mAVSViewerFontFace)) {
+		g_VDMPrefs.mAVSViewerFontFace = L"Consolas";
+	}
 }
 
 void SavePrefs() {
@@ -77,13 +78,12 @@ INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM 
 }
 
 void VDDialogPrefsScriptEditor::SetFontLabel() {
-	VDStringW face(VDTextAToW(mPrefs.mAVSViewerFontFace));
-	const wchar_t *s = face.c_str();
+	const wchar_t *s = mPrefs.mAVSViewerFontFace.c_str();
 	SetDlgItemTextW(mhwnd, IDC_FONT_TEXT, VDswprintf(L"%s, %d pt", 2, &s, &mPrefs.mAVSViewerFontSize).c_str());
 }
 
-void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONT lplf) {
-	GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), lplf);
+void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf) {
+	GetObjectW(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONTW), lplf);
 
 	HDC hdc = GetDC(hwnd);
 
@@ -92,23 +92,23 @@ void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONT lplf) {
 
 	ReleaseDC(hwnd, hdc);
 
-	strcpy(lplf->lfFaceName, mPrefs.mAVSViewerFontFace.c_str());
+	wcscpy(lplf->lfFaceName, mPrefs.mAVSViewerFontFace.c_str());
 }
 
 void VDDialogPrefsScriptEditor::AVSViewerChooseFont() {
-	LOGFONT lf;
-	CHOOSEFONT cf;
+	LOGFONTW lf;
+	CHOOSEFONTW cf;
 
 	InitFont(mhwnd, &lf);
 
-	ZeroMemory(&cf, sizeof(CHOOSEFONT));
-	cf.lStructSize = sizeof(CHOOSEFONT);
+	ZeroMemory(&cf, sizeof(CHOOSEFONTW));
+	cf.lStructSize = sizeof(CHOOSEFONTW);
 	cf.hwndOwner = mhwnd;
 	cf.lpLogFont = &lf;
 	cf.Flags = CF_BOTH | CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT;
 	cf.nFontType = SCREEN_FONTTYPE;
 
-	if (!::ChooseFont(&cf)) return;
+	if (!::ChooseFontW(&cf)) return;
 
 	mPrefs.mAVSViewerFontSize = cf.iPointSize / 10;
 	mPrefs.mAVSViewerFontFace = lf.lfFaceName;

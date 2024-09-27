@@ -6,11 +6,11 @@
 #define REG_KEY_APP "Software\\VirtualDub.org\\Script Editor"
 
 struct VDubModPreferences2 {
-	char	m_bScriptEditorSingleInstance;
-	char	m_bScriptEditorAutoPopup;
-	char	m_bWrapLines;
-	uint32				mAVSViewerFontSize;
-	VDStringA			mAVSViewerFontFace;
+	char		m_bScriptEditorSingleInstance;
+	char		m_bScriptEditorAutoPopup;
+	char		m_bWrapLines;
+	uint32		mAVSViewerFontSize;
+	VDStringW	mAVSViewerFontFace;
 } extern g_VDMPrefs;
 
 class VDDialogPrefsScriptEditor {
@@ -22,7 +22,7 @@ public:
 	static INT_PTR CALLBACK DlgProc(HWND hdlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	void SetFontLabel();
-	void InitFont(HWND hwnd, LPLOGFONT lplf);
+	void InitFont(HWND hwnd, LPLOGFONTW lplf);
 	void AVSViewerChooseFont();
 };
 
