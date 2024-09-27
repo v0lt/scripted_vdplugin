@@ -494,10 +494,9 @@ void AVSEditor::Open(const wchar_t* path) {
 	}
 	free(lpszBuf);
 
-	char buf[512];
-
-	wsprintfA(buf, "VirtualDub2 Script Editor - [%ls]", lpszFileName);
-	SetWindowText(hwnd, buf);
+	VDStringW windowtitle;
+	windowtitle.sprintf(L"VirtualDub2 Script Editor - [%s]", lpszFileName);
+	SetWindowTextW(hwnd, windowtitle.c_str());
 
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
 	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
@@ -692,7 +691,7 @@ void AVSEditor::SetStatus(const char *format, ...) throw() {
 	_vsnprintf(buf, sizeof buf, format, val);
 	va_end(val);
 
-	SetWindowText(hwndStatus, buf);
+	SetWindowTextA(hwndStatus, buf);
 }
 
 void AVSEditor::UpdateStatus() throw() {
@@ -769,7 +768,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 			SendMessageSci(SCI_CLEARALL, 0, 0);
 //			SetScriptType(SCRIPTTYPE_NONE);
 			SetScriptType(SCRIPTTYPE_AVS);
-			SetWindowText(hwnd, "VirtualDub2 Script Editor");
+			SetWindowTextA(hwnd, "VirtualDub2 Script Editor");
 		}
 		break;
 	case ID_REFRESH:
@@ -932,13 +931,13 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 			ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
 
 			if (GetOpenFileNameW(&ofn)) {
-				VDStringA filepath_utf8;
+				VDStringA filepath_u8;
 				if (scriptType == SCRIPTTYPE_NONE) {
-					filepath_utf8 = VDTextWToU8(szName, -1);
+					filepath_u8 = VDTextWToU8(szName, -1);
 				} else {
-					filepath_utf8.sprintf("\"%s\"", VDTextWToU8(szName, -1));
+					filepath_u8.sprintf("\"%s\"", VDTextWToU8(szName, -1));
 				}
-				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) (char*)(filepath_utf8.c_str()));
+				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) (char*)(filepath_u8.c_str()));
 			}
 		}
 		break;
