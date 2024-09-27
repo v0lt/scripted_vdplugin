@@ -140,14 +140,14 @@ int guiMessageBox(HWND hwnd, UINT idText, UINT idCaption, UINT uType) {
 		error = true;
 
 	if (error) {
-		return MessageBox(hwnd, "Can't retrieve message!", "Internal Error", MB_OK);
+		return MessageBoxA(hwnd, "Can't retrieve message!", "Internal Error", MB_OK);
 	}
 
-	return MessageBox(hwnd, text, caption, uType);
+	return MessageBoxA(hwnd, text, caption, uType);
 }
 
 int guiMessageBoxText(HWND hwnd, LPCTSTR lpCaption, UINT uType, const char *text) {
-	return MessageBox(hwnd, text, lpCaption, uType);
+	return MessageBoxA(hwnd, text, lpCaption, uType);
 }
 
 const int WM_DEFER_ERROR = WM_USER+1;
@@ -500,7 +500,7 @@ void AVSEditor::Open(const wchar_t* path) {
 
 	char buf[512];
 
-	wsprintf(buf, "VirtualDub2 Script Editor - [%ls]", lpszFileName);
+	wsprintfA(buf, "VirtualDub2 Script Editor - [%ls]", lpszFileName);
 	SetWindowText(hwnd, buf);
 
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
@@ -724,9 +724,9 @@ void AVSEditor::UpdateStatus() throw() {
 	c = SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 	posy = SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
 	posx = c - SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
-	wsprintf(buf, "%d:%d", posy+1, posx+1);
-	SendMessage(hwndStatus, SB_SETTEXT, 2, (LPARAM) &buf);
-	SendMessage(hwndStatus, SB_SETTEXT, 1, (LPARAM) scripttypeName[scriptType]);
+	wsprintfA(buf, "%d:%d", posy+1, posx+1);
+	SendMessageA(hwndStatus, SB_SETTEXT, 2, (LPARAM) &buf);
+	SendMessageA(hwndStatus, SB_SETTEXT, 1, (LPARAM) scripttypeName[scriptType]);
 }
 
 void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const char *face) {
@@ -842,8 +842,8 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 		{
 			int64 p = VDRequestPos();
 			char buf[50];
-			wsprintf(buf, "%I64d", p);
-			SendMessage(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			wsprintfA(buf, "%I64d", p);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 		}
 		break;
 
@@ -861,27 +861,27 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 
 			char buf[50];
 			if (scriptType == SCRIPTTYPE_NONE) {
-				wsprintf(buf, "%I64d-%I64d", r0, r1);
+				wsprintfA(buf, "%I64d-%I64d", r0, r1);
 			}
 			if (scriptType == SCRIPTTYPE_VDSCRIPT) {
 				if (trim) 
-					wsprintf(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", r0, r1);
+					wsprintfA(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", r0, r1);
 				else
-					wsprintf(buf, "%I64d,%I64d", r0, r1);
+					wsprintfA(buf, "%I64d,%I64d", r0, r1);
 			}
 			if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
 				if (r0 == 0 && r1 == 1)
-					wsprintf(buf, (trim)?"Trim(%d,%d)":"%d,%d", 0, -1);// special case of very first frame
+					wsprintfA(buf, (trim)?"Trim(%d,%d)":"%d,%d", 0, -1);// special case of very first frame
 				else
-					wsprintf(buf, (trim)?"Trim(%I64d,%I64d)":"%I64d,%I64d", r0, r1 -1);
+					wsprintfA(buf, (trim)?"Trim(%I64d,%I64d)":"%I64d,%I64d", r0, r1 -1);
 			}
 			if (scriptType == SCRIPTTYPE_VPS) {
 				if (r1 == r0+1)
-					wsprintf(buf, (trim)?"clip[%d]":"%d", r0);
+					wsprintfA(buf, (trim)?"clip[%d]":"%d", r0);
 				else
-					wsprintf(buf, (trim)?"clip[%I64d:%I64d]":"%I64d:%I64d", r0, r1);
+					wsprintfA(buf, (trim)?"clip[%I64d:%I64d]":"%I64d:%I64d", r0, r1);
 			}
-			SendMessage(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 		}
 		break;
 
@@ -902,34 +902,34 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 				vd_basic_range range = set.ranges[i];
 
 				if (scriptType == SCRIPTTYPE_NONE) {
-					wsprintf(buf, "Trim(%I64d,%I64d)", range.from, range.to);
+					wsprintfA(buf, "Trim(%I64d,%I64d)", range.from, range.to);
 					if (i>0) buffer += " + ";
 				}
 
 				if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
 					if (range.from == 0 && range.to == 1)
-						wsprintf(buf, "Trim(%d,%d)", 0, -1); // special case of one very first frame
+						wsprintfA(buf, "Trim(%d,%d)", 0, -1); // special case of one very first frame
 					else
-						wsprintf(buf, "Trim(%I64d,%I64d)", range.from, range.to - 1);
+						wsprintfA(buf, "Trim(%I64d,%I64d)", range.from, range.to - 1);
 					if (i>0) buffer += " ++ ";
 				}
 
 				if (scriptType == SCRIPTTYPE_VPS) {
 					if (range.to==range.from+1)
-						wsprintf(buf, "clip[%I64d]", range.from);
+						wsprintfA(buf, "clip[%I64d]", range.from);
 					else
-						wsprintf(buf, "clip[%I64d:%I64d]", range.from, range.to);
+						wsprintfA(buf, "clip[%I64d:%I64d]", range.from, range.to);
 					if (i>0) buffer += " + ";
 				}
 
 				if (scriptType == SCRIPTTYPE_VDSCRIPT) {
-					wsprintf(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", range.from, range.to);
+					wsprintfA(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", range.from, range.to);
 					if (i>0) buffer += "\r\n";
 				}
 
 				buffer += buf;
 			}
-			SendMessage(hwndView, SCI_REPLACESEL, 0, (LPARAM) buffer.c_str());
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) buffer.c_str());
 		}
 		break;
 
@@ -958,9 +958,9 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 
 			if (GetOpenFileName(&ofn)) {
 				if (scriptType == SCRIPTTYPE_NONE)
-					wsprintf(buf, "%s", szName);
+					wsprintfA(buf, "%s", szName);
 				else
-					wsprintf(buf, "\"%s\"", szName);
+					wsprintfA(buf, "\"%s\"", szName);
 				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM) &buf);
 			}
 		}
@@ -971,8 +971,8 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 			vd_framesize frame;
 			VDRequestFrameSize(frame);
 			char buf[50];
-			wsprintf(buf, "Crop(%d,%d,%d,%d)", frame.frame.left, frame.frame.top, frame.frame.right, frame.frame.bottom);
-			SendMessage(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			wsprintfA(buf, "Crop(%d,%d,%d,%d)", frame.frame.left, frame.frame.top, frame.frame.right, frame.frame.bottom);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 		}
 		break;
 
@@ -1288,7 +1288,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			NMHDR *phdr = (NMHDR *) lParam;
 			return pcd->Handle_WM_NOTIFY(phdr->hwndFrom, phdr->code, phdr);
 //			if (phdr->code == WN_KEYDOWN) {
-//				MessageBox(pcd->hwnd, "Test", "TEST", MB_OK);
+//				MessageBoxA(pcd->hwnd, "Test", "TEST", MB_OK);
 //			}
 		}
 		return 0;
@@ -1327,8 +1327,8 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			//SETTEXTEX st;
 			//st.flags = ST_SELECTION;
 			//st.codepage = CP_ACP;
-			wsprintf(buf, "%d", pos->pos);
-			SendMessage(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			wsprintfA(buf, "%d", pos->pos);
+			SendMessageA(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 			delete [] pos;
 		}
 		return 0;
@@ -1341,16 +1341,16 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			//st.flags = ST_SELECTION;
 			//st.codepage = CP_ACP;
 			if (pcd->scriptType == SCRIPTTYPE_NONE)
-//				wsprintf(buf, "%d-%d", range->range.from, range->range.to);
-				wsprintf(buf, "%d-%d", range->range.from, range->range.to - 1); // -1 corrected by Fizick
+//				wsprintfA(buf, "%d-%d", range->range.from, range->range.to);
+				wsprintfA(buf, "%d-%d", range->range.from, range->range.to - 1); // -1 corrected by Fizick
 			else
-//				wsprintf(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", range->range.from, range->range.to);
+//				wsprintfA(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", range->range.from, range->range.to);
 				// Fixed bug with TRIM position for Avisynth - code changed by Fizick:
 				if (range->range.from == 0 && range->range.to == 1)
-					wsprintf(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", 0, -1);// special case of very first frame
+					wsprintfA(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", 0, -1);// special case of very first frame
 				else
-					wsprintf(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", range->range.from, range->range.to -1);// -1 corrected by Fizick
-			SendMessage(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+					wsprintfA(buf, (range->tag)?"Trim(%d,%d)":"%d,%d", range->range.from, range->range.to -1);// -1 corrected by Fizick
+			SendMessageA(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 			delete [] range;
 		}
 		return 0;
@@ -1367,16 +1367,16 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			for(int i = 0; i<fs->count; i++) {
 				//range = (fs->ranges + (i*sizeof(VDM_BASIC_RANGE)));
 				range = fs->ranges[i];
-//				wsprintf(buf, "Trim(%d,%d)", range.from, range.to);
+//				wsprintfA(buf, "Trim(%d,%d)", range.from, range.to);
 				// Fixed bug with TRIM position for Avisynth - code changed by Fizick:
 				if (range.from == 0 && range.to == 1)
-					wsprintf(buf, "Trim(%d,%d)", 0, -1); // special case of one very first frame
+					wsprintfA(buf, "Trim(%d,%d)", 0, -1); // special case of one very first frame
 				else
-					wsprintf(buf, "Trim(%d,%d)", range.from, range.to - 1); // -1 corrected by Fizick
+					wsprintfA(buf, "Trim(%d,%d)", range.from, range.to - 1); // -1 corrected by Fizick
 				if (i>0) buffer += " ++ ";
 				buffer += buf;
 			}
-			SendMessage(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) buffer.c_str());
+			SendMessageA(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) buffer.c_str());
 			if (fs->count==0) guiMessageBox(hwnd, IDS_ERR_AVS_NOFRAMESET, IDS_ERR_CAPTION, MB_OK|MB_ICONERROR);
 			delete [] fs->ranges;
 			delete [] fs;
@@ -1390,8 +1390,8 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			//SETTEXTEX st;
 			//st.flags = ST_SELECTION;
 			//st.codepage = CP_ACP;
-			wsprintf(buf, "Crop(%d,%d,%d,%d)", s->frame.left, s->frame.top, s->frame.right, s->frame.bottom);
-			SendMessage(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			wsprintfA(buf, "Crop(%d,%d,%d,%d)", s->frame.left, s->frame.top, s->frame.right, s->frame.bottom);
+			SendMessageA(pcd->hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
 			delete [] s;
 		}
 		return 0;
@@ -1400,7 +1400,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 	case WM_DEFER_ERROR:
 		{
 			char* s = (char*)lParam;
-			MessageBox(hwnd, s, "File open error", MB_OK);
+			MessageBoxA(hwnd, s, "File open error", MB_OK);
 			free(s);
 		}
 		return 0;
@@ -1445,7 +1445,7 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 
 			FindTextOption* opt = &pcd->mFind;
 
-			SetDlgItemText(hwnd, ID_FIND_FINDWHAT, pcd->mFind.szFindString);
+			SetDlgItemTextA(hwnd, ID_FIND_FINDWHAT, pcd->mFind.szFindString);
 
 			CheckDlgButton(hwnd, ID_FIND_WHOLEWORD, (opt->bWholeWord) ? BST_CHECKED : BST_UNCHECKED);
 			CheckDlgButton(hwnd, ID_FIND_MATCHCASE, (opt->bMatchCase) ? BST_CHECKED : BST_UNCHECKED);
@@ -1472,7 +1472,7 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			{
 				FindTextOption* opt = &pcd->mFind;
 
-				GetDlgItemText(hwnd, ID_FIND_FINDWHAT, opt->szFindString, sizeof(opt->szFindString));
+				GetDlgItemTextA(hwnd, ID_FIND_FINDWHAT, opt->szFindString, sizeof(opt->szFindString));
 
 				opt->bWholeWord   = (IsDlgButtonChecked(hwnd, ID_FIND_WHOLEWORD  ) == BST_CHECKED);
 				opt->bMatchCase   = (IsDlgButtonChecked(hwnd, ID_FIND_MATCHCASE  ) == BST_CHECKED);
@@ -1509,15 +1509,15 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 
 			char buf[64];
 			int64 frame = VDRequestPos();
-			wsprintf(buf, "%I64d", frame);
-			SetDlgItemText(hwnd, IDC_FRAMENUMBER, buf);
+			wsprintfA(buf, "%I64d", frame);
+			SetDlgItemTextA(hwnd, IDC_FRAMENUMBER, buf);
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
 			SendDlgItemMessage(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
 
 			int c = pcd->SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 			int line = pcd->SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
-			wsprintf(buf, "%d", line+1);
-			SetDlgItemText(hwnd, IDC_LINENUMBER, buf);
+			wsprintfA(buf, "%d", line+1);
+			SetDlgItemTextA(hwnd, IDC_LINENUMBER, buf);
 
 			CheckDlgButton(hwnd, IDC_JUMPTOFRAME, BST_CHECKED);
 			CheckDlgButton(hwnd, IDC_JUMPTOLINE, BST_UNCHECKED);
@@ -1534,13 +1534,13 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 		case IDOK:
 			if (IsDlgButtonChecked(hwnd, IDC_JUMPTOFRAME)) {
 				char buf[64];
-				GetDlgItemText(hwnd,IDC_FRAMENUMBER,buf,64);
+				GetDlgItemTextA(hwnd,IDC_FRAMENUMBER,buf,64);
 				int64 frame;
 				if(sscanf(buf,"%I64d",&frame)==1)
 					VDSetPos(frame);
 			} else {
 				char buf[64];
-				GetDlgItemText(hwnd,IDC_LINENUMBER,buf,64);
+				GetDlgItemTextA(hwnd,IDC_LINENUMBER,buf,64);
 				int line;
 				if(sscanf(buf,"%d",&line)==1)
 					pcd->SendMessageSci(SCI_GOTOLINE, line-1);
@@ -1800,7 +1800,7 @@ void UpdatePreferences() {
 void HandleError(const char* s, void* userData)
 {
 	AVSEditor* obj = (AVSEditor*)userData;
-	MessageBox(obj->GetHwnd(), s, "File open error", MB_OK);
+	MessageBoxA(obj->GetHwnd(), s, "File open error", MB_OK);
 }
 
 void AttachWindows(HWND parent)
