@@ -38,21 +38,21 @@ public:
  bool ok;
  Tdll(const char *dllName1,const char *pth)
   {
-   hdll=LoadLibrary(dllName1);
+   hdll=LoadLibraryA(dllName1);
    if (!hdll)
     {
      char name[MAX_PATH],ext[MAX_PATH];
      _splitpath(dllName1,NULL,NULL,name,ext);
      char dllName2[MAX_PATH];
      _makepath(dllName2,NULL,NULL,name,ext);
-     hdll=LoadLibrary(dllName2);
+     hdll=LoadLibraryA(dllName2);
      if (!hdll && pth)
       {
        char pomS[MAX_PATH];
        strcpy(pomS,pth);
        strcat(pomS,dllName2);
        //sprintf(pomS,"%s%s",pth,dllName2);
-       hdll=LoadLibrary(pomS);
+       hdll=LoadLibraryA(pomS);
       }
     }
    ok=(hdll!=NULL);

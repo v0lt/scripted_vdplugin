@@ -146,10 +146,6 @@ int guiMessageBox(HWND hwnd, UINT idText, UINT idCaption, UINT uType) {
 	return MessageBoxA(hwnd, text, caption, uType);
 }
 
-int guiMessageBoxText(HWND hwnd, LPCTSTR lpCaption, UINT uType, const char *text) {
-	return MessageBoxA(hwnd, text, lpCaption, uType);
-}
-
 const int WM_DEFER_ERROR = WM_USER+1;
 
 class AVSEditor {
@@ -1091,7 +1087,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 				}
 				char caption[256];
 				LoadString(g_hInst, IDS_INFO_AVS_VERSION_CAP, (LPTSTR)caption, sizeof caption);
-				guiMessageBoxText(hwnd, caption, MB_OK|MB_ICONINFORMATION, v.c_str());
+				MessageBoxA(hwnd, v.c_str(), caption, MB_OK|MB_ICONINFORMATION);
 			} else {
 				guiMessageBox(hwnd, IDS_ERR_AVS_NOTFOUND, IDS_INFO_AVS_VERSION_CAP, MB_OK|MB_ICONSTOP);
 			}
