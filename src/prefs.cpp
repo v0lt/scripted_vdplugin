@@ -83,12 +83,15 @@ void VDDialogPrefsScriptEditor::SetFontLabel() {
 }
 
 void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf) {
-	GetObjectW(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONTW), lplf);
-
 	HDC hdc = GetDC(hwnd);
-
+	ZeroMemory(lplf, sizeof(*lplf));
+	lplf->lfCharSet = (BYTE)GetTextCharset(hdc);
+	lplf->lfOutPrecision = OUT_DEFAULT_PRECIS;
+	lplf->lfClipPrecision = CLIP_DEFAULT_PRECIS;
+	lplf->lfQuality = DEFAULT_QUALITY;
+	lplf->lfPitchAndFamily = DEFAULT_PITCH;
+	lplf->lfWeight = FW_NORMAL;
 	lplf->lfHeight = -MulDiv(mPrefs.mAVSViewerFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-	lplf->lfCharSet = GetTextCharset(hdc);
 
 	ReleaseDC(hwnd, hdc);
 
@@ -96,19 +99,19 @@ void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf) {
 }
 
 void VDDialogPrefsScriptEditor::AVSViewerChooseFont() {
-	LOGFONTW lf;
-	CHOOSEFONTW cf;
 
+	LOGFONTW lf;
 	InitFont(mhwnd, &lf);
 
-	ZeroMemory(&cf, sizeof(CHOOSEFONTW));
-	cf.lStructSize = sizeof(CHOOSEFONTW);
+	CHOOSEFONTW cf = { sizeof(CHOOSEFONTW) };
 	cf.hwndOwner = mhwnd;
 	cf.lpLogFont = &lf;
-	cf.Flags = CF_BOTH | CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT;
+	cf.Flags = CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT | CF_FIXEDPITCHONLY | CF_FORCEFONTEXIST;
 	cf.nFontType = SCREEN_FONTTYPE;
 
-	if (!::ChooseFontW(&cf)) return;
+	if (!::ChooseFont(&cf)) { // ChooseFontW cannot be used directly (see documentation).
+		return;
+	}
 
 	mPrefs.mAVSViewerFontSize = cf.iPointSize / 10;
 	mPrefs.mAVSViewerFontFace = lf.lfFaceName;
