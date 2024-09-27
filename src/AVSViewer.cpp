@@ -695,8 +695,6 @@ void AVSEditor::SetStatus(const char *format, ...) throw() {
 }
 
 void AVSEditor::UpdateStatus() throw() {
-	char buf[1024];
-	int posx, posy, c;
 //	POINT pt;
 
 	//SendMessage(hwndView, EM_GETSEL, (WPARAM) &posx, (LPARAM) &posy);
@@ -704,12 +702,13 @@ void AVSEditor::UpdateStatus() throw() {
 //	c = SendMessage(hwndView, EM_CHARFROMPOS, 0, (LPARAM) &pt);
 //	posy = SendMessage(hwndView, EM_LINEFROMCHAR, c, 0);
 //	posx = c - SendMessage(hwndView, EM_LINEINDEX, posy, 0);
-	c = SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
-	posy = SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
-	posx = c - SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
-	wsprintfA(buf, "%d:%d", posy+1, posx+1);
-	SendMessageA(hwndStatus, SB_SETTEXT, 2, (LPARAM) &buf);
-	SendMessageA(hwndStatus, SB_SETTEXT, 1, (LPARAM) scripttypeName[scriptType]);
+	int c = SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
+	int posy = SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
+	int posx = c - SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
+	VDStringA status_pos;
+	status_pos.sprintf("%d:%d", posy + 1, posx + 1);
+	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
+	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[scriptType]);
 }
 
 void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face) {
@@ -1098,8 +1097,8 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw() {
 	EndDeferWindowPos(hdwp);
 
 	int st[3];
-	st[0] = r.right-150;
-	st[1] = r.right-75;
+	st[0] = r.right-200;
+	st[1] = r.right-100;
 	st[2] = -1;
 	SendMessageW(hwndStatus, SB_SETPARTS, 3, (LPARAM) &st);
 	UpdateStatus();
