@@ -192,7 +192,7 @@
     <Image Include="ico00002.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resource.rc" />
+    <ResourceCompile Include="scripted.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)scintilla\scintilla.vcxproj">
