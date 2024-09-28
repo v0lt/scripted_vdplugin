@@ -7,7 +7,8 @@
 extern HINSTANCE g_hInst;
 VDubModPreferences2 g_VDMPrefs;
 
-void LoadPrefs() {
+void LoadPrefs()
+{
 	VDRegistryKey key(REG_KEY_APP);
 
 	g_VDMPrefs.m_bScriptEditorSingleInstance = key.getInt("singleInstance", 1);
@@ -21,7 +22,8 @@ void LoadPrefs() {
 	}
 }
 
-void SavePrefs() {
+void SavePrefs()
+{
 	VDRegistryKey key(REG_KEY_APP);
 
 	key.setInt("singleInstance", g_VDMPrefs.m_bScriptEditorSingleInstance);
@@ -32,9 +34,10 @@ void SavePrefs() {
 	key.setString("fontface", g_VDMPrefs.mAVSViewerFontFace.c_str());
 }
 
-void ShowPrefs(HWND parent) {
+void ShowPrefs(HWND parent)
+{
 	VDDialogPrefsScriptEditor editor(g_VDMPrefs);
-	LRESULT r = DialogBoxParam(g_hInst,MAKEINTRESOURCE(IDD_OPTIONS),parent,editor.DlgProc,(LPARAM)&editor);
+	LRESULT r = DialogBoxParamW(g_hInst,MAKEINTRESOURCEW(IDD_OPTIONS),parent,editor.DlgProc,(LPARAM)&editor);
 	if (r==0) {
 		g_VDMPrefs = editor.mPrefs;
 		SavePrefs();
@@ -48,20 +51,20 @@ INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM 
 
 	switch(msg) {
 	case WM_INITDIALOG:
-		SetWindowLongPtr(hdlg, DWLP_USER, lParam);
+		SetWindowLongPtrW(hdlg, DWLP_USER, lParam);
 		obj = (VDDialogPrefsScriptEditor *)lParam;
 		obj->mhwnd = hdlg;
-		SendDlgItemMessage(hdlg, IDC_SINGLEINSTANCE, BM_SETCHECK, obj->mPrefs.m_bScriptEditorSingleInstance ? BST_CHECKED:BST_UNCHECKED, 0);
-		SendDlgItemMessage(hdlg, IDC_AUTOPOPUP, BM_SETCHECK, obj->mPrefs.m_bScriptEditorAutoPopup ? BST_CHECKED:BST_UNCHECKED, 0);
-		SendDlgItemMessage(hdlg, IDC_WRAPLINES, BM_SETCHECK, obj->mPrefs.m_bWrapLines ? BST_CHECKED:BST_UNCHECKED, 0);
+		SendDlgItemMessageW(hdlg, IDC_SINGLEINSTANCE, BM_SETCHECK, obj->mPrefs.m_bScriptEditorSingleInstance ? BST_CHECKED:BST_UNCHECKED, 0);
+		SendDlgItemMessageW(hdlg, IDC_AUTOPOPUP, BM_SETCHECK, obj->mPrefs.m_bScriptEditorAutoPopup ? BST_CHECKED:BST_UNCHECKED, 0);
+		SendDlgItemMessageW(hdlg, IDC_WRAPLINES, BM_SETCHECK, obj->mPrefs.m_bWrapLines ? BST_CHECKED:BST_UNCHECKED, 0);
 		obj->SetFontLabel();
 		break;
 	case WM_COMMAND:
 		switch(LOWORD(wParam)) {
 			case IDOK:
-				obj->mPrefs.m_bScriptEditorSingleInstance = SendDlgItemMessage(hdlg, IDC_SINGLEINSTANCE, BM_GETCHECK, 0, 0)==BST_CHECKED;
-				obj->mPrefs.m_bScriptEditorAutoPopup = SendDlgItemMessage(hdlg, IDC_AUTOPOPUP, BM_GETCHECK, 0, 0)==BST_CHECKED;
-				obj->mPrefs.m_bWrapLines = SendDlgItemMessage(hdlg, IDC_WRAPLINES, BM_GETCHECK, 0, 0)==BST_CHECKED;
+				obj->mPrefs.m_bScriptEditorSingleInstance = SendDlgItemMessageW(hdlg, IDC_SINGLEINSTANCE, BM_GETCHECK, 0, 0)==BST_CHECKED;
+				obj->mPrefs.m_bScriptEditorAutoPopup = SendDlgItemMessageW(hdlg, IDC_AUTOPOPUP, BM_GETCHECK, 0, 0)==BST_CHECKED;
+				obj->mPrefs.m_bWrapLines = SendDlgItemMessageW(hdlg, IDC_WRAPLINES, BM_GETCHECK, 0, 0)==BST_CHECKED;
 				EndDialog(hdlg, 0);
 				return TRUE;
 			case IDCANCEL:
@@ -77,12 +80,14 @@ INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM 
 	return FALSE;
 }
 
-void VDDialogPrefsScriptEditor::SetFontLabel() {
+void VDDialogPrefsScriptEditor::SetFontLabel()
+{
 	const wchar_t *s = mPrefs.mAVSViewerFontFace.c_str();
 	SetDlgItemTextW(mhwnd, IDC_FONT_TEXT, VDswprintf(L"%s, %d pt", 2, &s, &mPrefs.mAVSViewerFontSize).c_str());
 }
 
-void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf) {
+void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf)
+{
 	HDC hdc = GetDC(hwnd);
 	ZeroMemory(lplf, sizeof(*lplf));
 	lplf->lfCharSet = (BYTE)GetTextCharset(hdc);
@@ -98,8 +103,8 @@ void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf) {
 	wcscpy(lplf->lfFaceName, mPrefs.mAVSViewerFontFace.c_str());
 }
 
-void VDDialogPrefsScriptEditor::AVSViewerChooseFont() {
-
+void VDDialogPrefsScriptEditor::AVSViewerChooseFont()
+{
 	LOGFONTW lf;
 	InitFont(mhwnd, &lf);
 

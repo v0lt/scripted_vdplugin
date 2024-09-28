@@ -17,16 +17,19 @@ HACCEL		g_hAccelAVS;
 extern "C" bool Scintilla_RegisterClasses(void *hInstance);
 extern "C" bool Scintilla_ReleaseResources();
 
-void VDUISaveWindowPlacementW32(HWND hwnd, const char *name) {
+void VDUISaveWindowPlacementW32(HWND hwnd, const char *name)
+{
 	VDRegistryKey key(REG_KEY_APP"\\Window Placement");
 
 	WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
 
-	if (GetWindowPlacement(hwnd, &wp))
-		key.setBinary(name, (const char *)&wp.rcNormalPosition, sizeof(RECT));
+	if (GetWindowPlacement(hwnd, &wp)) {
+		key.setBinary(name, (const char*)&wp.rcNormalPosition, sizeof(RECT));
+	}
 }
 
-void VDUIRestoreWindowPlacementW32(HWND hwnd, const char *name) {
+void VDUIRestoreWindowPlacementW32(HWND hwnd, const char *name)
+{
 	if (!IsZoomed(hwnd) && !IsIconic(hwnd)) {
 		VDRegistryKey key(REG_KEY_APP"\\Window Placement");
 		RECT r;
@@ -46,13 +49,19 @@ void VDUIRestoreWindowPlacementW32(HWND hwnd, const char *name) {
 	}
 }
 
-void AVSViewerLoadSettings(HWND hwnd, const char* name) {
-	if (!hwnd) return;
+void AVSViewerLoadSettings(HWND hwnd, const char* name)
+{
+	if (!hwnd) {
+		return;
+	}
 	VDUIRestoreWindowPlacementW32(hwnd, name);
 }
 
-void AVSViewerSaveSettings(HWND hwnd, const char* name) {
-	if (!hwnd) return;
+void AVSViewerSaveSettings(HWND hwnd, const char* name)
+{
+	if (!hwnd) {
+		return;
+	}
 	VDUISaveWindowPlacementW32(hwnd, name);
 }
 
@@ -65,7 +74,9 @@ void VDRequestFrameSize(vd_framesize& frame)
 
 void init_avs()
 {
-	if(g_dllAviSynth) return;
+	if (g_dllAviSynth) {
+		return;
+	}
 	g_dllAviSynth = new CAviSynth("avisynth.dll");
 }
 
@@ -241,7 +252,8 @@ void VDRequestFrameset(vd_frameset& set, int max)
 	}
 }
 
-class ToolDriver: public vdxunknown<IVDXTool> {
+class ToolDriver: public vdxunknown<IVDXTool>
+{
 	virtual ~ToolDriver() {
 		uninitialize();
 	}
@@ -291,10 +303,14 @@ class ToolDriver: public vdxunknown<IVDXTool> {
 
 bool VDXAPIENTRY create(const VDXToolContext *pContext, IVDXTool **pp)
 {
-	if(!initialize()) return false;
+	if (!initialize()) {
+		return false;
+	}
 
 	ToolDriver *p = new ToolDriver();
-	if(!p) return false;
+	if (!p) {
+		return false;
+	}
 	*pp = p;
 	p->AddRef();
 	g_context = pContext;
@@ -338,7 +354,7 @@ extern "C" VDPluginInfo** VDXAPIENTRY VDGetPluginInfo()
 
 BOOLEAN WINAPI DllMain( IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved )
 {
-	switch ( nReason ){
+	switch (nReason) {
 	case DLL_PROCESS_ATTACH:
 		g_hInst = hDllHandle;
 		return true;

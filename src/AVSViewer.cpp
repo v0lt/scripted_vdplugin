@@ -126,7 +126,8 @@ struct FindTextOption {
 	bool bWrap;
 };
 
-int guiMessageBox(HWND hwnd, UINT idText, UINT idCaption, UINT uType) {
+int guiMessageBox(HWND hwnd, UINT idText, UINT idCaption, UINT uType)
+{
 	char caption[256];
 	char text[4096]; // increased by Fizick (for Avisynth functions list)
 	bool error = false;
@@ -226,11 +227,14 @@ AVSEditor::AVSEditor(HWND _hwnd) : hwnd(_hwnd), hfont(0)
 {
 }
 
-AVSEditor::~AVSEditor() {
-	if (hwndFind)
+AVSEditor::~AVSEditor()
+{
+	if (hwndFind) {
 		DestroyWindow(hwndFind);
-	if (hfont)
+	}
+	if (hfont) {
 		DeleteObject(hfont);
+	}
 }
 
 // Toff ----->
@@ -407,7 +411,8 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 // <----- Toff
 
-void AVSEditor::Init() {
+void AVSEditor::Init()
+{
 	hwndStatus = CreateStatusWindowW(WS_CHILD|WS_VISIBLE|SBARS_SIZEGRIP, L"", hwnd, 501);
 
 	hwndView = CreateWindowExW(
@@ -458,14 +463,16 @@ void AVSEditor::Init() {
 	SetScriptType(scriptType);
 }
 
-void AVSEditor::UpdateLineNumbers() {
+void AVSEditor::UpdateLineNumbers()
+{
 	SendMessageSci(SCI_SETMARGINTYPEN, 1, SC_MARGIN_NUMBER);
 	char *gw = "9";
 	int pixelWidth = 4 + 5 * SendMessageSci(SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM) gw);
 	SendMessageSci(SCI_SETMARGINWIDTHN, 1, bLineNumbers?pixelWidth:0);
 }
 
-void AVSEditor::Open(const wchar_t* path) {
+void AVSEditor::Open(const wchar_t* path)
+{
 	if(path) wcscpy(lpszFileName, path);
 
 	unsigned char *lpszBuf;
@@ -510,13 +517,15 @@ void AVSEditor::Open(const wchar_t* path) {
 	SetScriptType(GetScriptType(lpszFileName));
 }
 
-void AVSEditor::HandleError(const char* s, int line){
+void AVSEditor::HandleError(const char* s, int line)
+{
 	SendMessageSci(SCI_GOTOLINE, line-1);
 	char* s1 = _strdup(s);
 	PostMessageW(hwnd,WM_DEFER_ERROR,0,(LPARAM)s1);
 }
 
-void AVSEditor::SetScriptType(int type){
+void AVSEditor::SetScriptType(int type)
+{
 	scriptType = type;
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
 	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
@@ -629,7 +638,8 @@ void AVSEditor::SetScriptType(int type){
 	UpdateStatus();
 }
 
-bool AVSEditor::Commit() {
+bool AVSEditor::Commit()
+{
 		int s;
 	char *lpszBuf;
 	FILE *f;
@@ -683,7 +693,8 @@ bool AVSEditor::Commit() {
 	return true;
 }
 
-void AVSEditor::SetStatus(const char *format, ...) throw() {
+void AVSEditor::SetStatus(const char *format, ...) throw()
+{
 	char buf[1024];
 	va_list val;
 
@@ -694,7 +705,8 @@ void AVSEditor::SetStatus(const char *format, ...) throw() {
 	SetWindowTextA(hwndStatus, buf);
 }
 
-void AVSEditor::UpdateStatus() throw() {
+void AVSEditor::UpdateStatus() throw()
+{
 //	POINT pt;
 
 	//SendMessage(hwndView, EM_GETSEL, (WPARAM) &posx, (LPARAM) &posy);
@@ -711,7 +723,8 @@ void AVSEditor::UpdateStatus() throw() {
 	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[scriptType]);
 }
 
-void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face) {
+void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face)
+{
 	SendMessageSci(SCI_STYLESETFORE, style, fore);
 	SendMessageSci(SCI_STYLESETBACK, style, back);
 	if (size >= 1) {
@@ -723,8 +736,8 @@ void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, con
 	}
 }
 
-
-LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
+LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
+{
 	if ((HWND) lParam == hwndView) {
 /*		switch (HIWORD(wParam)) {
 		case SCEN_CHANGE:
@@ -1082,7 +1095,8 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw() {
 	return 0;
 }
 
-LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw() {
+LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw()
+{
 	HDWP hdwp;
 	RECT r, rstatus;
 
@@ -1106,7 +1120,8 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw() {
 	return 0;
 }
 
-LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) throw() {
+LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) throw()
+{
 	if (hwndFrom == hwndView) {
 		SCNotification* scn = (SCNotification*)phdr;
 		switch(code){
@@ -1128,7 +1143,8 @@ LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) throw
 	return 0;
 }
 
-LRESULT AVSEditor::Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam) {
+LRESULT AVSEditor::Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam)
+{
 	/*
 	HDROP hdrop = (HDROP)wParam;
 	UINT count = DragQueryFileW(hdrop, 0xFFFFFFFF, NULL, 0);
@@ -1151,7 +1167,8 @@ LRESULT AVSEditor::Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-void AVSEditor::CheckBracing() {
+void AVSEditor::CheckBracing()
+{
 	int pos = SendMessageSci(SCI_GETCURRENTPOS);
 	if(pos>0){
 		SendMessageSci(SCI_BRACEHIGHLIGHT, INVALID_POSITION, INVALID_POSITION);
@@ -1166,7 +1183,8 @@ void AVSEditor::CheckBracing() {
 	}
 }
 
-void AVSEditor::DoCalltip() {
+void AVSEditor::DoCalltip()
+{
 	int pos = SendMessageSci(SCI_GETCURRENTPOS);
 	if(pos>0){
 		char ch = (char)SendMessageSci(SCI_GETCHARAT, pos-1);
@@ -1185,7 +1203,8 @@ void AVSEditor::DoCalltip() {
 
 ////////////////////////////
 
-LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw() {
+LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw()
+{
 	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtrW(hwnd, 0);
 
 	switch(msg) {
@@ -1402,7 +1421,8 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 	return 0;
 }
 
-void AVSEditor::UpdatePreferences() {
+void AVSEditor::UpdatePreferences()
+{
 	SetMenu(hwnd, CreateAVSMenu());
 	SetScriptType(scriptType);
 	Handle_WM_SIZE(0, 0);
@@ -1410,7 +1430,8 @@ void AVSEditor::UpdatePreferences() {
 
 ///////////////////////////////////////////////////////////////////////////
 
-INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
 	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtrW(hwnd, DWLP_USER);
 
 	switch (msg) {
@@ -1476,7 +1497,8 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 	return FALSE;
 }
 
-INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
 	AVSEditor* pcd = (AVSEditor*) GetWindowLongPtrW(hwnd, DWLP_USER);
 
 	switch (msg) {
@@ -1492,7 +1514,7 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			wsprintfA(buf, "%I64d", frame);
 			SetDlgItemTextA(hwnd, IDC_FRAMENUMBER, buf);
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
-			SendDlgItemMessage(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
+			SendDlgItemMessageW(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
 
 			int c = pcd->SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 			int line = pcd->SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
@@ -1560,18 +1582,22 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 	return FALSE;
 }
 
-void AVSEditor::Find() {
-	if (hwndFind)
+void AVSEditor::Find()
+{
+	if (hwndFind) {
 		SetForegroundWindow(hwndFind);
-	else
-		CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_FIND), hwndView, FindDlgProc, (LPARAM) this);
+	} else {
+		CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_FIND), hwndView, FindDlgProc, (LPARAM)this);
+	}
 }
 
-void AVSEditor::Jumpto() {
+void AVSEditor::Jumpto()
+{
 	CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_JUMPTO), hwndView, JumpDlgProc, (LPARAM) this);
 }
 
-void AVSEditor::FindNext(bool reverse) {
+void AVSEditor::FindNext(bool reverse)
+{
 	if (mFind.szFindString[0] == 0) {
 		return;
 	}
@@ -1621,7 +1647,8 @@ void AVSEditor::FindNext(bool reverse) {
 	}
 }
 
-int GetScriptType(const wchar_t *fn) {
+int GetScriptType(const wchar_t *fn)
+{
 	const wchar_t* p = wcsrchr(fn, '.');
 	if (!p) return SCRIPTTYPE_NONE;
 	if (!_wcsicmp(p, L".avs")) return SCRIPTTYPE_AVS;
@@ -1635,11 +1662,13 @@ int GetScriptType(const wchar_t *fn) {
 	return SCRIPTTYPE_NONE;
 }
 
-bool IsScriptType(const wchar_t *fn, int type) {
+bool IsScriptType(const wchar_t *fn, int type)
+{
 	return (GetScriptType(fn)==type);
 }
 
-void LoadAVSEditorIcons() {
+void LoadAVSEditorIcons()
+{
 	HRSRC hrsrc;
 	HGLOBAL hGlob;
 
@@ -1654,7 +1683,8 @@ void LoadAVSEditorIcons() {
 	imExternal = LockResource(hGlob);
 }
 
-ATOM RegisterAVSEditorClass() {
+ATOM RegisterAVSEditorClass()
+{
 	WNDCLASSW wc1;
 
 	wc1.style			= 0;
@@ -1671,7 +1701,8 @@ ATOM RegisterAVSEditorClass() {
 	return RegisterClassW(&wc1);
 }
 
-AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront) {
+AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront)
+{
 	if (!g_VDMPrefs.m_bScriptEditorSingleInstance || (g_ScriptEditor == (HWND) -1)) {
 		HWND wnd = CreateWindowW(
 			AVSEDITORCLASS,
@@ -1692,7 +1723,12 @@ AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront) {
 	} else {
 		ShowWindow(g_ScriptEditor, SW_SHOW);
 	}
-	(bringfront)?BringWindowToTop(g_ScriptEditor):SetWindowPos(refWND, g_ScriptEditor, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+	
+	if (bringfront) {
+		BringWindowToTop(g_ScriptEditor);
+	} else {
+		SetWindowPos(refWND, g_ScriptEditor, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	}
 
 	SetFocus(g_ScriptEditor);
 
@@ -1701,28 +1737,36 @@ AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront) {
 	return pcd;
 }
 
-bool OpenCurrentFile(HWND parent) {
+bool OpenCurrentFile(HWND parent)
+{
 	AVSEditor* obj = CreateEditor(NULL, (HWND)parent, true);
 	wchar_t buf[MAX_PATH];
 	VDGetFilename(buf,MAX_PATH);
-	if (IsScriptType(buf,SCRIPTTYPE_AVS) || IsScriptType(buf,SCRIPTTYPE_VPS)) {
+	const int scriptType = GetScriptType(buf);
+	if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_VPS) {
 		obj->Open(buf);
 		return true;
 	}
 	return false;
 }
 
-bool HandleFilename(HWND hwnd, const wchar_t* path) {
+bool HandleFilename(HWND hwnd, const wchar_t* path)
+{
 	for(int i=0; i<(int)g_windows.size(); i++) {
 		AVSEditor* obj = g_windows[i];
-		if (obj->CheckFilename(path)) return true;
+		if (obj->CheckFilename(path)) {
+			return true;
+		}
 	}
 
-	bool handle = false;
-	if (IsScriptType(path,SCRIPTTYPE_AVS)) handle = true;
-	if (IsScriptType(path,SCRIPTTYPE_VPS)) handle = true;
-	if (!handle) return false;
-	if (!g_VDMPrefs.m_bScriptEditorAutoPopup) return true;
+	const int scriptType = GetScriptType(path);
+	if (scriptType != SCRIPTTYPE_AVS && scriptType != SCRIPTTYPE_VPS) {
+		return false;
+	}
+
+	if (!g_VDMPrefs.m_bScriptEditorAutoPopup) {
+		return true;
+	}
 
 	if (g_VDMPrefs.m_bScriptEditorSingleInstance && g_ScriptEditor!=(HWND)-1)
 		SendMessageW(g_ScriptEditor,WM_CLOSE,0,0);
@@ -1732,7 +1776,8 @@ bool HandleFilename(HWND hwnd, const wchar_t* path) {
 	return true;
 }
 
-bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line) {
+bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line)
+{
 	for(int i=0; i<(int)g_windows.size(); i++) {
 		AVSEditor* obj = g_windows[i];
 		if (obj->CheckFilename(path)){
@@ -1742,14 +1787,14 @@ bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line
 		}
 	}
 
-	bool handle = false;
-	if (IsScriptType(path,SCRIPTTYPE_AVS)) handle = true;
-	if (IsScriptType(path,SCRIPTTYPE_VPS)) handle = true;
-	if (IsScriptType(path,SCRIPTTYPE_VDSCRIPT)) handle = true;
-	if (!handle) return false;
+	const int scriptType = GetScriptType(path);
+	if (scriptType != SCRIPTTYPE_AVS && scriptType != SCRIPTTYPE_VPS && scriptType != SCRIPTTYPE_VDSCRIPT) {
+		return false;
+	}
 
-	if (g_VDMPrefs.m_bScriptEditorSingleInstance && g_ScriptEditor!=(HWND)-1)
-		SendMessageW(g_ScriptEditor,WM_CLOSE,0,0);
+	if (g_VDMPrefs.m_bScriptEditorSingleInstance && g_ScriptEditor != (HWND)-1) {
+		SendMessageW(g_ScriptEditor, WM_CLOSE, 0, 0);
+	}
 
 	AVSEditor* obj = CreateEditor(NULL, hwnd, false);
 	obj->Open(path);
@@ -1757,7 +1802,8 @@ bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line
 	return true;
 }
 
-bool ProcessDialogs(MSG& msg) {
+bool ProcessDialogs(MSG& msg)
+{
 	for (int i = 0; i < (int)g_dialogs.size(); i++) {
 		if (IsDialogMessageW(g_dialogs[i], &msg)) {
 			return true;
@@ -1766,21 +1812,26 @@ bool ProcessDialogs(MSG& msg) {
 	return false;
 }
 
-bool ProcessHotkeys(MSG& msg) {
+bool ProcessHotkeys(MSG& msg)
+{
 	extern HACCEL g_hAccelAVS;
 	HWND hwnd = GetAncestor(msg.hwnd, GA_ROOT);
 	for(int i=0; i<(int)g_windows.size(); i++) {
 		AVSEditor* obj = g_windows[i];
 		if (obj->GetHwnd()==hwnd) {
-			if (TranslateAcceleratorW(hwnd, g_hAccelAVS, &msg)) return true;
+			if (TranslateAcceleratorW(hwnd, g_hAccelAVS, &msg)) {
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
-void UpdatePreferences() {
-	for(int i=0; i<(int)g_windows.size(); i++)
+void UpdatePreferences()
+{
+	for (int i = 0; i < (int)g_windows.size(); i++) {
 		g_windows[i]->UpdatePreferences();
+	}
 }
 
 void HandleError(const char* s, void* userData)

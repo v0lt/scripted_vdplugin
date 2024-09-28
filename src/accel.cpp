@@ -236,7 +236,7 @@ HACCEL CreateAVSAccelerators() {
 			(avsAccel + c)->cmd = g_accelAVSCommand[i];
 		}
 	}
-	return CreateAcceleratorTable(avsAccel, c+1);
+	return CreateAcceleratorTableW(avsAccel, c+1);
 }
 
 wchar_t* GetVirtualKeyName(WORD key)
@@ -348,10 +348,6 @@ void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 	}
 }
 
-
-#define WIN95_MENUITEMINFO_SIZE (offsetof(MENUITEMINFO, cch) + sizeof(UINT))
-
-
 HMENU CreateAVSMenu() {
 	HMENU menu = LoadMenuW(g_hInst, MAKEINTRESOURCEW(IDR_AVSVIEWER_MENU));
 	wchar_t buffer[255];
@@ -377,4 +373,3 @@ HMENU CreateAVSMenu() {
 	}
 	return menu;
 }
-

@@ -15,7 +15,7 @@ struct VDubModPreferences2 {
 
 class VDDialogPrefsScriptEditor {
 public:
-	HWND mhwnd;
+	HWND mhwnd = nullptr;
 
 	VDubModPreferences2& mPrefs;
 	VDDialogPrefsScriptEditor(VDubModPreferences2& p) : mPrefs(p) {}
