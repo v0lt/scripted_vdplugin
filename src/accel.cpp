@@ -239,39 +239,112 @@ HACCEL CreateAVSAccelerators() {
 	return CreateAcceleratorTable(avsAccel, c+1);
 }
 
+wchar_t* GetVirtualKeyName(WORD key)
+{
+	switch (key) {
+	case VK_BACK:    return L"Backspace";
+	case VK_TAB:     return L"Tab";
+	case VK_CLEAR:   return L"Clear";
+	case VK_RETURN:  return L"Enter";
+	case VK_SHIFT:   return L"Shift";
+	case VK_CONTROL: return L"Ctrl";
+	case VK_MENU:    return L"Alt";
+	case VK_PAUSE:   return L"Pause";
+	case VK_CAPITAL: return L"Caps Lock";
+	case VK_ESCAPE:  return L"Escape";
+	case VK_SPACE:   return L"Space";
+	case VK_PRIOR:   return L"PgUp";
+	case VK_NEXT:    return L"PgDn";
+	case VK_END:     return L"End";
+	case VK_HOME:    return L"Home";
+	case VK_LEFT:    return L"Left";
+	case VK_UP:      return L"Up";
+	case VK_RIGHT:   return L"Right";
+	case VK_DOWN:    return L"Down";
+	case VK_INSERT:  return L"Insert";
+	case VK_DELETE:  return L"Delete";
+	case 0x30:       return L"0";
+	case 0x31:       return L"1";
+	case 0x32:       return L"2";
+	case 0x33:       return L"3";
+	case 0x34:       return L"4";
+	case 0x35:       return L"5";
+	case 0x36:       return L"6";
+	case 0x37:       return L"7";
+	case 0x38:       return L"8";
+	case 0x39:       return L"9";
+	case 0x41:       return L"A";
+	case 0x42:       return L"B";
+	case 0x43:       return L"C";
+	case 0x44:       return L"D";
+	case 0x45:       return L"E";
+	case 0x46:       return L"F";
+	case 0x47:       return L"G";
+	case 0x48:       return L"H";
+	case 0x49:       return L"I";
+	case 0x4A:       return L"J";
+	case 0x4B:       return L"K";
+	case 0x4C:       return L"L";
+	case 0x4D:       return L"M";
+	case 0x4E:       return L"N";
+	case 0x4F:       return L"O";
+	case 0x50:       return L"P";
+	case 0x51:       return L"Q";
+	case 0x52:       return L"R";
+	case 0x53:       return L"S";
+	case 0x54:       return L"T";
+	case 0x55:       return L"U";
+	case 0x56:       return L"V";
+	case 0x57:       return L"W";
+	case 0x58:       return L"X";
+	case 0x59:       return L"Y";
+	case 0x5A:       return L"Z";
+	case VK_F1:      return L"F1";
+	case VK_F2:      return L"F2";
+	case VK_F3:      return L"F3";
+	case VK_F4:      return L"F4";
+	case VK_F5:      return L"F5";
+	case VK_F6:      return L"F6";
+	case VK_F7:      return L"F7";
+	case VK_F8:      return L"F8";
+	case VK_F9:      return L"F9";
+	case VK_F10:     return L"F10";
+	case VK_F11:     return L"F11";
+	case VK_F12:     return L"F12";
+	}
+
+	return nullptr;
+}
+
 void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 	bool bRem = false;
 	*buffer = 0;
-	wchar_t buf[255];
-	wchar_t b[2] = L"\0";
 	if (fVirt & FALT) {
-		if (LoadStringW(g_hInst, 5018, (wchar_t*) &buf, 255)>0) {
-			wcsncat(buffer, buf, len);
-			wcsncat(buffer, L"+", len-wcslen(buffer));
-			bRem = true;
-		}
+		wcsncat(buffer, L"Alt+", len);
+		bRem = true;
 	}
 	if (fVirt & FCONTROL) {
-		if (LoadStringW(g_hInst, 5017, (wchar_t*) &buf, 255)>0) {
-			wcsncat(buffer, buf, len-wcslen(buffer));
-			wcsncat(buffer, L"+", len-wcslen(buffer));
-			bRem = true;
-		}
+		wcsncat(buffer, L"Ctrl+", len-wcslen(buffer));
+		bRem = true;
 	}
 	if (fVirt & FSHIFT) {
-		if (LoadStringW(g_hInst, 5016, (wchar_t*) &buf, 255)>0) {
-			wcsncat(buffer, buf, len-wcslen(buffer));
-			wcsncat(buffer, L"+", len-wcslen(buffer));
-			bRem = true;
-		}
+		wcsncat(buffer, L"Shift+", len-wcslen(buffer));
+		bRem = true;
 	}
-	if (bRem) *(buffer + (wcslen(buffer)-1)) = '-';
+	if (bRem) {
+		*(buffer + (wcslen(buffer) - 1)) = '-';
+	}
 	if (fVirt & FVIRTKEY) {
-		if (LoadStringW(g_hInst, 5000+key, (wchar_t*) &buf, 255)>0)
-			wcsncat(buffer, buf, len-wcslen(buffer));
+		wchar_t* vkn = GetVirtualKeyName(key);
+		if (vkn) {
+			wcsncat(buffer, vkn, len - wcslen(buffer));
+		}
 	} else {
-		b[0] = (wchar_t)key;
-		if (key!=0) wcscat(buffer, b);
+		if (key != 0) {
+			wchar_t b[2] = L"\0";
+			b[0] = (wchar_t)key;
+			wcscat(buffer, b);
+		}
 	}
 }
 

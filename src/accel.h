@@ -85,7 +85,6 @@ typedef struct tagACCELKEYTABLE_AVS {
 } ACCELKEYTABLE_AVS, *LPACCELKEYTABLE_AVS;
 
 void InitDescriptions();
-void GetKeyString(BYTE fVirt, WORD key, char *buffer, int len);
 HACCEL CreateAVSAccelerators();
 HMENU CreateAVSMenu();
 

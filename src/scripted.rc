@@ -38,7 +38,7 @@ END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#include ""keys.rc""\r\n"
+    "\r\n"
     "\0"
 END
 
@@ -284,7 +284,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#include "keys.rc"
+
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
