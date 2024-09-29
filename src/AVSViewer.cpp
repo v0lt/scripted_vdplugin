@@ -244,7 +244,7 @@ bool AVSEditor::CommentUncommentLine(int lineNumber, bool comment)
 	char buff[2];
 
 	// Get start of line index
-	int line_index = SendMessageSci(SCI_POSITIONFROMLINE, lineNumber, 0);
+	sptr_t line_index = SendMessageSci(SCI_POSITIONFROMLINE, lineNumber, 0);
 	SendMessageSci(SCI_SETSEL, line_index, line_index+1);
 	SendMessageSci(SCI_GETSELTEXT, 0, (LPARAM)buff);	
 	
@@ -284,16 +284,16 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 	int lineNumber = 0;
 
 //	int totalLineNumber = SendMessage(hwndView,EM_GETLINECOUNT ,0,0);
-	int totalLineNumber = SendMessageSci(SCI_GETLINECOUNT ,0,0);
+	int totalLineNumber = (int)SendMessageSci(SCI_GETLINECOUNT ,0,0);
 
 	// Get cursor position
 //	SendMessage(hwndView, EM_EXGETSEL, 0, (LPARAM)&chr);
-//	charIndex = chr.cpMin;
-	charStart = SendMessageSci(SCI_GETSELECTIONSTART, 0, 0);
-	charEnd = SendMessageSci(SCI_GETSELECTIONEND, 0, 0);
-	charIndex = charStart;
+//	charIndex  = chr.cpMin;
+	charStart  = (int)SendMessageSci(SCI_GETSELECTIONSTART, 0, 0);
+	charEnd    = (int)SendMessageSci(SCI_GETSELECTIONEND, 0, 0);
+	charIndex  = charStart;
 //	lineNumber = SendMessage(hwndView, EM_LINEFROMCHAR, charIndex, 0);
-	lineNumber = SendMessageSci(SCI_LINEFROMPOSITION, charIndex, 0);
+	lineNumber = (int)SendMessageSci(SCI_LINEFROMPOSITION, charIndex, 0);
 
 	// Go up and find the "#StartTweaking" line
 	const char* startLineText = "#StartTweaking";
@@ -398,7 +398,7 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			{
 				if(wParam >= VK_F1 && wParam <= VK_F12)
 				{
-					pcd->RemoveLineCommentInRange(wParam - VK_F1);
+					pcd->RemoveLineCommentInRange((int)wParam - VK_F1);
 					if (pcd->Commit())
 						VDSendReopen(pcd->lpszFileName, pcd);
 				}
@@ -467,8 +467,8 @@ void AVSEditor::UpdateLineNumbers()
 {
 	SendMessageSci(SCI_SETMARGINTYPEN, 1, SC_MARGIN_NUMBER);
 	char *gw = "9";
-	int pixelWidth = 4 + 5 * SendMessageSci(SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM) gw);
-	SendMessageSci(SCI_SETMARGINWIDTHN, 1, bLineNumbers?pixelWidth:0);
+	sptr_t pixelWidth = 4 + 5 * SendMessageSci(SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM) gw);
+	SendMessageSci(SCI_SETMARGINWIDTHN, 1, bLineNumbers ? pixelWidth : 0);
 }
 
 void AVSEditor::Open(const wchar_t* path)
@@ -670,8 +670,8 @@ bool AVSEditor::Commit()
 	}
 
 //	s = SendMessage(hwndView, WM_GETTEXTLENGTH, 0, 0);
-	int cp = SendMessageSci(SCI_GETCODEPAGE);
-	s = SendMessageSci(SCI_GETTEXTLENGTH, 0, 0);
+	int cp = (int)SendMessageSci(SCI_GETCODEPAGE);
+	s = (int)SendMessageSci(SCI_GETTEXTLENGTH, 0, 0);
 	lpszBuf = (char *) malloc(s+1);
 //	gt.cb = s;
 //	gt.flags = GT_USECRLF;
@@ -716,9 +716,9 @@ void AVSEditor::UpdateStatus() throw()
 //	c = SendMessage(hwndView, EM_CHARFROMPOS, 0, (LPARAM) &pt);
 //	posy = SendMessage(hwndView, EM_LINEFROMCHAR, c, 0);
 //	posx = c - SendMessage(hwndView, EM_LINEINDEX, posy, 0);
-	int c = SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
-	int posy = SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
-	int posx = c - SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
+	int c    = (int)SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
+	int posy = (int)SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
+	int posx = c - (int)SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
 	VDStringA status_pos;
 	status_pos.sprintf("%d:%d", posy + 1, posx + 1);
 	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
@@ -1015,11 +1015,11 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
 
 	case ID_AVS_COMMENT_LINES:
 		{
-			int first = SendMessageSci(SCI_GETSELECTIONSTART);
-			int firstline = SendMessageSci(SCI_LINEFROMPOSITION, first);
-			int last = SendMessageSci(SCI_GETSELECTIONEND);
-			int lastline = SendMessageSci(SCI_LINEFROMPOSITION, last);
-			for(int i = (first>last)?lastline:firstline;i <= ((first>last)?firstline:lastline);i++){
+			int first     = (int)SendMessageSci(SCI_GETSELECTIONSTART);
+			int firstline = (int)SendMessageSci(SCI_LINEFROMPOSITION, first);
+			int last      = (int)SendMessageSci(SCI_GETSELECTIONEND);
+			int lastline  = (int)SendMessageSci(SCI_LINEFROMPOSITION, last);
+			for (int i = (first > last) ? lastline : firstline; i <= ((first > last) ? firstline : lastline); i++) {
 				CommentUncommentLine(i, TRUE);
 			}
 		}
@@ -1027,10 +1027,10 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
 
 	case ID_AVS_UNCOMMENT_LINES:
 		{
-			int first = SendMessageSci(SCI_GETSELECTIONSTART);
-			int firstline = SendMessageSci(SCI_LINEFROMPOSITION, first);
-			int last = SendMessageSci(SCI_GETSELECTIONEND);
-			int lastline = SendMessageSci(SCI_LINEFROMPOSITION, last);
+			int first     = (int)SendMessageSci(SCI_GETSELECTIONSTART);
+			int firstline = (int)SendMessageSci(SCI_LINEFROMPOSITION, first);
+			int last      = (int)SendMessageSci(SCI_GETSELECTIONEND);
+			int lastline  = (int)SendMessageSci(SCI_LINEFROMPOSITION, last);
 			for(int i = (first>last)?lastline:firstline;i <= ((first>last)?firstline:lastline);i++){
 				CommentUncommentLine(i, FALSE);
 			}
@@ -1042,9 +1042,9 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
 			if (SendMessageSci(SCI_AUTOCACTIVE)){
 				SendMessageSci(SCI_AUTOCCANCEL);
 			} else {
-				int pos = SendMessageSci(SCI_GETCURRENTPOS);
-				int line = SendMessageSci(SCI_LINEFROMPOSITION, pos);
-				int posinline = pos - SendMessageSci(SCI_POSITIONFROMLINE, line);
+				int pos       = (int)SendMessageSci(SCI_GETCURRENTPOS);
+				int line      = (int)SendMessageSci(SCI_LINEFROMPOSITION, pos);
+				int posinline = pos - (int)SendMessageSci(SCI_POSITIONFROMLINE, line);
 				char *bline = new char[SendMessageSci(SCI_LINELENGTH, line)+1];
 				SendMessageSci(SCI_GETLINE, line, (LPARAM) bline);
 				*(bline + posinline) = 0;
@@ -1171,11 +1171,11 @@ LRESULT AVSEditor::Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam)
 
 void AVSEditor::CheckBracing()
 {
-	int pos = SendMessageSci(SCI_GETCURRENTPOS);
+	sptr_t pos = SendMessageSci(SCI_GETCURRENTPOS);
 	if(pos>0){
 		SendMessageSci(SCI_BRACEHIGHLIGHT, INVALID_POSITION, INVALID_POSITION);
 		if ((char) SendMessageSci(SCI_GETCHARAT, pos-1)==')') {
-			int pos2 = SendMessageSci(SCI_BRACEMATCH, pos-1);
+			sptr_t pos2 = SendMessageSci(SCI_BRACEMATCH, pos-1);
 			if (pos2==INVALID_POSITION){
 				SendMessageSci(SCI_BRACEBADLIGHT, pos-1);
 			} else {
@@ -1187,7 +1187,7 @@ void AVSEditor::CheckBracing()
 
 void AVSEditor::DoCalltip()
 {
-	int pos = SendMessageSci(SCI_GETCURRENTPOS);
+	sptr_t pos = SendMessageSci(SCI_GETCURRENTPOS);
 	if(pos>0){
 		char ch = (char)SendMessageSci(SCI_GETCHARAT, pos-1);
 		if (ch=='(') {
@@ -1475,7 +1475,7 @@ INT_PTR CALLBACK AVSEditor::FindDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			{
 				FindTextOption* opt = &pcd->mFind;
 
-				GetDlgItemTextW(hwnd, ID_FIND_FINDWHAT, opt->szFindString, std::size(opt->szFindString));
+				GetDlgItemTextW(hwnd, ID_FIND_FINDWHAT, opt->szFindString, (int)std::size(opt->szFindString));
 
 				opt->bWholeWord   = (IsDlgButtonChecked(hwnd, ID_FIND_WHOLEWORD  ) == BST_CHECKED);
 				opt->bMatchCase   = (IsDlgButtonChecked(hwnd, ID_FIND_MATCHCASE  ) == BST_CHECKED);
@@ -1518,8 +1518,8 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
 			SendDlgItemMessageW(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
 
-			int c = pcd->SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
-			int line = pcd->SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
+			int c    = (int)pcd->SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
+			int line = (int)pcd->SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
 			wsprintfA(buf, "%d", line+1);
 			SetDlgItemTextA(hwnd, IDC_LINENUMBER, buf);
 
@@ -1604,8 +1604,8 @@ void AVSEditor::FindNext(bool reverse)
 		return;
 	}
 
-	int len = SendMessageSci(SCI_GETLENGTH);
-	int pos = SendMessageSci(SCI_GETCURRENTPOS);
+	int len = (int)SendMessageSci(SCI_GETLENGTH);
+	int pos = (int)SendMessageSci(SCI_GETCURRENTPOS);
 
 	VDStringA findstr_u8 = VDTextWToU8(mFind.szFindString, -1);
 
@@ -1628,7 +1628,7 @@ void AVSEditor::FindNext(bool reverse)
 	if (mFind.bMatchCase) flags |= SCFIND_MATCHCASE;
 	if (mFind.bRegexp)    flags |= SCFIND_REGEXP;
 
-	int ret = SendMessageSci(SCI_FINDTEXT, (WPARAM) flags, (LPARAM) &ft);
+	sptr_t ret = SendMessageSci(SCI_FINDTEXT, (WPARAM) flags, (LPARAM) &ft);
 
 	if (mFind.bWrap && ret == -1) {
 		if	(reverse) {
@@ -1642,10 +1642,11 @@ void AVSEditor::FindNext(bool reverse)
 	}
 
 	if (ret > -1) {
-		if	(reverse)
-			SendMessageSci(SCI_SETSEL, (WPARAM) ft.chrgText.cpMax, (LPARAM) ft.chrgText.cpMin);
-		else
-			SendMessageSci(SCI_SETSEL, (WPARAM) ft.chrgText.cpMin, (LPARAM) ft.chrgText.cpMax);
+		if (reverse) {
+			SendMessageSci(SCI_SETSEL, (WPARAM)ft.chrgText.cpMax, (LPARAM)ft.chrgText.cpMin);
+		} else {
+			SendMessageSci(SCI_SETSEL, (WPARAM)ft.chrgText.cpMin, (LPARAM)ft.chrgText.cpMax);
+		}
 	}
 }
 
