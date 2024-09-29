@@ -320,15 +320,15 @@ void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 	bool bRem = false;
 	*buffer = 0;
 	if (fVirt & FALT) {
-		wcsncat(buffer, L"Alt+", len);
+		wcscat_s(buffer, len, L"Alt+");
 		bRem = true;
 	}
 	if (fVirt & FCONTROL) {
-		wcsncat(buffer, L"Ctrl+", len-wcslen(buffer));
+		wcscat_s(buffer, len, L"Ctrl+");
 		bRem = true;
 	}
 	if (fVirt & FSHIFT) {
-		wcsncat(buffer, L"Shift+", len-wcslen(buffer));
+		wcscat_s(buffer, len, L"Shift+");
 		bRem = true;
 	}
 	if (bRem) {
@@ -337,13 +337,13 @@ void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 	if (fVirt & FVIRTKEY) {
 		wchar_t* vkn = GetVirtualKeyName(key);
 		if (vkn) {
-			wcsncat(buffer, vkn, len - wcslen(buffer));
+			wcscat_s(buffer, len, vkn);
 		}
 	} else {
 		if (key != 0) {
 			wchar_t b[2] = L"\0";
 			b[0] = (wchar_t)key;
-			wcscat(buffer, b);
+			wcscat_s(buffer, len, b);
 		}
 	}
 }

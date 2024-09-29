@@ -260,7 +260,7 @@ class ToolDriver: public vdxunknown<IVDXTool>
 
 	virtual bool VDXAPIENTRY GetMenuInfo(int id, char* name, int name_size, bool* enabled) {
 		if (id==0) {
-			strcpy(name,"Script Editor");
+			strcpy_s(name, name_size, "Script Editor");
 			*enabled = true;
 			return true;
 		}
@@ -268,7 +268,7 @@ class ToolDriver: public vdxunknown<IVDXTool>
 	}
 	virtual bool VDXAPIENTRY GetCommandId(int id, char* name, int name_size) {
 		if (id==0) {
-			strcpy(name,"Tools.ScriptEditor");
+			strcpy_s(name, name_size, "Tools.ScriptEditor");
 			return true;
 		}
 		return false;

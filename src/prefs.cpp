@@ -100,7 +100,7 @@ void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf)
 
 	ReleaseDC(hwnd, hdc);
 
-	wcscpy(lplf->lfFaceName, mPrefs.mAVSViewerFontFace.c_str());
+	wcscpy_s(lplf->lfFaceName, mPrefs.mAVSViewerFontFace.c_str());
 }
 
 void VDDialogPrefsScriptEditor::AVSViewerChooseFont()
