@@ -473,15 +473,17 @@ void AVSEditor::UpdateLineNumbers()
 
 void AVSEditor::Open(const wchar_t* path)
 {
-	if(path) wcscpy(lpszFileName, path);
+	if (path) {
+		wcscpy_s(lpszFileName, path);
+	}
 
 	unsigned char *lpszBuf;
 	FILE *f;
 	size_t n, r;
 
 	lpszBuf = NULL;
-	f = _wfopen(lpszFileName, L"rb");
-	if (f == NULL) {
+	errno_t err = _wfopen_s(&f, lpszFileName, L"rb");
+	if (err) {
 		return;
 	}
 	fseek(f, 0, SEEK_END);
@@ -678,8 +680,8 @@ bool AVSEditor::Commit()
 //	gt.lpUsedDefChar = NULL;
 //	SendMessage(hwndView, EM_GETTEXTEX, (WPARAM) &gt, (LPARAM) lpszBuf);
 	SendMessageSci(SCI_GETTEXT, s+1, (LPARAM) lpszBuf);
-	f = _wfopen(lpszFileName, L"wb");
-	if (f) {
+	errno_t err = _wfopen_s(&f, lpszFileName, L"wb");
+	if (err) {
 		fwrite(lpszBuf, sizeof(char), s, f);
 		fclose(f);
 	}
@@ -699,7 +701,7 @@ void AVSEditor::SetStatus(const char *format, ...) throw()
 	va_list val;
 
 	va_start(val,format);
-	_vsnprintf(buf, sizeof buf, format, val);
+	_vsnprintf_s(buf, sizeof buf, format, val);
 	va_end(val);
 
 	SetWindowTextA(hwndStatus, buf);
@@ -1538,13 +1540,13 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 				char buf[64];
 				GetDlgItemTextA(hwnd,IDC_FRAMENUMBER,buf,64);
 				int64 frame;
-				if(sscanf(buf,"%I64d",&frame)==1)
+				if(sscanf_s(buf,"%I64d",&frame)==1)
 					VDSetPos(frame);
 			} else {
 				char buf[64];
 				GetDlgItemTextA(hwnd,IDC_LINENUMBER,buf,64);
 				int line;
-				if(sscanf(buf,"%d",&line)==1)
+				if(sscanf_s(buf,"%d",&line)==1)
 					pcd->SendMessageSci(SCI_GOTOLINE, line-1);
 			}
 			EndDialog(hwnd, 0);

@@ -360,13 +360,13 @@ HMENU CreateAVSMenu() {
 		if (g_accelAVS.command[i].altkey[0].key>0) {
 			mi.cch = 255;
 			GetMenuItemInfoW(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
-			wcscat(buffer, L"\t");
+			wcscat_s(buffer, L"\t");
 			GetKeyString(g_accelAVS.command[i].altkey[0].fVirt, g_accelAVS.command[i].altkey[0].key, (wchar_t*) &buf, 255);
-			wcscat(buffer, buf);
+			wcscat_s(buffer, buf);
 			if (g_accelAVS.command[i].altkey[1].key>0) {
-				wcscat(buffer, L", ");
+				wcscat_s(buffer, L", ");
 				GetKeyString(g_accelAVS.command[i].altkey[1].fVirt, g_accelAVS.command[i].altkey[1].key, (wchar_t*) &buf, 255);
-				wcscat(buffer, buf);
+				wcscat_s(buffer, buf);
 			}
 			SetMenuItemInfoW(menu, g_accelAVSCommand[i], MF_BYCOMMAND, &mi);
 		}
