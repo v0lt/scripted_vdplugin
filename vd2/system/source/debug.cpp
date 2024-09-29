@@ -136,7 +136,7 @@ void VDDebugPrint(const char *format, ...) {
 
 	va_list val;
 	va_start(val, format);
-	_vsnprintf(buf, sizeof buf, format, val);
+	vsprintf_s(buf, format, val);
 	va_end(val);
 	Sleep(0);
 	OutputDebugStringA(buf);

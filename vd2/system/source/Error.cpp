@@ -142,7 +142,7 @@ MyInternalError::MyInternalError(const char *format, ...) {
 	va_list val;
 
 	va_start(val, format);
-	_vsnprintf(buf, (sizeof buf) - 1, format, val);
+	vsprintf_s(buf, format, val);
 	buf[1023] = 0;
 	va_end(val);
 

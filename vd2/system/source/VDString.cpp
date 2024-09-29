@@ -97,7 +97,7 @@ VDStringA& VDStringA::append_sprintf(const value_type *format, ...) {
 VDStringA& VDStringA::append_vsprintf(const value_type *format, va_list val) {
 	char buf[2048];
 
-	int len = vdvsnprintf(buf, 2048, format, val);
+	int len = vsprintf_s(buf, format, val);
 	if (len >= 0)
 		append(buf, buf+len);
 	else {
@@ -108,7 +108,7 @@ VDStringA& VDStringA::append_vsprintf(const value_type *format, va_list val) {
 			tmp.resize(siz);
 
 			char *tmpp = tmp.data();
-			len = vdvsnprintf(tmp.data(), siz, format, val);
+			len = vsprintf_s(tmp.data(), siz, format, val);
 			if (len >= 0) {
 				append(tmpp, tmpp+len);
 				break;
