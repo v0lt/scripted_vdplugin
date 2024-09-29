@@ -112,7 +112,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resource.rc">
+    <ResourceCompile Include="scripted.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
