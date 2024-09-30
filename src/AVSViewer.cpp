@@ -1756,8 +1756,7 @@ bool OpenCurrentFile(HWND parent)
 
 bool HandleFilename(HWND hwnd, const wchar_t* path)
 {
-	for(int i=0; i<(int)g_windows.size(); i++) {
-		AVSEditor* obj = g_windows[i];
+	for (auto& obj : g_windows) {
 		if (obj->CheckFilename(path)) {
 			return true;
 		}
@@ -1782,8 +1781,7 @@ bool HandleFilename(HWND hwnd, const wchar_t* path)
 
 bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line)
 {
-	for(int i=0; i<(int)g_windows.size(); i++) {
-		AVSEditor* obj = g_windows[i];
+	for (auto& obj : g_windows) {
 		if (obj->CheckFilename(path)){
 			obj->Open(path);
 			obj->HandleError(s,line);
@@ -1808,8 +1806,8 @@ bool HandleFileOpenError(HWND hwnd, const wchar_t* path, const char* s, int line
 
 bool ProcessDialogs(MSG& msg)
 {
-	for (int i = 0; i < (int)g_dialogs.size(); i++) {
-		if (IsDialogMessageW(g_dialogs[i], &msg)) {
+	for (const auto& dialog : g_dialogs) {
+		if (IsDialogMessageW(dialog, &msg)) {
 			return true;
 		}
 	}
@@ -1820,8 +1818,7 @@ bool ProcessHotkeys(MSG& msg)
 {
 	extern HACCEL g_hAccelAVS;
 	HWND hwnd = GetAncestor(msg.hwnd, GA_ROOT);
-	for(int i=0; i<(int)g_windows.size(); i++) {
-		AVSEditor* obj = g_windows[i];
+	for (auto& obj : g_windows) {
 		if (obj->GetHwnd()==hwnd) {
 			if (TranslateAcceleratorW(hwnd, g_hAccelAVS, &msg)) {
 				return true;
@@ -1833,8 +1830,8 @@ bool ProcessHotkeys(MSG& msg)
 
 void UpdatePreferences()
 {
-	for (int i = 0; i < (int)g_windows.size(); i++) {
-		g_windows[i]->UpdatePreferences();
+	for (auto& obj : g_windows) {
+		obj->UpdatePreferences();
 	}
 }
 
@@ -1846,8 +1843,7 @@ void HandleError(const char* s, void* userData)
 
 void AttachWindows(HWND parent)
 {
-	for(int i=0; i<(int)g_windows.size(); i++) {
-		AVSEditor* obj = g_windows[i];
+	for (auto& obj : g_windows) {
 		HWND hwnd = obj->GetHwnd();
 		//obj->hwndRef = parent;
 		ShowWindow(hwnd,SW_SHOWNOACTIVATE);
@@ -1856,8 +1852,7 @@ void AttachWindows(HWND parent)
 
 void DetachWindows(HWND parent)
 {
-	for(int i=0; i<(int)g_windows.size(); i++) {
-		AVSEditor* obj = g_windows[i];
+	for (auto& obj : g_windows) {
 		HWND hwnd = obj->GetHwnd();
 		ShowWindow(hwnd,SW_HIDE);
 	}
