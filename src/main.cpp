@@ -118,17 +118,17 @@ wchar_t g_fileName[MAX_PATH];
 
 void VDGetFilename(wchar_t* buf, size_t n)
 {
-	wcscpy_s(buf,n,g_fileName);
+	wcscpy_s(buf, n, g_fileName);
 }
 
 void VDSetFilename(wchar_t* s, void*)
 {
-	wcscpy_s(g_fileName,MAX_PATH,s);
+	wcscpy_s(g_fileName, MAX_PATH, s);
 }
 
 void VDSendReopen(const wchar_t* fileName, void* userData)
 {
-	::HandleError("Reopen not implemented",userData);
+	::HandleError("Reopen not implemented", userData);
 }
 
 int64 VDRequestPos()
@@ -149,7 +149,9 @@ void VDRequestRange(int64& r0, int64& r1)
 void VDRequestFrameset(vd_frameset& set, int max)
 {
 	set.count = 0;
-	if(max<2) return;
+	if (max < 2) {
+		return;
+	}
 	set.count = 2;
 	set.ranges[0].from = 0;
 	set.ranges[0].to = 10;
@@ -158,34 +160,38 @@ void VDRequestFrameset(vd_frameset& set, int max)
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance,
-										 HINSTANCE hPrevInstance,
-										 LPSTR     lpCmdLine,
-										 int       nCmdShow)
+	HINSTANCE hPrevInstance,
+	LPSTR     lpCmdLine,
+	int       nCmdShow)
 {
 	::g_hInst = hInstance;
 
-	if(__argc>1){
+	if (__argc > 1) {
 		char* s = __argv[1];
-		VDTextAToW(g_fileName,MAX_PATH,s);
+		VDTextAToW(g_fileName, MAX_PATH, s);
 	}
 
 	initialize();
 	//AVSEdit(NULL, NULL, true);
 
-	while(true){
+	while (true) {
 		MSG msg;
-		while(PeekMessage(&msg,0,0,0,PM_NOREMOVE)){
-			if(!GetMessage(&msg,0,0,0)){
+		while (PeekMessage(&msg, 0, 0, 0, PM_NOREMOVE)) {
+			if (!GetMessage(&msg, 0, 0, 0)) {
 				return 0;
 			}
-		
-			if(TranslateMessages(msg)) continue;
+
+			if (TranslateMessages(msg)) {
+				continue;
+			}
 
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		}
 
-		if (g_ScriptEditor==(HWND)-1) break;
+		if (g_ScriptEditor == (HWND)-1) {
+			break;
+		}
 	}
 
 	uninitialize();
@@ -231,7 +237,7 @@ void VDRequestRange(int64& r0, int64& r1)
 	IVDTimeline* t = g_context->mpCallbacks->GetTimeline();
 	int64 start;
 	int64 end;
-	t->GetSelection(start,end);
+	t->GetSelection(start, end);
 	r0 = start;
 	r1 = end;
 }
@@ -241,25 +247,27 @@ void VDRequestFrameset(vd_frameset& set, int max)
 	IVDTimeline* t = g_context->mpCallbacks->GetTimeline();
 	int count = t->GetSubsetCount();
 	set.count = 0;
-	if(max<count) return;
+	if (max < count) {
+		return;
+	}
 	set.count = count;
-	for(int i=0; i<count; i++){
+	for (int i = 0; i < count; i++) {
 		int64 start;
 		int64 end;
-		t->GetSubsetRange(i,start,end);
+		t->GetSubsetRange(i, start, end);
 		set.ranges[i].from = start;
 		set.ranges[i].to = end;
 	}
 }
 
-class ToolDriver: public vdxunknown<IVDXTool>
+class ToolDriver : public vdxunknown<IVDXTool>
 {
 	virtual ~ToolDriver() {
 		uninitialize();
 	}
 
 	virtual bool VDXAPIENTRY GetMenuInfo(int id, char* name, int name_size, bool* enabled) {
-		if (id==0) {
+		if (id == 0) {
 			strcpy_s(name, name_size, "Script Editor");
 			*enabled = true;
 			return true;
@@ -267,14 +275,14 @@ class ToolDriver: public vdxunknown<IVDXTool>
 		return false;
 	}
 	virtual bool VDXAPIENTRY GetCommandId(int id, char* name, int name_size) {
-		if (id==0) {
+		if (id == 0) {
 			strcpy_s(name, name_size, "Tools.ScriptEditor");
 			return true;
 		}
 		return false;
 	}
 	virtual bool VDXAPIENTRY ExecuteMenu(int id, VDXHWND hwndParent) {
-		if (id==0) {
+		if (id == 0) {
 			OpenCurrentFile((HWND)hwndParent);
 			return true;
 		}
@@ -284,14 +292,14 @@ class ToolDriver: public vdxunknown<IVDXTool>
 		return TranslateMessages(msg);
 	}
 	virtual bool VDXAPIENTRY HandleError(const char* s, int source, void* userData) {
-		::HandleError(s,userData);
+		::HandleError(s, userData);
 		return true;
 	}
 	virtual bool VDXAPIENTRY HandleFileOpen(const wchar_t* fileName, const wchar_t* driverName, VDXHWND hwndParent) {
-		return HandleFilename((HWND)hwndParent,fileName);
+		return HandleFilename((HWND)hwndParent, fileName);
 	}
 	virtual bool VDXAPIENTRY HandleFileOpenError(const wchar_t* fileName, const wchar_t* driverName, VDXHWND hwndParent, const char* s, int source) {
-    return ::HandleFileOpenError((HWND)hwndParent,fileName,s,source);
+		return ::HandleFileOpenError((HWND)hwndParent, fileName, s, source);
 	}
 	virtual void VDXAPIENTRY Attach(VDXHWND hwndParent) {
 		AttachWindows((HWND)hwndParent);
@@ -301,13 +309,13 @@ class ToolDriver: public vdxunknown<IVDXTool>
 	}
 };
 
-bool VDXAPIENTRY create(const VDXToolContext *pContext, IVDXTool **pp)
+bool VDXAPIENTRY create(const VDXToolContext* pContext, IVDXTool** pp)
 {
 	if (!initialize()) {
 		return false;
 	}
 
-	ToolDriver *p = new ToolDriver();
+	ToolDriver* p = new ToolDriver();
 	if (!p) {
 		return false;
 	}
@@ -323,12 +331,12 @@ bool VDXAPIENTRY config(VDXHWND parent)
 	return true;
 }
 
-VDXToolDefinition tool_def={
+VDXToolDefinition tool_def = {
 	sizeof(VDXToolDefinition),
 	create
 };
 
-VDXPluginInfo plugin_def={
+VDXPluginInfo plugin_def = {
 	sizeof(VDXPluginInfo),
 	L"Script Editor",
 	L"Anton Shekhovtsov",
@@ -352,7 +360,7 @@ extern "C" VDPluginInfo** VDXAPIENTRY VDGetPluginInfo()
 	return kPlugins;
 }
 
-BOOLEAN WINAPI DllMain( IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved )
+BOOLEAN WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 {
 	switch (nReason) {
 	case DLL_PROCESS_ATTACH:

@@ -386,7 +386,7 @@ void CAviSynth::LoadDll(const char *path)
 			coAll=NULL;
 			if (coAllScintilla) delete coAllScintilla;
 			coAllScintilla=NULL;
-			
+
 			const size_t tmpsize = max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
 			char* temp = new char[tmpsize];
 
@@ -424,7 +424,7 @@ void CAviSynth::LoadDll(const char *path)
 				AVSTokenSci.insert(c);
 				token = strtok(NULL, " ");
 			}
-		
+
 			strcpy_s(temp, tmpsize, coInternal);
 			token2 = strtok(temp, " ");
 			sprintf_s(sci, "?%d", ICO_SCI_AVS_INTERNAL);
@@ -435,7 +435,7 @@ void CAviSynth::LoadDll(const char *path)
 				AVSTokenSci.insert(c);
 				token2 = strtok(NULL, " ");
 			}
-		
+
 			if (coExternal) {
 				strcpy_s(temp, tmpsize, coExternal);
 				token = strtok(temp, " ");
@@ -448,7 +448,7 @@ void CAviSynth::LoadDll(const char *path)
 					token = strtok(NULL, " ");
 				}
 			}
-		
+
 			set<string,less_nocase>::iterator walkit;
 			walkit = AVSToken.begin();
 			strcpy_s(coAll, coAll_size, walkit->c_str());
@@ -470,7 +470,6 @@ void CAviSynth::LoadDll(const char *path)
 			AVSToken.clear();
 			AVSTokenSci.clear();
 			delete [] temp;
- 			
 		}
 /*		if (env) {
 			env->AddFunction("ffdshow_source","",Tffdshow_source::Create,this);

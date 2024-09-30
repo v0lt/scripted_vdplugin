@@ -208,7 +208,7 @@ private:
 	void SetScriptType(int type);
 	void CheckBracing();
 	void DoCalltip();
-	
+
 	// Toff ----->
 	void RemoveLineCommentInRange(int line);
 	bool CommentUncommentLine(int lineNumber, bool comment);
@@ -246,8 +246,8 @@ bool AVSEditor::CommentUncommentLine(int lineNumber, bool comment)
 	// Get start of line index
 	sptr_t line_index = SendMessageSci(SCI_POSITIONFROMLINE, lineNumber, 0);
 	SendMessageSci(SCI_SETSEL, line_index, line_index+1);
-	SendMessageSci(SCI_GETSELTEXT, 0, (LPARAM)buff);	
-	
+	SendMessageSci(SCI_GETSELTEXT, 0, (LPARAM)buff);
+
 	if(buff[0] == '#')
 	{
 		if(!comment)
@@ -329,13 +329,14 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 			lastLine = lineNumber;
 			break;
 		}
-// 	  	CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));		
+		//CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
 		delete [] buff;
 		buff = NULL;
 	}
 	if (buff) delete [] buff;
-	for (lineNumber = firstLine; lineNumber<lastLine; lineNumber++)
-			CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));		
+	for (lineNumber = firstLine; lineNumber < lastLine; lineNumber++) {
+		CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
+	}
 //	while( (SendMessage(hwndView, EM_LINELENGTH, charIndex, 0) != startLineLen ||
 //		   SendMessage(hwndView, EM_GETLINE, lineNumber, (LPARAM)buff) > 0) &&
 //		   strncmp(startLineText,buff,startLineLen) != 0 )
@@ -371,7 +372,7 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 			 SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)buff) > 0) &&
 			 strncmp(stopLineText,buff,stopLineLen) != 0 )
 	{
-		CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));		
+		CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
 		lineNumber++;
 		if(lineNumber >= totalLineNumber)
 		{
@@ -432,7 +433,7 @@ void AVSEditor::Init()
 	ptrScintilla = (sptr_t)SendMessageW(hwndView,SCI_GETDIRECTPOINTER,0,0);
 
 	bLineNumbers = TRUE;
-	UpdateLineNumbers();	
+	UpdateLineNumbers();
 
 //	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), 11, "Courier New");
 //	SendMessageSci(SCI_STYLECLEARALL);	// Copies global style to all others
@@ -561,9 +562,9 @@ void AVSEditor::SetScriptType(int type)
 			const COLORREF darkBlue = RGB(0, 0, 0x80);
 			const COLORREF darkRed = RGB(0x80,0,0);
 			const COLORREF darkViolet = RGB(0x80,0,0x80);
-	
+
 			SetAStyle(SCE_AVS_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
-		
+
 			SetAStyle(SCE_AVS_NUMBER, darkBlue);
 
 			// Commands
@@ -1118,7 +1119,7 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw()
 	st[2] = -1;
 	SendMessageW(hwndStatus, SB_SETPARTS, 3, (LPARAM) &st);
 	UpdateStatus();
-	
+
 	return 0;
 }
 
@@ -1230,7 +1231,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 		return pcd->Handle_WM_SIZE(wParam, lParam);
 
 	case WM_DESTROY:
-		SetWindowLongPtrW(pcd->hwndView, GWLP_WNDPROC, (LPARAM)pcd->OldAVSViewWinProc);	
+		SetWindowLongPtrW(pcd->hwndView, GWLP_WNDPROC, (LPARAM)pcd->OldAVSViewWinProc);
 
 		g_windows.erase(find(g_windows.begin(),g_windows.end(),pcd));
 		AVSViewerSaveSettings(hwnd,REG_WINDOW_MAIN);
@@ -1258,7 +1259,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 
 			dwEnableFlags = (SendMessageW(pcd->hwndView, SCI_CANUNDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_EDIT_UNDO, dwEnableFlags);
-			
+
 			dwEnableFlags = (SendMessageW(pcd->hwndView, SCI_CANREDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_EDIT_REDO, dwEnableFlags);
 
@@ -1595,7 +1596,7 @@ void AVSEditor::Find()
 
 void AVSEditor::Jumpto()
 {
-	CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_JUMPTO), hwndView, JumpDlgProc, (LPARAM) this);
+	CreateDialogParamW(g_hInst, MAKEINTRESOURCEW(IDD_JUMPTO), hwndView, JumpDlgProc, (LPARAM)this);
 }
 
 void AVSEditor::FindNext(bool reverse)
@@ -1699,7 +1700,7 @@ ATOM RegisterAVSEditorClass()
 	wc1.hCursor			= LoadCursor(NULL, IDC_ARROW);
 	wc1.hbrBackground	= NULL; //(HBRUSH)(COLOR_WINDOW+1);
 	wc1.lpszMenuName	= MAKEINTRESOURCEW(IDR_AVSVIEWER_MENU);
-	wc1.lpszClassName	= AVSEDITORCLASS;	
+	wc1.lpszClassName	= AVSEDITORCLASS;
 
 	return RegisterClassW(&wc1);
 }
@@ -1726,7 +1727,7 @@ AVSEditor* CreateEditor(HWND hwndParent, HWND refWND, bool bringfront)
 	} else {
 		ShowWindow(g_ScriptEditor, SW_SHOW);
 	}
-	
+
 	if (bringfront) {
 		BringWindowToTop(g_ScriptEditor);
 	} else {

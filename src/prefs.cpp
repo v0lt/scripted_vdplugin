@@ -37,7 +37,7 @@ void SavePrefs()
 void ShowPrefs(HWND parent)
 {
 	VDDialogPrefsScriptEditor editor(g_VDMPrefs);
-	LRESULT r = DialogBoxParamW(g_hInst,MAKEINTRESOURCEW(IDD_OPTIONS),parent,editor.DlgProc,(LPARAM)&editor);
+	LRESULT r = DialogBoxParamW(g_hInst, MAKEINTRESOURCEW(IDD_OPTIONS), parent, editor.DlgProc, (LPARAM)&editor);
 	if (r==0) {
 		g_VDMPrefs = editor.mPrefs;
 		SavePrefs();
