@@ -387,9 +387,12 @@ void CAviSynth::LoadDll(const char *path)
 			if (coAllScintilla) delete coAllScintilla;
 			coAllScintilla=NULL;
 			
- 			int tmpsize = max(strlen(coInternal),(coExternal?strlen(coExternal):0))+1;
-			char *temp;
-			coAll = new char[strlen(coKeywords)+strlen(coInternal)+(coExternal?strlen(coExternal):0)+2];
+			const size_t tmpsize = max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
+			char* temp = new char[tmpsize];
+
+			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2;
+			coAll = new char[coAll_size];
+
 			char *token;
 			char *token2;
 			//string *c;
@@ -397,7 +400,7 @@ void CAviSynth::LoadDll(const char *path)
 			char sci[3];
 			set<string,less_nocase> AVSToken;
 			set<string,less_nocase> AVSTokenSci;
-		
+
 /*			strcpy(temp, coKeywords);
 			token = strtok(temp, " ");
 			sprintf(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
@@ -411,10 +414,9 @@ void CAviSynth::LoadDll(const char *path)
 				delete c;
 			}
 */
-			temp = new char[tmpsize];
-			strcpy(temp, coKeywords);
+			strcpy_s(temp, tmpsize, coKeywords);
 			token = strtok(temp, " ");
-			sprintf(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
+			sprintf_s(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
 			while (token != NULL) {
 				c = token;
 				AVSToken.insert(c);
@@ -423,9 +425,9 @@ void CAviSynth::LoadDll(const char *path)
 				token = strtok(NULL, " ");
 			}
 		
-			strcpy(temp, coInternal);
+			strcpy_s(temp, tmpsize, coInternal);
 			token2 = strtok(temp, " ");
-			sprintf(sci, "?%d", ICO_SCI_AVS_INTERNAL);
+			sprintf_s(sci, "?%d", ICO_SCI_AVS_INTERNAL);
 			while (token2 != NULL) {
 				c = token2;
 				AVSToken.insert(c);
@@ -435,9 +437,9 @@ void CAviSynth::LoadDll(const char *path)
 			}
 		
 			if (coExternal) {
-				strcpy(temp, coExternal);
+				strcpy_s(temp, tmpsize, coExternal);
 				token = strtok(temp, " ");
-				sprintf(sci, "?%d", ICO_SCI_AVS_EXTERNAL);
+				sprintf_s(sci, "?%d", ICO_SCI_AVS_EXTERNAL);
 				while (token != NULL) {
 					c = token;
 					AVSToken.insert(c);
@@ -449,18 +451,20 @@ void CAviSynth::LoadDll(const char *path)
 		
 			set<string,less_nocase>::iterator walkit;
 			walkit = AVSToken.begin();
-			strcpy(coAll, walkit->c_str());
+			strcpy_s(coAll, coAll_size, walkit->c_str());
 			for(walkit++; walkit!=AVSToken.end();walkit++) {
-				strcat(coAll, " ");
-				strcat(coAll, walkit->c_str());
+				strcat_s(coAll, coAll_size, " ");
+				strcat_s(coAll, coAll_size, walkit->c_str());
 			}
-		
-			coAllScintilla = new char[strlen(coKeywords)+strlen(coInternal)+(coExternal?strlen(coExternal):0)+2+(AVSTokenSci.size()*2)];
+
+			const size_t coAllScintilla_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2 + (AVSTokenSci.size() * 2);
+			coAllScintilla = new char[coAllScintilla_size];
+
 			walkit = AVSTokenSci.begin();
-			strcpy(coAllScintilla, walkit->c_str());
+			strcpy_s(coAllScintilla, coAllScintilla_size, walkit->c_str());
 			for(walkit++; walkit!=AVSTokenSci.end();walkit++) {
-				strcat(coAllScintilla, " ");
-				strcat(coAllScintilla, walkit->c_str());
+				strcat_s(coAllScintilla, coAllScintilla_size, " ");
+				strcat_s(coAllScintilla, coAllScintilla_size, walkit->c_str());
 			}
  
 			AVSToken.clear();
