@@ -414,7 +414,7 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 // <----- Toff
 
-void AVSEditor::Init()
+void AVSEditor::Init() throw()
 {
 	hwndStatus = CreateStatusWindowW(WS_CHILD|WS_VISIBLE|SBARS_SIZEGRIP, L"", hwnd, 501);
 
@@ -643,13 +643,13 @@ void AVSEditor::SetScriptType(int type)
 	UpdateStatus();
 }
 
-bool AVSEditor::Commit()
+bool AVSEditor::Commit() throw()
 {
-		int s;
+	int s;
 	char *lpszBuf;
 	FILE *f;
 	//GETTEXTLENGTHEX gte;
-//	GETTEXTEX gt;
+	//GETTEXTEX gt;
 
 	if (lpszFileName[0] == 0) {
 		wchar_t szName[MAX_PATH];
