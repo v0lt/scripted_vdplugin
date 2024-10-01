@@ -657,7 +657,7 @@ inline VDStringA operator+(const VDStringA& str, char c) {
 
 namespace std {
 	template<>
-	struct less<VDStringA> : binary_function<VDStringA, VDStringA, bool> {
+	struct less<VDStringA> {
 		bool operator()(const VDStringA& x, const VDStringA& y) const {
 			return x.compare(y) < 0;
 		}
