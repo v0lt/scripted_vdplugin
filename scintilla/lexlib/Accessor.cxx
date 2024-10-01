@@ -5,12 +5,11 @@
 // Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cassert>
+
+#include <string>
+#include <string_view>
 
 #include "ILexer.h"
 #include "Scintilla.h"
@@ -21,19 +20,17 @@
 #include "LexAccessor.h"
 #include "Accessor.h"
 
-#ifdef SCI_NAMESPACE
-using namespace Scintilla;
-#endif
+using namespace Lexilla;
 
-Accessor::Accessor(IDocument *pAccess_, PropSetSimple *pprops_) : LexAccessor(pAccess_), pprops(pprops_) {
+Accessor::Accessor(Scintilla::IDocument *pAccess_, PropSetSimple *pprops_) : LexAccessor(pAccess_), pprops(pprops_) {
 }
 
-int Accessor::GetPropertyInt(const char *key, int defaultValue) const {
+int Accessor::GetPropertyInt(std::string_view key, int defaultValue) const {
 	return pprops->GetInt(key, defaultValue);
 }
 
 int Accessor::IndentAmount(Sci_Position line, int *flags, PFNIsCommentLeader pfnIsCommentLeader) {
-	Sci_Position end = Length();
+	const Sci_Position end = Length();
 	int spaceFlags = 0;
 
 	// Determines the indentation level of the current line and also checks for consistent
@@ -48,7 +45,7 @@ int Accessor::IndentAmount(Sci_Position line, int *flags, PFNIsCommentLeader pfn
 	Sci_Position posPrev = inPrevPrefix ? LineStart(line-1) : 0;
 	while ((ch == ' ' || ch == '\t') && (pos < end)) {
 		if (inPrevPrefix) {
-			char chPrev = (*this)[posPrev++];
+			const char chPrev = (*this)[posPrev++];
 			if (chPrev == ' ' || chPrev == '\t') {
 				if (chPrev != ch)
 					spaceFlags |= wsInconsistent;

@@ -8,25 +8,24 @@
 #ifndef PROPSETSIMPLE_H
 #define PROPSETSIMPLE_H
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
+namespace Lexilla {
 
 class PropSetSimple {
 	void *impl;
-	void Set(const char *keyVal);
 public:
 	PropSetSimple();
+	// Deleted so PropSetSimple objects can not be copied.
+	PropSetSimple(const PropSetSimple&) = delete;
+	PropSetSimple(PropSetSimple&&) = delete;
+	PropSetSimple &operator=(const PropSetSimple&) = delete;
+	PropSetSimple &operator=(PropSetSimple&&) = delete;
 	virtual ~PropSetSimple();
-	void Set(const char *key, const char *val, int lenKey=-1, int lenVal=-1);
-	void SetMultiple(const char *);
-	const char *Get(const char *key) const;
-	int GetExpanded(const char *key, char *result) const;
-	int GetInt(const char *key, int defaultValue=0) const;
+
+	bool Set(std::string_view key, std::string_view val);
+	const char *Get(std::string_view key) const;
+	int GetInt(std::string_view key, int defaultValue=0) const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

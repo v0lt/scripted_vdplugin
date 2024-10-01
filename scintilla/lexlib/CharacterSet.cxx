@@ -6,27 +6,22 @@
 // Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cassert>
+
+#include <string_view>
 
 #include "CharacterSet.h"
 
-#ifdef SCI_NAMESPACE
-using namespace Scintilla;
-#endif
+using namespace Lexilla;
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
+namespace Lexilla {
 
-int CompareCaseInsensitive(const char *a, const char *b) {
+int CompareCaseInsensitive(const char *a, const char *b) noexcept {
 	while (*a && *b) {
 		if (*a != *b) {
-			char upperA = MakeUpperCase(*a);
-			char upperB = MakeUpperCase(*b);
+			const char upperA = MakeUpperCase(*a);
+			const char upperB = MakeUpperCase(*b);
 			if (upperA != upperB)
 				return upperA - upperB;
 		}
@@ -37,11 +32,23 @@ int CompareCaseInsensitive(const char *a, const char *b) {
 	return *a - *b;
 }
 
-int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
+bool EqualCaseInsensitive(std::string_view a, std::string_view b) noexcept {
+	if (a.length() != b.length()) {
+		return false;
+	}
+	for (size_t i = 0; i < a.length(); i++) {
+		if (MakeUpperCase(a[i]) != MakeUpperCase(b[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int CompareNCaseInsensitive(const char *a, const char *b, size_t len) noexcept {
 	while (*a && *b && len) {
 		if (*a != *b) {
-			char upperA = MakeUpperCase(*a);
-			char upperB = MakeUpperCase(*b);
+			const char upperA = MakeUpperCase(*a);
+			const char upperB = MakeUpperCase(*b);
 			if (upperA != upperB)
 				return upperA - upperB;
 		}
@@ -56,6 +63,4 @@ int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 		return *a - *b;
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif

@@ -8,9 +8,7 @@
 #ifndef CHARACTERCATEGORY_H
 #define CHARACTERCATEGORY_H
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
+namespace Lexilla {
 
 enum CharacterCategory {
 	ccLu, ccLl, ccLt, ccLm, ccLo,
@@ -22,10 +20,31 @@ enum CharacterCategory {
 	ccCc, ccCf, ccCs, ccCo, ccCn
 };
 
-CharacterCategory CategoriseCharacter(int character);
+CharacterCategory CategoriseCharacter(int character) noexcept;
 
-#ifdef SCI_NAMESPACE
+// Common definitions of allowable characters in identifiers from UAX #31.
+bool IsIdStart(int character) noexcept;
+bool IsIdContinue(int character) noexcept;
+bool IsXidStart(int character) noexcept;
+bool IsXidContinue(int character) noexcept;
+
+class CharacterCategoryMap {
+private:
+	std::vector<unsigned char> dense;
+public:
+	CharacterCategoryMap();
+	CharacterCategory CategoryFor(int character) const noexcept {
+		if (static_cast<size_t>(character) < dense.size()) {
+			return static_cast<CharacterCategory>(dense[character]);
+		} else {
+			// binary search through ranges
+			return CategoriseCharacter(character);
+		}
+	}
+	int Size() const noexcept;
+	void Optimize(int countCharacters);
+};
+
 }
-#endif
 
 #endif

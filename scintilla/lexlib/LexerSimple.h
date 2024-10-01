@@ -8,23 +8,22 @@
 #ifndef LEXERSIMPLE_H
 #define LEXERSIMPLE_H
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
+namespace Lexilla {
 
 // A simple lexer with no state
 class LexerSimple : public LexerBase {
-	const LexerModule *module;
+	const LexerModule *lexerModule;
 	std::string wordLists;
 public:
-	explicit LexerSimple(const LexerModule *module_);
-	const char * SCI_METHOD DescribeWordListSets();
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess);
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess);
+	explicit LexerSimple(const LexerModule *lexerModule_);
+	const char * SCI_METHOD DescribeWordListSets() override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override;
+	// ILexer5 methods
+	const char * SCI_METHOD GetName() override;
+	int SCI_METHOD  GetIdentifier() override;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

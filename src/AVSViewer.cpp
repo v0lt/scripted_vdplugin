@@ -49,6 +49,8 @@
 #define INCLUDE_DEPRECATED_FEATURES
 #include "Scintilla.h"
 #include "SciLexer.h"
+#include "ILexer.h"
+#include "Lexilla.h"
 //#include "avsconst.h"
 
 #include "resource.h"
@@ -540,7 +542,7 @@ void AVSEditor::SetScriptType(int type)
 				guiMessageBox(hwnd, IDS_ERR_NO_AVSLEXER, IDS_ERR_NO_AVSLEXER_CAP, MB_OK|MB_ICONERROR);
 			}*/
 			//SendMessageSci(SCI_SETLEXERLANGUAGE, 0, (int) "avslex");
-			SendMessageSci(SCI_SETLEXER, SCLEX_AVS);
+			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("avs"));
 			//SendMessageSci(SCI_SETSTYLEBITS, 7);
 
 			SendMessageSci(SCI_CLEARREGISTEREDIMAGES);
@@ -598,13 +600,13 @@ void AVSEditor::SetScriptType(int type)
 
 		case SCRIPTTYPE_DECOMB: {
 			scriptType = SCRIPTTYPE_DECOMB;
-			SendMessageSci(SCI_SETLEXER, SCLEX_NULL);
+			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 		break;
 
 		case SCRIPTTYPE_VPS: {
 			scriptType = SCRIPTTYPE_VPS;
-			SendMessageSci(SCI_SETLEXER, SCLEX_PYTHON);
+			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("python"));
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 			const COLORREF black = RGB(0, 0, 0);
 			const COLORREF white = RGB(0xFF, 0xFF, 0xFF);
@@ -627,13 +629,13 @@ void AVSEditor::SetScriptType(int type)
 
 		case SCRIPTTYPE_VDSCRIPT: {
 			scriptType = SCRIPTTYPE_VDSCRIPT;
-			SendMessageSci(SCI_SETLEXER, SCLEX_NULL);
+			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 		break;
 
 		default: {
 			scriptType = SCRIPTTYPE_NONE;
-			SendMessageSci(SCI_SETLEXER, SCLEX_NULL);
+			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 	}
 

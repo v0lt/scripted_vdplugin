@@ -13,6 +13,9 @@
     <Filter Include="include">
       <UniqueIdentifier>{df369fda-7d90-41b7-874c-1548a6a9c0f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="win32">
+      <UniqueIdentifier>{128e0ab9-845a-409f-98c1-ae615332df02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AutoComplete.cxx">
@@ -25,9 +28,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CaseFolder.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Catalogue.cxx">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CellBuffer.cxx">
@@ -52,9 +52,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\EditView.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ExternalLexer.cxx">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Indicator.cxx">
@@ -114,9 +111,6 @@
     <ClCompile Include="lexlib\LexerModule.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="lexlib\LexerNoExceptions.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
     <ClCompile Include="lexlib\LexerSimple.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
@@ -135,9 +129,48 @@
     <ClCompile Include="lexers\LexPython.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="win32\HanjaDic.cxx" />
-    <ClCompile Include="win32\PlatWin.cxx" />
-    <ClCompile Include="win32\ScintillaWin.cxx" />
+    <ClCompile Include="src\ChangeHistory.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterCategoryMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterType.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DBCS.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UndoHistory.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniqueString.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="lexlib\DefaultLexer.cxx">
+      <Filter>lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\HanjaDic.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\PlatWin.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\ScintillaWin.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lexilla.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexNull.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexlib\LexAccessor.cxx">
+      <Filter>lexlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AutoComplete.h">
@@ -150,9 +183,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\CaseFolder.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Catalogue.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\CellBuffer.h">
@@ -177,12 +207,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\EditView.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ExternalLexer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FontQuality.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Indicator.h">
@@ -227,9 +251,6 @@
     <ClInclude Include="src\Style.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnicodeFromUTF8.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\UniConversion.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -255,9 +276,6 @@
       <Filter>lexlib</Filter>
     </ClInclude>
     <ClInclude Include="lexlib\LexerModule.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexerNoExceptions.h">
       <Filter>lexlib</Filter>
     </ClInclude>
     <ClInclude Include="lexlib\LexerSimple.h">
@@ -287,9 +305,6 @@
     <ClInclude Include="include\ILexer.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\Sci_Position.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -302,7 +317,79 @@
     <ClInclude Include="include\ScintillaWidget.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="win32\HanjaDic.h" />
-    <ClInclude Include="win32\PlatWin.h" />
+    <ClInclude Include="src\ChangeHistory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterCategoryMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterType.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBCS.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debugging.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ElapsedPeriod.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SparseVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UndoHistory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniqueString.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="lexlib\DefaultLexer.h">
+      <Filter>lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ILoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaMessages.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaStructures.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\HanjaDic.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\PlatWin.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\ScintillaWin.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\WinTypes.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lexilla.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="lexlib\CatalogueModules.h">
+      <Filter>lexlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\SciTE.properties">
+      <Filter>src</Filter>
+    </None>
+    <None Include="include\Scintilla.iface">
+      <Filter>include</Filter>
+    </None>
   </ItemGroup>
 </Project>

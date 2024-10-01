@@ -5,26 +5,33 @@
 // Copyright 1998-2003 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
+#include <cstddef>
+#include <cstdlib>
+#include <cassert>
+#include <cstring>
+#include <cstdio>
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
+#include <optional>
 #include <algorithm>
+#include <memory>
 
+#include "ScintillaTypes.h"
+#include "ScintillaMessages.h"
+
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
-#include "Scintilla.h"
-#include "CharacterSet.h"
+#include "CharacterType.h"
 #include "Position.h"
 #include "AutoComplete.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
+using namespace Scintilla::Internal;
 
 AutoComplete::AutoComplete() :
 	active(false),
@@ -32,37 +39,36 @@ AutoComplete::AutoComplete() :
 	typesep('?'),
 	ignoreCase(false),
 	chooseSingle(false),
-	lb(0),
+	options(AutoCompleteOption::Normal),
 	posStart(0),
 	startLen(0),
 	cancelAtStartPos(true),
 	autoHide(true),
 	dropRestOfWord(false),
-	ignoreCaseBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE),
+	ignoreCaseBehaviour(CaseInsensitiveBehaviour::RespectCase),
 	widthLBDefault(100),
 	heightLBDefault(100),
-	autoSort(SC_ORDER_PRESORTED) {
+	autoSort(Ordering::PreSorted) {
 	lb = ListBox::Allocate();
 }
 
 AutoComplete::~AutoComplete() {
 	if (lb) {
 		lb->Destroy();
-		delete lb;
-		lb = 0;
 	}
 }
 
-bool AutoComplete::Active() const {
+bool AutoComplete::Active() const noexcept {
 	return active;
 }
 
 void AutoComplete::Start(Window &parent, int ctrlID,
-	int position, Point location, int startLen_,
-	int lineHeight, bool unicodeMode, int technology) {
+	Sci::Position position, Point location, Sci::Position startLen_,
+	int lineHeight, bool unicodeMode, Technology technology, ListOptions listOptions) {
 	if (active) {
 		Cancel();
 	}
+	lb->SetOptions(listOptions);
 	lb->Create(parent, ctrlID, location, lineHeight, unicodeMode, technology);
 	lb->Clear();
 	active = true;
@@ -74,7 +80,7 @@ void AutoComplete::SetStopChars(const char *stopChars_) {
 	stopChars = stopChars_;
 }
 
-bool AutoComplete::IsStopChar(char ch) {
+bool AutoComplete::IsStopChar(char ch) const noexcept {
 	return ch && (stopChars.find(ch) != std::string::npos);
 }
 
@@ -82,7 +88,7 @@ void AutoComplete::SetFillUpChars(const char *fillUpChars_) {
 	fillUpChars = fillUpChars_;
 }
 
-bool AutoComplete::IsFillUpChar(char ch) {
+bool AutoComplete::IsFillUpChar(char ch) const noexcept {
 	return ch && (fillUpChars.find(ch) != std::string::npos);
 }
 
@@ -90,7 +96,7 @@ void AutoComplete::SetSeparator(char separator_) {
 	separator = separator_;
 }
 
-char AutoComplete::GetSeparator() const {
+char AutoComplete::GetSeparator() const noexcept {
 	return separator;
 }
 
@@ -98,7 +104,7 @@ void AutoComplete::SetTypesep(char separator_) {
 	typesep = separator_;
 }
 
-char AutoComplete::GetTypesep() const {
+char AutoComplete::GetTypesep() const noexcept {
 	return typesep;
 }
 
@@ -109,6 +115,11 @@ struct Sorter {
 
 	Sorter(AutoComplete *ac_, const char *list_) : ac(ac_), list(list_) {
 		int i = 0;
+		if (!list[i]) {
+			// Empty list has a single empty member
+			indices.push_back(i); // word start
+			indices.push_back(i); // word end
+		}
 		while (list[i]) {
 			indices.push_back(i); // word start
 			while (list[i] != ac->GetTypesep() && list[i] != ac->GetSeparator() && list[i])
@@ -130,10 +141,10 @@ struct Sorter {
 		indices.push_back(i); // index of last position
 	}
 
-	bool operator()(int a, int b) {
-		int lenA = indices[a * 2 + 1] - indices[a * 2];
-		int lenB = indices[b * 2 + 1] - indices[b * 2];
-		int len  = std::min(lenA, lenB);
+	bool operator()(int a, int b) noexcept {
+		const int lenA = indices[a * 2 + 1] - indices[a * 2];
+		const int lenB = indices[b * 2 + 1] - indices[b * 2];
+		const int len  = std::min(lenA, lenB);
 		int cmp;
 		if (ac->ignoreCase)
 			cmp = CompareNCaseInsensitive(list + indices[a * 2], list + indices[b * 2], len);
@@ -146,7 +157,7 @@ struct Sorter {
 };
 
 void AutoComplete::SetList(const char *list) {
-	if (autoSort == SC_ORDER_PRESORTED) {
+	if (autoSort == Ordering::PreSorted) {
 		lb->SetList(list, separator, typesep);
 		sortMatrix.clear();
 		for (int i = 0; i < lb->Length(); ++i)
@@ -156,10 +167,10 @@ void AutoComplete::SetList(const char *list) {
 
 	Sorter IndexSort(this, list);
 	sortMatrix.clear();
-	for (int i = 0; i < (int)IndexSort.indices.size() / 2; ++i)
+	for (int i = 0; i < static_cast<int>(IndexSort.indices.size()) / 2; ++i)
 		sortMatrix.push_back(i);
 	std::sort(sortMatrix.begin(), sortMatrix.end(), IndexSort);
-	if (autoSort == SC_ORDER_CUSTOM || sortMatrix.size() < 2) {
+	if (autoSort == Ordering::Custom || sortMatrix.size() < 2) {
 		lb->SetList(list, separator, typesep);
 		PLATFORM_ASSERT(lb->Length() == static_cast<int>(sortMatrix.size()));
 		return;
@@ -186,7 +197,7 @@ void AutoComplete::SetList(const char *list) {
 		item[wordLen] = '\0';
 		sortedList += item;
 	}
-	for (int i = 0; i < (int)sortMatrix.size(); ++i)
+	for (int i = 0; i < static_cast<int>(sortMatrix.size()); ++i)
 		sortMatrix[i] = i;
 	lb->SetList(sortedList.c_str(), separator, typesep);
 }
@@ -196,9 +207,7 @@ int AutoComplete::GetSelection() const {
 }
 
 std::string AutoComplete::GetValue(int item) const {
-	char value[maxItemLen];
-	lb->GetValue(item, value, sizeof(value));
-	return std::string(value);
+	return lb->GetValue(item);
 }
 
 void AutoComplete::Show(bool show) {
@@ -207,7 +216,7 @@ void AutoComplete::Show(bool show) {
 		lb->Select(0);
 }
 
-void AutoComplete::Cancel() {
+void AutoComplete::Cancel() noexcept {
 	if (lb->Created()) {
 		lb->Clear();
 		lb->Destroy();
@@ -217,7 +226,7 @@ void AutoComplete::Cancel() {
 
 
 void AutoComplete::Move(int delta) {
-	int count = lb->Length();
+	const int count = lb->Length();
 	int current = lb->GetSelection();
 	current += delta;
 	if (current >= count)
@@ -228,48 +237,47 @@ void AutoComplete::Move(int delta) {
 }
 
 void AutoComplete::Select(const char *word) {
-	size_t lenWord = strlen(word);
+	const size_t lenWord = strlen(word);
 	int location = -1;
 	int start = 0; // lower bound of the api array block to search
 	int end = lb->Length() - 1; // upper bound of the api array block to search
 	while ((start <= end) && (location == -1)) { // Binary searching loop
 		int pivot = (start + end) / 2;
-		char item[maxItemLen];
-		lb->GetValue(sortMatrix[pivot], item, maxItemLen);
+		std::string item = GetValue(sortMatrix[pivot]);
 		int cond;
 		if (ignoreCase)
-			cond = CompareNCaseInsensitive(word, item, lenWord);
+			cond = CompareNCaseInsensitive(word, item.c_str(), lenWord);
 		else
-			cond = strncmp(word, item, lenWord);
+			cond = strncmp(word, item.c_str(), lenWord);
 		if (!cond) {
 			// Find first match
 			while (pivot > start) {
-				lb->GetValue(sortMatrix[pivot-1], item, maxItemLen);
+				item = lb->GetValue(sortMatrix[pivot-1]);
 				if (ignoreCase)
-					cond = CompareNCaseInsensitive(word, item, lenWord);
+					cond = CompareNCaseInsensitive(word, item.c_str(), lenWord);
 				else
-					cond = strncmp(word, item, lenWord);
+					cond = strncmp(word, item.c_str(), lenWord);
 				if (0 != cond)
 					break;
 				--pivot;
 			}
 			location = pivot;
 			if (ignoreCase
-				&& ignoreCaseBehaviour == SC_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE) {
+				&& ignoreCaseBehaviour == CaseInsensitiveBehaviour::RespectCase) {
 				// Check for exact-case match
 				for (; pivot <= end; pivot++) {
-					lb->GetValue(sortMatrix[pivot], item, maxItemLen);
-					if (!strncmp(word, item, lenWord)) {
+					item = lb->GetValue(sortMatrix[pivot]);
+					if (!strncmp(word, item.c_str(), lenWord)) {
 						location = pivot;
 						break;
 					}
-					if (CompareNCaseInsensitive(word, item, lenWord))
+					if (CompareNCaseInsensitive(word, item.c_str(), lenWord))
 						break;
 				}
 			}
 		} else if (cond < 0) {
 			end = pivot - 1;
-		} else if (cond > 0) {
+		} else { // cond > 0
 			start = pivot + 1;
 		}
 	}
@@ -279,14 +287,13 @@ void AutoComplete::Select(const char *word) {
 		else
 			lb->Select(-1);
 	} else {
-		if (autoSort == SC_ORDER_CUSTOM) {
+		if (autoSort == Ordering::Custom) {
 			// Check for a logically earlier match
-			char item[maxItemLen];
 			for (int i = location + 1; i <= end; ++i) {
-				lb->GetValue(sortMatrix[i], item, maxItemLen);
-				if (CompareNCaseInsensitive(word, item, lenWord))
+				std::string item = lb->GetValue(sortMatrix[i]);
+				if (CompareNCaseInsensitive(word, item.c_str(), lenWord))
 					break;
-				if (sortMatrix[i] < sortMatrix[location] && !strncmp(word, item, lenWord))
+				if (sortMatrix[i] < sortMatrix[location] && !strncmp(word, item.c_str(), lenWord))
 					location = i;
 			}
 		}
