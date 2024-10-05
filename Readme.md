@@ -4,7 +4,7 @@
 It is a port from script editor build in VirtualDubMod with some extra features added and issues fixed.
 
 ### Currently implemented for ALL:
-|
+|                |                                    |
 |----------------|------------------------------------|
 | CTRL/G         | Goto (Script Line or Frame Number) |
 | CTRL/Z         | Undo                               |
@@ -26,7 +26,7 @@ It is a port from script editor build in VirtualDubMod with some extra features 
 * external functions hi-liting and completion
 * Auto-opening of .avs files
 
-|
+|                  |                                                                       |
 |------------------|-----------------------------------------------------------------------|
 | CTRL/P           | Insert current frame number                                           |
 | CTRL/R           | Insert Range                                                          |
@@ -42,7 +42,7 @@ It is a port from script editor build in VirtualDubMod with some extra features 
 * Syntax hi-liting
 * Auto-opening of .vpy files
 
-|
+|                |                             |
 |----------------|-----------------------------|
 | CTRL/P         | Insert current frame number |
 
