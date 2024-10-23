@@ -605,12 +605,19 @@ void CAviSynth::LoadDll(const char *path)
 			} catch (...) {s = "Version < 2.07; VersionString() not implemented";}
 			Version = _strdup(s.c_str());
 
-			if (coExternal) delete coExternal;
-			coExternal=NULL;
+			const char* avsPluginFunctions = nullptr;
 			try {
-				AVSValue p = env->GetVar("$PluginFunctions$");
-				coExternal = _strdup(p.AsString());
+				AVSValue p = env->GetVar("$PluginFunctions$"); // TODO: This doesn't work! Fix it.
+				avsPluginFunctions = p.AsString();
 			} catch (...) {;}
+
+			if (avsPluginFunctions && avsPluginFunctions[0]) {
+				if (coExternal) {
+					delete coExternal;
+					coExternal = nullptr;
+				}
+				coExternal = _strdup(avsPluginFunctions);
+			}
 
 			if (coAll) delete coAll;
 			coAll=NULL;
