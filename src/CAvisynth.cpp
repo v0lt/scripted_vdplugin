@@ -518,6 +518,12 @@ const char coInternalDefault[] =
 	"Version "
 ;
 
+const char coExternalDefault[] =
+	"FFIndex "
+	"FFAudioSource "
+	"FFVideoSource "
+	"FFmpegSource2 ";
+
 //====================================== avisynth ======================================
 Cvdub_source::Cvdub_source(CAviSynth *Iself, IScriptEnvironment* env):self(Iself)
 {
@@ -558,7 +564,7 @@ CAviSynth::CAviSynth(const char *path)
 	Version = NULL;
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
-	coExternal = NULL;
+	coExternal = _strdup(coExternalDefault);
 	coAll = NULL;
 	coAllScintilla = NULL;
 	ok = false;

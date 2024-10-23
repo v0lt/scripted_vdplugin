@@ -552,7 +552,9 @@ void AVSEditor::SetScriptType(int type)
 
 			SendMessageSci(SCI_SETKEYWORDS, 0, (LPARAM) g_dllAviSynth->coKeywords);
 			SendMessageSci(SCI_SETKEYWORDS, 1, (LPARAM) g_dllAviSynth->coInternal);
-			if (g_dllAviSynth->coExternal) SendMessageSci(SCI_SETKEYWORDS, 2, (LPARAM) g_dllAviSynth->coExternal);
+			if (g_dllAviSynth->coExternal) {
+				SendMessageSci(SCI_SETKEYWORDS, 2, (LPARAM)g_dllAviSynth->coExternal);
+			}
 
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 
