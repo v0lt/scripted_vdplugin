@@ -43,8 +43,24 @@ struct less_nocase {
 	}
 };
 
-const char coKeywordsDefault[] =	"end return global function clip int bool float default "
-								"string last true false try catch";
+// http://avisynth.nl/index.php/The_full_AviSynth_grammar#Keywords
+const char coKeywordsDefault[] =
+	"function "
+	"global "
+	"return "
+	"try "
+	"catch"
+	"last "
+	"true "
+	"false "
+	"yes "
+	"no "
+	"clip "
+	"int "
+	"float "
+	"string "
+	"bool "
+	"val";
 
 const char coInternalDefault[] =
 	// Numeric Functions
