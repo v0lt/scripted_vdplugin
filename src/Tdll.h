@@ -41,10 +41,10 @@ public:
         hdll = LoadLibraryA(dllName1);
         if (!hdll) {
             char name[MAX_PATH], ext[MAX_PATH];
-            _splitpath_s(dllName1, NULL, 0, NULL, 0, name, MAX_PATH, ext, MAX_PATH);
+            _splitpath_s(dllName1, nullptr, 0, nullptr, 0, name, MAX_PATH, ext, MAX_PATH);
 
             char dllName2[MAX_PATH];
-            _makepath_s(dllName2, NULL, NULL, name, ext);
+            _makepath_s(dllName2, nullptr, nullptr, name, ext);
 
             hdll = LoadLibraryA(dllName2);
             if (!hdll && pth) {

@@ -591,7 +591,7 @@ void CAviSynth::LoadDll(const char *path)
 		Version = nullptr;
 	}
 
-	avisynth = new Tdll(path,NULL);
+	avisynth = new Tdll(path, nullptr);
 	avisynth->loadFunction((void**)&CreateScriptEnvironment,"CreateScriptEnvironment");
 	if (avisynth->ok) {
 		ok = true;
@@ -647,48 +647,48 @@ void CAviSynth::LoadDll(const char *path)
 /*			strcpy(temp, coKeywords);
 			token = strtok(temp, " ");
 			sprintf(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
-			while (token != NULL) {
+			while (token != nullptr) {
 				c = new string;
 				*c = token;
 				AVSToken.insert(*c);
 				*c += sci;
 				AVSTokenSci.insert(*c);
-				token = strtok(NULL, " ");
+				token = strtok(nullptr, " ");
 				delete c;
 			}
 */
 			strcpy_s(temp, tmpsize, coKeywords);
 			token = strtok(temp, " ");
 			sprintf_s(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
-			while (token != NULL) {
+			while (token != nullptr) {
 				c = token;
 				AVSToken.insert(c);
 				c += sci;
 				AVSTokenSci.insert(c);
-				token = strtok(NULL, " ");
+				token = strtok(nullptr, " ");
 			}
 
 			strcpy_s(temp, tmpsize, coInternal);
 			token2 = strtok(temp, " ");
 			sprintf_s(sci, "?%d", ICO_SCI_AVS_INTERNAL);
-			while (token2 != NULL) {
+			while (token2 != nullptr) {
 				c = token2;
 				AVSToken.insert(c);
 				c += sci;
 				AVSTokenSci.insert(c);
-				token2 = strtok(NULL, " ");
+				token2 = strtok(nullptr, " ");
 			}
 
 			if (coExternal) {
 				strcpy_s(temp, tmpsize, coExternal);
 				token = strtok(temp, " ");
 				sprintf_s(sci, "?%d", ICO_SCI_AVS_EXTERNAL);
-				while (token != NULL) {
+				while (token != nullptr) {
 					c = token;
 					AVSToken.insert(c);
 					c += sci;
 					AVSTokenSci.insert(c);
-					token = strtok(NULL, " ");
+					token = strtok(nullptr, " ");
 				}
 			}
 
@@ -741,24 +741,42 @@ void CAviSynth::LoadDll(const char *path)
 
 CAviSynth::~CAviSynth()
 {
-	if (Version) delete Version;
-	Version=NULL;
-	if (coKeywords) delete coKeywords;
-	coKeywords=NULL;
-	if (coInternal) delete coInternal;
-	coInternal=NULL;
-	if (coExternal) delete coExternal;
-	coExternal=NULL;
-	if (coAll) delete coAll;
-	coAll=NULL;
-	if (coAllScintilla) delete coAllScintilla;
-	coAllScintilla=NULL;
-	if (clip) delete clip;
-	clip=NULL;
-	if (env) delete env;
-	env=NULL;
-	if (avisynth) delete avisynth;
-	avisynth=NULL;
+	if (Version) {
+		delete Version;
+		Version = nullptr;
+	}
+	if (coKeywords) {
+		delete coKeywords;
+		coKeywords = nullptr;
+	}
+	if (coInternal) {
+		delete coInternal;
+		coInternal = nullptr;
+	}
+	if (coExternal) {
+		delete coExternal;
+		coExternal = nullptr;
+	}
+	if (coAll) {
+		delete coAll;
+		coAll = nullptr;
+	}
+	if (coAllScintilla) {
+		delete coAllScintilla;
+		coAllScintilla = nullptr;
+	}
+	if (clip) {
+		delete clip;
+		clip = nullptr;
+	}
+	if (env) {
+		delete env;
+		env = nullptr;
+	}
+	if (avisynth) {
+		delete avisynth;
+		avisynth = nullptr;
+	}
 }
 
 /*

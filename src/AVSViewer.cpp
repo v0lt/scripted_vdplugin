@@ -197,7 +197,7 @@ private:
 	void SetStatus(const char *format, ...) throw();
 	void UpdateStatus() throw();
 	void UpdateLineNumbers();
-	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const wchar_t *face = NULL);
+	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const wchar_t *face = nullptr);
 
 	LRESULT Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw();
 	LRESULT Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw();
@@ -279,7 +279,7 @@ bool AVSEditor::CommentUncommentLine(int lineNumber, bool comment)
 void AVSEditor::RemoveLineCommentInRange(int line)
 {
 //	CHARRANGE chr;
-	char *buff = NULL;
+	char *buff = nullptr;
 	int charIndex = 0;
 	int charStart = 0;
 	int charEnd = 0;
@@ -307,13 +307,15 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 		SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)buff);
 		if (strncmp(startLineText,buff,startLineLen) != 0 ) {
 			delete [] buff;
-			buff = NULL;
+			buff = nullptr;
 			continue;
 		}
 		break;
 	}
-	if (buff) delete [] buff;
-	buff = NULL;
+	if (buff) {
+		delete[] buff;
+		buff = nullptr;
+	}
 
 	if (lineNumber<0) return;
 
@@ -333,7 +335,7 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 		}
 		//CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
 		delete [] buff;
-		buff = NULL;
+		buff = nullptr;
 	}
 	if (buff) delete [] buff;
 	for (lineNumber = firstLine; lineNumber < lastLine; lineNumber++) {
@@ -427,7 +429,7 @@ void AVSEditor::Init() throw()
 		hwnd,
 		NULL,
 		g_hInst,
-		NULL);
+		nullptr);
 
 	lpszFileName[0] = 0;
 
@@ -484,7 +486,7 @@ void AVSEditor::Open(const wchar_t* path)
 	FILE *f;
 	size_t n, r;
 
-	lpszBuf = NULL;
+	lpszBuf = nullptr;
 	errno_t err = _wfopen_s(&f, lpszFileName, L"rb");
 	if (err) {
 		return;
@@ -767,15 +769,15 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
 			ofn.lStructSize			= sizeof(OPENFILENAMEW);
 			ofn.hwndOwner			= hwnd;
 			ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
-			ofn.lpstrCustomFilter	= NULL;
+			ofn.lpstrCustomFilter	= nullptr;
 			ofn.nFilterIndex		= 1;
 			ofn.lpstrFile			= szName;
 			ofn.nMaxFile			= sizeof szName;
-			ofn.lpstrFileTitle		= NULL;
-			ofn.lpstrInitialDir		= NULL;
-			ofn.lpstrTitle			= NULL;
+			ofn.lpstrFileTitle		= nullptr;
+			ofn.lpstrInitialDir		= nullptr;
+			ofn.lpstrTitle			= nullptr;
 			ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
-			ofn.lpstrDefExt			= NULL;
+			ofn.lpstrDefExt			= nullptr;
 
 			if (GetOpenFileNameW(&ofn)) {
 				//VDTextAToW(lpszFileName, MAX_PATH, szName, MAX_PATH);
@@ -1701,7 +1703,7 @@ ATOM RegisterAVSEditorClass()
 	wc1.cbWndExtra		= sizeof(AVSEditor *);
 	wc1.hInstance		= g_hInst;
 	wc1.hIcon			= LoadIconW(g_hInst, MAKEINTRESOURCEW(IDI_AVSEDIT));
-	wc1.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc1.hCursor			= LoadCursorW(NULL, IDC_ARROW);
 	wc1.hbrBackground	= NULL; //(HBRUSH)(COLOR_WINDOW+1);
 	wc1.lpszMenuName	= MAKEINTRESOURCEW(IDR_AVSVIEWER_MENU);
 	wc1.lpszClassName	= AVSEDITORCLASS;
