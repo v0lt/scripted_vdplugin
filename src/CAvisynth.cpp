@@ -558,17 +558,17 @@ PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 //======================================= ffdshow =======================================
 CAviSynth::CAviSynth(const char *path)
 {
-	clip = NULL;
-	env = NULL;
-	avisynth = NULL;
-	Version = NULL;
+	clip = nullptr;
+	env = nullptr;
+	avisynth = nullptr;
+	Version = nullptr;
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
 	coExternal = _strdup(coExternalDefault);
-	coAll = NULL;
-	coAllScintilla = NULL;
+	coAll = nullptr;
+	coAllScintilla = nullptr;
 	ok = false;
-	Version25 = false;
+	InterfaceVer = 0;
 	oldscript[0] = '\0';
 	LoadDll(path);
 }
@@ -578,12 +578,18 @@ void CAviSynth::LoadDll(const char *path)
 	string s;
 
 	ok = false;
-	Version25 = false;
-	if (env) delete env;
-	env = NULL;
-	if (avisynth) delete avisynth;
-	avisynth = NULL;
-	if (Version) delete Version;
+	if (env) {
+		delete env;
+		env = nullptr;
+	}
+	if (avisynth) {
+		delete avisynth;
+		avisynth = nullptr;
+	}
+	if (Version) {
+		delete Version;
+		Version = nullptr;
+	}
 
 	avisynth = new Tdll(path,NULL);
 	avisynth->loadFunction((void**)&CreateScriptEnvironment,"CreateScriptEnvironment");
@@ -591,13 +597,9 @@ void CAviSynth::LoadDll(const char *path)
 		ok = true;
 		env = CreateScriptEnvironment(2);
 		if (!env) {
-			env = CreateScriptEnvironment(1);
-		} else {
-			Version25 = true;
-		}
-		if (!env) {
 			ok = false;
 		} else {
+			InterfaceVer = 2;
 			AVSValue a;
 			try {
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
@@ -619,10 +621,14 @@ void CAviSynth::LoadDll(const char *path)
 				coExternal = _strdup(avsPluginFunctions);
 			}
 
-			if (coAll) delete coAll;
-			coAll=NULL;
-			if (coAllScintilla) delete coAllScintilla;
-			coAllScintilla=NULL;
+			if (coAll) {
+				delete coAll;
+				coAll = nullptr;
+			}
+			if (coAllScintilla) {
+				delete coAllScintilla;
+				coAllScintilla = nullptr;
+			}
 
 			const size_t tmpsize = max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
 			char* temp = new char[tmpsize];

@@ -35,7 +35,7 @@ class CAviSynth {
 		char *coAll;
 		char *coAllScintilla;
 		bool ok;
-		bool Version25;
+		int InterfaceVer;
 
 		CAviSynth(const char *path);
 		void LoadDll(const char *path);
