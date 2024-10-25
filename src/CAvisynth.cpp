@@ -609,8 +609,10 @@ void CAviSynth::LoadDll(const char *path)
 
 			const char* avsPluginFunctions = nullptr;
 			try {
-				AVSValue p = env->GetVar("$PluginFunctions$"); // TODO: This doesn't work! Fix it.
-				avsPluginFunctions = p.AsString();
+				AVSValue var = env->GetVar("$PluginFunctions$"); // TODO: This doesn't work! Fix it.
+				if (var.IsString()) {
+					avsPluginFunctions = var.AsString();
+				}
 			} catch (...) {;}
 
 			if (avsPluginFunctions && avsPluginFunctions[0]) {
