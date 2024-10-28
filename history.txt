@@ -6,5 +6,6 @@ The "VirtualDub2 scripted" code (https://git.code.sf.net/p/vdfiltermod/scripted)
 Updated files of the source code VirtualDub2.
 Fixed a crash when trying to save a read-only file.
 Implemented Unicode support. Now script files are read and saved in UTF-8 format.
+The list of keywords, internal functions and internal filters for AviSynth+ has been updated.
 Scintilla 5.5.2 updated.
 Lexilla 5.4.0 updated.
