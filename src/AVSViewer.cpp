@@ -533,9 +533,19 @@ void AVSEditor::HandleError(const char* s, int line)
 
 void AVSEditor::SetScriptType(int type)
 {
+	const COLORREF black      = RGB(0, 0, 0);
+	const COLORREF white      = RGB(0xFF, 0xFF, 0xFF);
+	const COLORREF red        = RGB(0xFF, 0, 0);
+	const COLORREF offWhite   = RGB(0xFF, 0xFB, 0xF0);
+	const COLORREF darkGray   = RGB(0xAA, 0xAA, 0xAA);
+	const COLORREF darkGreen  = RGB(0, 0x80, 0);
+	const COLORREF darkBlue   = RGB(0, 0, 0x80);
+	const COLORREF darkRed    = RGB(0x80, 0, 0);
+	const COLORREF darkViolet = RGB(0x80, 0, 0x80);
+
 	scriptType = type;
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
-	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
+	SetAStyle(STYLE_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 	SendMessageSci(SCI_STYLECLEARALL);	// Copies global style to all others
 	switch(type) {
 		case SCRIPTTYPE_AVS: {
@@ -560,15 +570,6 @@ void AVSEditor::SetScriptType(int type)
 
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 
-			const COLORREF black = RGB(0, 0, 0);
-			const COLORREF white = RGB(0xFF, 0xFF, 0xFF);
-			const COLORREF red = RGB(0xFF, 0, 0);
-			const COLORREF offWhite = RGB(0xFF, 0xFB, 0xF0);
-			const COLORREF darkGreen = RGB(0, 0x80, 0);
-			const COLORREF darkBlue = RGB(0, 0, 0x80);
-			const COLORREF darkRed = RGB(0x80,0,0);
-			const COLORREF darkViolet = RGB(0x80,0,0x80);
-
 			SetAStyle(SCE_AVS_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 
 			SetAStyle(SCE_AVS_NUMBER, darkBlue);
@@ -584,9 +585,9 @@ void AVSEditor::SetScriptType(int type)
 			SendMessageSci(SCI_STYLESETBOLD, SCE_AVS_FILTER, 1);
 
 			// Comment
-			SetAStyle(SCE_AVS_COMMENTBLOCK, RGB(0xAA,0xAA,0xAA));
-			SetAStyle(SCE_AVS_COMMENTBLOCKN, RGB(0xAA,0xAA,0xAA));
-			SetAStyle(SCE_AVS_COMMENTLINE, RGB(0xAA,0xAA,0xAA));
+			SetAStyle(SCE_AVS_COMMENTBLOCK, darkGray);
+			SetAStyle(SCE_AVS_COMMENTBLOCKN, darkGray);
+			SetAStyle(SCE_AVS_COMMENTLINE, darkGray);
 			//SendMessageSci(SCI_STYLESETITALIC, SCE_AVS_COMMENT, 1);
 
 			SetAStyle(SCE_AVS_OPERATOR, darkBlue);
@@ -612,19 +613,14 @@ void AVSEditor::SetScriptType(int type)
 			scriptType = SCRIPTTYPE_VPS;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("python"));
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
-			const COLORREF black = RGB(0, 0, 0);
-			const COLORREF white = RGB(0xFF, 0xFF, 0xFF);
-			const COLORREF darkGreen = RGB(0, 0x80, 0);
-			const COLORREF darkBlue = RGB(0, 0, 0x80);
-			const COLORREF darkRed = RGB(0x80,0,0);
 			SetAStyle(SCE_P_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 			SendMessageSci(SCI_STYLESETBOLD, SCE_P_DEFAULT, 1);
 			SetAStyle(SCE_P_WORD, darkGreen);
 			SendMessageSci(SCI_STYLESETBOLD, SCE_P_WORD, 1);
 
 			// Comment
-			SetAStyle(SCE_P_COMMENTBLOCK, RGB(0xAA,0xAA,0xAA));
-			SetAStyle(SCE_P_COMMENTLINE, RGB(0xAA,0xAA,0xAA));
+			SetAStyle(SCE_P_COMMENTBLOCK, darkGray);
+			SetAStyle(SCE_P_COMMENTLINE, darkGray);
 
 			SetAStyle(SCE_P_OPERATOR, darkBlue);
 			SetAStyle(SCE_P_STRING, darkRed);
