@@ -103,7 +103,7 @@ VDThread::VDThread(const char *pszDebugName)
 {
 }
 
-VDThread::~VDThread() throw() {
+VDThread::~VDThread() noexcept {
 	if (isThreadAttached())
 		ThreadWait();
 }

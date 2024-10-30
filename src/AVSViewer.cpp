@@ -180,8 +180,8 @@ public:
 	AVSEditor(HWND);
 	~AVSEditor();
 
-	static LRESULT APIENTRY AVSEditorWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) throw();
-	static LRESULT APIENTRY SubAVSEditorWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) throw();
+	static LRESULT APIENTRY AVSEditorWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+	static LRESULT APIENTRY SubAVSEditorWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	void UpdatePreferences();
 	HWND GetHwnd(){ return hwnd; }
 	bool CheckFilename(const wchar_t* path) {
@@ -191,17 +191,17 @@ public:
 	void HandleError(const char* s, int line);
 
 private:
-	void Init() throw();
-	bool Commit() throw();
+	void Init() noexcept;
+	bool Commit() noexcept;
 
-	void SetStatus(const char *format, ...) throw();
-	void UpdateStatus() throw();
+	void SetStatus(const char *format, ...) noexcept;
+	void UpdateStatus() noexcept;
 	void UpdateLineNumbers();
 	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const wchar_t *face = nullptr);
 
-	LRESULT Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw();
-	LRESULT Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw();
-	LRESULT Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) throw();
+	LRESULT Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept;
+	LRESULT Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) noexcept;
+	LRESULT Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) noexcept;
 	LRESULT Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam);
 
 	sptr_t SendMessageSci(int Message, WPARAM wParam = 0, LPARAM lParam = 0) 
@@ -391,7 +391,7 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 	SendMessageSci(SCI_SETSEL, charStart, charEnd);
 }
 
-LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw()
+LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtrW(
 		(HWND)GetWindowLongPtrW(hwnd, GWLP_HWNDPARENT), 0);
@@ -416,7 +416,7 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 // <----- Toff
 
-void AVSEditor::Init() throw()
+void AVSEditor::Init() noexcept
 {
 	hwndStatus = CreateStatusWindowW(WS_CHILD|WS_VISIBLE|SBARS_SIZEGRIP, L"", hwnd, 501);
 
@@ -643,7 +643,7 @@ void AVSEditor::SetScriptType(int type)
 	UpdateStatus();
 }
 
-bool AVSEditor::Commit() throw()
+bool AVSEditor::Commit() noexcept
 {
 	int s;
 	char *lpszBuf;
@@ -698,7 +698,7 @@ bool AVSEditor::Commit() throw()
 	return true;
 }
 
-void AVSEditor::SetStatus(const char *format, ...) throw()
+void AVSEditor::SetStatus(const char *format, ...) noexcept
 {
 	char buf[1024];
 	va_list val;
@@ -710,7 +710,7 @@ void AVSEditor::SetStatus(const char *format, ...) throw()
 	SetWindowTextA(hwndStatus, buf);
 }
 
-void AVSEditor::UpdateStatus() throw()
+void AVSEditor::UpdateStatus() noexcept
 {
 //	POINT pt;
 
@@ -741,7 +741,7 @@ void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, con
 	}
 }
 
-LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
+LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 {
 	if ((HWND) lParam == hwndView) {
 /*		switch (HIWORD(wParam)) {
@@ -1100,7 +1100,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) throw()
 	return 0;
 }
 
-LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw()
+LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) noexcept
 {
 	HDWP hdwp;
 	RECT r, rstatus;
@@ -1125,7 +1125,7 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) throw()
 	return 0;
 }
 
-LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) throw()
+LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) noexcept
 {
 	if (hwndFrom == hwndView) {
 		SCNotification* scn = (SCNotification*)phdr;
@@ -1208,7 +1208,7 @@ void AVSEditor::DoCalltip()
 
 ////////////////////////////
 
-LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) throw()
+LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	AVSEditor *pcd = (AVSEditor *)GetWindowLongPtrW(hwnd, 0);
 

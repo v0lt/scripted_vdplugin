@@ -170,7 +170,7 @@ public:
 		free(p);
 	}
 
-	size_type		max_size() const throw()			{ return ((~(size_type)0) >> 1) / sizeof(T); }
+	size_type		max_size() const noexcept			{ return ((~(size_type)0) >> 1) / sizeof(T); }
 
 	void			construct(pointer p, const T& val)	{ new((void *)p) T(val); }
 	void			destroy(pointer p)					{ ((T*)p)->~T(); }
@@ -222,7 +222,7 @@ public:
 		VDAlignedFree(p1);
 	}
 
-	size_type		max_size() const throw()			{ return INT_MAX - 2*kDeadZone; }
+	size_type		max_size() const noexcept			{ return INT_MAX - 2*kDeadZone; }
 
 	void			construct(pointer p, const T& val)	{ new((void *)p) T(val); }
 	void			destroy(pointer p)					{ ((T*)p)->~T(); }
@@ -257,7 +257,7 @@ public:
 
 	pointer			allocate(size_type n, void *p = 0)	{ return (pointer)VDAlignedMalloc(n*sizeof(T), kAlignment); }
 	void			deallocate(pointer p, size_type n)	{ VDAlignedFree(p); }
-	size_type		max_size() const throw()			{ return INT_MAX; }
+	size_type		max_size() const noexcept			{ return INT_MAX; }
 
 	void			construct(pointer p, const T& val)	{ new((void *)p) T(val); }
 	void			destroy(pointer p)					{ ((T*)p)->~T(); }

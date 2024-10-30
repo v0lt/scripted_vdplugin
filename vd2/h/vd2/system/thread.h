@@ -89,7 +89,7 @@ public:
 	};
 
 	VDThread(const char *pszDebugName = NULL);	// NOTE: pszDebugName must have static duration
-	~VDThread() throw();
+	~VDThread() noexcept;
 
 	// external functions
 
