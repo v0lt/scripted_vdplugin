@@ -1,6 +1,6 @@
 scripted.vdplugin history
 
-0.2.0 dev
+0.2.0.60 - 2024-11-10
 ----------------------
 The "VirtualDub2 scripted" code (https://git.code.sf.net/p/vdfiltermod/scripted) from 2019-05-10 was forked and adapted for Visual Studio 2017/2019/2022.
 Updated files of the source code VirtualDub2.
