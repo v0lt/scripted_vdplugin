@@ -8,6 +8,7 @@
 #ifndef _CAVISYNTH_H_
 #define _CAVISYNTH_H_
 
+#include <string>
 #include "avisynth.h"
 
 #define ICO_SCI_AVS_KEYWORDS 1
@@ -17,10 +18,10 @@
 class Tdll;
 class CAviSynth {
 	private:
-		Tdll *avisynth;
+		Tdll *avisynth = nullptr;
 		IScriptEnvironment* (__stdcall *CreateScriptEnvironment)(int version/* = AVISYNTH_INTERFACE_VERSION*/); //TODO: uncomment when VC6 support will be dropped
-		IScriptEnvironment *env;
-		PClip *clip;
+		IScriptEnvironment *env = nullptr;
+		PClip *clip = nullptr;
 		const unsigned char *srcY,*srcU,*srcV;
 		char oldscript[2048];
 		unsigned int framenum;
@@ -28,14 +29,14 @@ class CAviSynth {
 		friend class Cvdub_source;
 	protected:
 	public:
-		char *Version;
+		std::string Version;
 		char *coKeywords;
 		char *coInternal;
 		char *coExternal;
-		char *coAll;
-		char *coAllScintilla;
-		bool ok;
-		int InterfaceVer;
+		char *coAll = nullptr;
+		char *coAllScintilla = nullptr;
+		bool ok = false;
+		int InterfaceVer = 0;
 
 		CAviSynth(const char *path);
 		void LoadDll(const char *path);
@@ -44,7 +45,7 @@ class CAviSynth {
 
 class Cvdub_source :public IClip {
 	private:
-		VideoInfo vi;
+		VideoInfo vi = {};
 		CAviSynth *self;
 	public:
 		Cvdub_source(CAviSynth *Iself, IScriptEnvironment* env);

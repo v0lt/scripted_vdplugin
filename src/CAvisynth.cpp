@@ -27,7 +27,6 @@
 #define _ASSERTE
 #include "CAviSynth.h"
 #include "Tdll.h"
-#include <string>
 #include <set>
 
 using namespace std;
@@ -525,9 +524,9 @@ const char coExternalDefault[] =
 	"FFmpegSource2 ";
 
 //====================================== avisynth ======================================
-Cvdub_source::Cvdub_source(CAviSynth *Iself, IScriptEnvironment* env):self(Iself)
+Cvdub_source::Cvdub_source(CAviSynth *Iself, IScriptEnvironment* env)
+	: self(Iself)
 {
-	memset(&vi, 0, sizeof(VideoInfo));
 /*	vi.width=self->dxY;
 	vi.height=self->dyY;
 	vi.fps_numerator=25;
@@ -558,17 +557,9 @@ PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 //======================================= ffdshow =======================================
 CAviSynth::CAviSynth(const char *path)
 {
-	clip = nullptr;
-	env = nullptr;
-	avisynth = nullptr;
-	Version = nullptr;
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
 	coExternal = _strdup(coExternalDefault);
-	coAll = nullptr;
-	coAllScintilla = nullptr;
-	ok = false;
-	InterfaceVer = 0;
 	oldscript[0] = '\0';
 	LoadDll(path);
 }
@@ -586,10 +577,7 @@ void CAviSynth::LoadDll(const char *path)
 		delete avisynth;
 		avisynth = nullptr;
 	}
-	if (Version) {
-		delete Version;
-		Version = nullptr;
-	}
+	Version.clear();
 
 	avisynth = new Tdll(path, nullptr);
 	avisynth->loadFunction((void**)&CreateScriptEnvironment,"CreateScriptEnvironment");
@@ -604,8 +592,8 @@ void CAviSynth::LoadDll(const char *path)
 			try {
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
 				s = r.AsString();
-			} catch (...) {s = "Version < 2.07; VersionString() not implemented";}
-			Version = _strdup(s.c_str());
+			} catch (...) {s = "VersionString not implemented";}
+			Version = s.c_str();
 
 			const char* avsPluginFunctions = nullptr;
 			try {
@@ -743,10 +731,6 @@ void CAviSynth::LoadDll(const char *path)
 
 CAviSynth::~CAviSynth()
 {
-	if (Version) {
-		delete Version;
-		Version = nullptr;
-	}
 	if (coKeywords) {
 		delete coKeywords;
 		coKeywords = nullptr;
