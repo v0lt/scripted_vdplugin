@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2016-2019 Anton Shekhovtsov
+ * Copyright (C) 2024 v0lt
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
 #ifndef prefs_header
 #define prefs_header
 

@@ -1,9 +1,9 @@
-// ************************************************************************
-// *** Inspired by ffdshow from http://ffdshow.sf.net					***
-// *** TimgFilterAvisynth.h												***
-// *** Tobias Minich, Feb 2003											***
-// ************************************************************************
-
+/*
+ * Copyright (C) 2003 Tobias Minich
+ * Copyright (C) 2024 v0lt
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 #ifndef _CAVISYNTH_H_
 #define _CAVISYNTH_H_

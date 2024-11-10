@@ -1,24 +1,11 @@
-//	VirtualDubMod - Video processing and capture application based on VirtualDub by Avery Lee
-//	Copyright (C) 1998-2002 VirtualDubMod Developers
-//
-//	This program is free software; you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation; either version 2 of the License, or
-//	(at your option) any later version.
-//
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with this program; if not, write to the Free Software
-//	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-//////////////////////////////////////////////////////////////////////////////
-// Configurable hotkeys for main window, capture window and script editor	//
-// Tobias Minich, November 2002												//
-//////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (C) 1998-2002 VirtualDubMod Developers
+ * Copyright (C) 2002 Tobias Minich
+ * Copyright (C) 2016-2019 Anton Shekhovtsov
+ * Copyright (C) 2024 v0lt
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 //////////////////////////////////////////////////////////////////////////////
 //																			//

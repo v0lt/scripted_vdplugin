@@ -1,28 +1,12 @@
-//	VirtualDub - Video processing and capture application
-//	Copyright (C) 1998-2001 Avery Lee
-//
-//	This program is free software; you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation; either version 2 of the License, or
-//	(at your option) any later version.
-//
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with this program; if not, write to the Free Software
-//	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-// *******************************************************************
-// *** AVS Modification 										   ***
-// *** Tobias Minich, August 2002								   ***
-// ***															   ***
-// *** Since I'm a c++ newbie, i took the HexEditor as a template. ***
-// *** Thanks to Toff for cleaning it up :)						   ***
-
-// Tweakable line modification by christophe.paris@free.fr (Toff)
+/*
+ * Copyright (C) 1998-2001 Avery Lee
+ * Copyright (C) 2002 Tobias Minich
+ * Copyright (C) 200? christophe.paris@free.fr (Toff)
+ * Copyright (C) 2016-2019 Anton Shekhovtsov
+ * Copyright (C) 2024 v0lt
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 #pragma warning(disable : 4786)
 

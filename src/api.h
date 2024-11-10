@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2016-2019 Anton Shekhovtsov
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
 #ifndef api_header
 #define api_header
 
