@@ -9,8 +9,6 @@
 #ifndef f_AVSVIEWER_H
 #define f_AVSVIEWER_H
 
-#include <windows.h>
-
 #define AVSEDITORCLASS (szAVSEditorClassName)
 #define DEFAULT_EDITOR_FONT	"Consolas"
 
