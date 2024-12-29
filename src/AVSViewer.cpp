@@ -19,7 +19,6 @@
 #include <ctype.h>
 #include <crtdbg.h>
 
-#include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shellapi.h>

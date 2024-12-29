@@ -30,8 +30,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include <windows.h>
-
 #include <vd2/system/vdtypes.h>
 #include <vd2/system/vdstdc.h>
 #include <vd2/system/vdstl.h>

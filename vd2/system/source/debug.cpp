@@ -26,7 +26,6 @@
 #include "stdafx.h"
 #include <stdio.h>
 
-#include <windows.h>
 #include <vd2/system/win32/intrin.h>
 
 #include <vd2/system/vdtypes.h>

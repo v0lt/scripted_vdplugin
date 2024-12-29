@@ -24,7 +24,6 @@
 //		distribution.
 
 #include "stdafx.h"
-#include <windows.h>
 
 #include <vd2/system/VDString.h>
 #include <vd2/system/registry.h>

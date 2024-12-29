@@ -26,8 +26,6 @@
 #include "stdafx.h"
 #include <process.h>
 
-#include <windows.h>
-
 #include <vd2/system/vdtypes.h>
 #include <vd2/system/thread.h>
 #include <vd2/system/tls.h>
