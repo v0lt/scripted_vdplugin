@@ -185,7 +185,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	if (__argc > 1) {
 		char* s = __argv[1];
-		VDTextAToW(g_fileName, MAX_PATH, s);
+		int count = MultiByteToWideChar(CP_ACP, 0, s, -1, nullptr, 0);
+		if (count > 0 && count < MAX_PATH) {
+			MultiByteToWideChar(CP_ACP, 0, s, -1, g_fileName, MAX_PATH);
+		}
 	}
 
 	initialize();
