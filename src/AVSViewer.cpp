@@ -39,8 +39,6 @@
 #include "resource.h"
 //#include "oshelper.h"
 //#include "gui.h"
-//#include <vd2/system/Error.h>
-//#include <vd2/system/list.h>
 #include "prefs.h"
 
 #include "AVSViewer.h"
@@ -48,7 +46,6 @@
 //#include "ProgressDialog.h"
 //#include "virtualdubmod_messages.h"
 #include "accel.h"
-#include <vd2/system/vdtypes.h>
 //#include "avisynth.h"
 //#include "avisynth_interface.h"
 //#include "Tdll.h"

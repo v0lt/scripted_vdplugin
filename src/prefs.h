@@ -8,16 +8,16 @@
 #ifndef prefs_header
 #define prefs_header
 
-#include <vd2/system/VDString.h>
+#include <string>
 
 #define REG_KEY_APP "Software\\VirtualDub.org\\Script Editor"
 
 struct VDubModPreferences2 {
-	char		m_bScriptEditorSingleInstance;
-	char		m_bScriptEditorAutoPopup;
-	char		m_bWrapLines;
-	uint32		mAVSViewerFontSize;
-	VDStringW	mAVSViewerFontFace;
+	char         m_bScriptEditorSingleInstance;
+	char         m_bScriptEditorAutoPopup;
+	char         m_bWrapLines;
+	uint32_t     mAVSViewerFontSize;
+	std::wstring mAVSViewerFontFace;
 } extern g_VDMPrefs;
 
 class VDDialogPrefsScriptEditor {

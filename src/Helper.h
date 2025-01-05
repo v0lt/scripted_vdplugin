@@ -1,7 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <string>
-#include <cstdio>
+#include <stdexcept>
 
 #if _DEBUG
 template <typename... Args>

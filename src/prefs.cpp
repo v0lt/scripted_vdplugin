@@ -10,6 +10,7 @@
 #include "prefs.h"
 #include "AVSViewer.h"
 #include "resource.h"
+#include "Helper.h"
 
 extern HINSTANCE g_hInst;
 VDubModPreferences2 g_VDMPrefs;
@@ -54,8 +55,7 @@ void LoadPrefs()
 			std::wstring str(nBytes, 0);
 			lRes = ::RegQueryValueExW(key, L"fontface", nullptr, &dwType, reinterpret_cast<LPBYTE>(str.data()), &nBytes);
 			if (lRes == ERROR_SUCCESS && dwType == REG_SZ) {
-				//str_truncate_after_null(str);
-				g_VDMPrefs.mAVSViewerFontFace = str.c_str();
+				g_VDMPrefs.mAVSViewerFontFace = str;
 			}
 		}
 
@@ -82,7 +82,7 @@ void SavePrefs()
 		dwValue = g_VDMPrefs.mAVSViewerFontSize;
 		lRes = ::RegSetValueExA(key, "fontsize", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
 
-		std::wstring str(g_VDMPrefs.mAVSViewerFontFace.c_str());
+		std::wstring str(g_VDMPrefs.mAVSViewerFontFace);
 		lRes = ::RegSetValueExW(key, L"fontface", 0, REG_SZ, reinterpret_cast<const BYTE*>(str.c_str()), (DWORD)(str.size() + 1) * sizeof(wchar_t));
 
 		RegCloseKey(key);
@@ -137,8 +137,9 @@ INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM 
 
 void VDDialogPrefsScriptEditor::SetFontLabel()
 {
-	const wchar_t *s = mPrefs.mAVSViewerFontFace.c_str();
-	SetDlgItemTextW(mhwnd, IDC_FONT_TEXT, VDswprintf(L"%s, %d pt", 2, &s, &mPrefs.mAVSViewerFontSize).c_str());
+	std::wstring font_label = string_format(L"%s, %u pt", mPrefs.mAVSViewerFontFace.c_str(), mPrefs.mAVSViewerFontSize);
+
+	SetDlgItemTextW(mhwnd, IDC_FONT_TEXT, font_label.c_str());
 }
 
 void VDDialogPrefsScriptEditor::InitFont(HWND hwnd, LPLOGFONTW lplf)
