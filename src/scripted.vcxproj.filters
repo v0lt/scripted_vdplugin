@@ -9,9 +9,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="vd2">
-      <UniqueIdentifier>{67aeec2d-203b-405e-b5c1-d01f4ce5daf0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{fc41aad7-98a4-4adb-9d8f-8adf0bcf2da2}</UniqueIdentifier>
     </Filter>
@@ -31,42 +28,6 @@
     </ClCompile>
     <ClCompile Include="prefs.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\bitmath.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\debug.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\Error.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\log.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\protscope.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\registry.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\stdaccel.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\text.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\thread.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\tls.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\vdstl.cpp">
-      <Filter>vd2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vd2\system\source\VDString.cpp">
-      <Filter>vd2</Filter>
     </ClCompile>
     <ClCompile Include="Utils\StringUtil.cpp">
       <Filter>Utils</Filter>

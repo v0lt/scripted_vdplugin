@@ -152,18 +152,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\vd2\system\source\bitmath.cpp" />
-    <ClCompile Include="..\vd2\system\source\debug.cpp" />
-    <ClCompile Include="..\vd2\system\source\Error.cpp" />
-    <ClCompile Include="..\vd2\system\source\log.cpp" />
-    <ClCompile Include="..\vd2\system\source\protscope.cpp" />
-    <ClCompile Include="..\vd2\system\source\registry.cpp" />
-    <ClCompile Include="..\vd2\system\source\stdaccel.cpp" />
-    <ClCompile Include="..\vd2\system\source\text.cpp" />
-    <ClCompile Include="..\vd2\system\source\thread.cpp" />
-    <ClCompile Include="..\vd2\system\source\tls.cpp" />
-    <ClCompile Include="..\vd2\system\source\vdstl.cpp" />
-    <ClCompile Include="..\vd2\system\source\VDString.cpp" />
     <ClCompile Include="accel.cpp" />
     <ClCompile Include="AVSViewer.cpp" />
     <ClCompile Include="CAvisynth.cpp" />
