@@ -7,7 +7,6 @@
 
 #include "stdafx.h"
 #include <commdlg.h>
-#include <vd2/system/registry.h>
 #include "prefs.h"
 #include "AVSViewer.h"
 #include "resource.h"
@@ -17,29 +16,77 @@ VDubModPreferences2 g_VDMPrefs;
 
 void LoadPrefs()
 {
-	VDRegistryKey key(REG_KEY_APP);
+	g_VDMPrefs.m_bScriptEditorSingleInstance = 1;
+	g_VDMPrefs.m_bScriptEditorAutoPopup = 0;
+	g_VDMPrefs.m_bWrapLines = 0;
+	g_VDMPrefs.mAVSViewerFontSize = 14;
+	g_VDMPrefs.mAVSViewerFontFace = L"Consolas";
 
-	g_VDMPrefs.m_bScriptEditorSingleInstance = key.getInt("singleInstance", 1);
-	g_VDMPrefs.m_bScriptEditorAutoPopup = key.getInt("autoPopup", 0);
-	g_VDMPrefs.m_bWrapLines = key.getInt("wrapLines", 0);
+	HKEY key;
+	LSTATUS lRes = RegOpenKeyA(HKEY_CURRENT_USER, REG_KEY_APP, &key);
+	if (lRes == ERROR_SUCCESS) {
+		DWORD dwValue;
+		DWORD dwType;
+		ULONG nBytes = sizeof(DWORD);
 
-	g_VDMPrefs.mAVSViewerFontSize = key.getInt("fontsize", 14);
+		lRes = ::RegQueryValueExA(key, "singleInstance", nullptr, &dwType, reinterpret_cast<LPBYTE>(&dwValue), &nBytes);
+		if (lRes == ERROR_SUCCESS && dwType == REG_DWORD) {
+			g_VDMPrefs.m_bScriptEditorSingleInstance = !!dwValue;
+		}
 
-	if (!key.getString("fontface", g_VDMPrefs.mAVSViewerFontFace)) {
-		g_VDMPrefs.mAVSViewerFontFace = L"Consolas";
+		lRes = ::RegQueryValueExA(key, "autoPopup", nullptr, &dwType, reinterpret_cast<LPBYTE>(&dwValue), &nBytes);
+		if (lRes == ERROR_SUCCESS && dwType == REG_DWORD) {
+			g_VDMPrefs.m_bScriptEditorAutoPopup = !!dwValue;
+		}
+
+		lRes = ::RegQueryValueExA(key, "wrapLines", nullptr, &dwType, reinterpret_cast<LPBYTE>(&dwValue), &nBytes);
+		if (lRes == ERROR_SUCCESS && dwType == REG_DWORD) {
+			g_VDMPrefs.m_bWrapLines = !!dwValue;
+		}
+
+		lRes = ::RegQueryValueExA(key, "fontsize", nullptr, &dwType, reinterpret_cast<LPBYTE>(&dwValue), &nBytes);
+		if (lRes == ERROR_SUCCESS && dwType == REG_DWORD) {
+			g_VDMPrefs.mAVSViewerFontSize = dwValue;
+		}
+
+		lRes = ::RegQueryValueExW(key, L"fontface", nullptr, &dwType, nullptr, &nBytes);
+		if (lRes == ERROR_SUCCESS && dwType == REG_SZ) {
+			std::wstring str(nBytes, 0);
+			lRes = ::RegQueryValueExW(key, L"fontface", nullptr, &dwType, reinterpret_cast<LPBYTE>(str.data()), &nBytes);
+			if (lRes == ERROR_SUCCESS && dwType == REG_SZ) {
+				//str_truncate_after_null(str);
+				g_VDMPrefs.mAVSViewerFontFace = str.c_str();
+			}
+		}
+
+		RegCloseKey(key);
 	}
 }
 
 void SavePrefs()
 {
-	VDRegistryKey key(REG_KEY_APP);
+	HKEY key;
+	LSTATUS lRes = RegCreateKeyA(HKEY_CURRENT_USER, REG_KEY_APP, &key);
+	if (lRes == ERROR_SUCCESS) {
+		DWORD dwValue;
+		
+		dwValue = g_VDMPrefs.m_bScriptEditorSingleInstance;
+		lRes = ::RegSetValueExA(key, "singleInstance", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
 
-	key.setInt("singleInstance", g_VDMPrefs.m_bScriptEditorSingleInstance);
-	key.setInt("autoPopup", g_VDMPrefs.m_bScriptEditorAutoPopup);
-	key.setInt("wrapLines", g_VDMPrefs.m_bWrapLines);
+		dwValue = g_VDMPrefs.m_bScriptEditorAutoPopup;
+		lRes = ::RegSetValueExA(key, "autoPopup", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
 
-	key.setInt("fontsize", g_VDMPrefs.mAVSViewerFontSize);
-	key.setString("fontface", g_VDMPrefs.mAVSViewerFontFace.c_str());
+		dwValue = g_VDMPrefs.m_bWrapLines;
+		lRes = ::RegSetValueExA(key, "wrapLines", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
+
+		dwValue = g_VDMPrefs.mAVSViewerFontSize;
+		lRes = ::RegSetValueExA(key, "fontsize", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
+
+		std::wstring str(g_VDMPrefs.mAVSViewerFontFace.c_str());
+		lRes = ::RegSetValueExW(key, L"fontface", 0, REG_SZ, reinterpret_cast<const BYTE*>(str.c_str()), (DWORD)(str.size() + 1) * sizeof(wchar_t));
+
+		RegCloseKey(key);
+	}
 }
 
 void ShowPrefs(HWND parent)
