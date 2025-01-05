@@ -1,12 +1,11 @@
 /*
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #include "stdafx.h"
-#include <vd2/system/registry.h>
 #include <vd2/plugin/vdtool.h>
 #include <vd2/VDXFrame/Unknown.h>
 #include "CAviSynth.h"
@@ -25,32 +24,44 @@ extern "C" bool Scintilla_ReleaseResources();
 
 void VDUISaveWindowPlacementW32(HWND hwnd, const char *name)
 {
-	VDRegistryKey key(REG_KEY_APP"\\Window Placement");
-
 	WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
 
 	if (GetWindowPlacement(hwnd, &wp)) {
-		key.setBinary(name, (const char*)&wp.rcNormalPosition, sizeof(RECT));
+		HKEY key;
+		LSTATUS lRes = RegCreateKeyA(HKEY_CURRENT_USER, REG_KEY_APP"\\Window Placement", &key);
+		if (lRes == ERROR_SUCCESS) {
+			lRes = ::RegSetValueExA(key, name, 0, REG_BINARY, reinterpret_cast<const BYTE*>(&wp.rcNormalPosition), sizeof(wp.rcNormalPosition));
+			RegCloseKey(key);
+		}
 	}
 }
 
 void VDUIRestoreWindowPlacementW32(HWND hwnd, const char *name)
 {
 	if (!IsZoomed(hwnd) && !IsIconic(hwnd)) {
-		VDRegistryKey key(REG_KEY_APP"\\Window Placement");
-		RECT r;
+		HKEY key;
+		LSTATUS lRes = RegOpenKeyA(HKEY_CURRENT_USER, REG_KEY_APP"\\Window Placement", &key);
+		if (lRes == ERROR_SUCCESS) {
+			RECT r;
+			DWORD dwType;
+			ULONG nBytes = sizeof(DWORD);
+			lRes = ::RegQueryValueExA(key, name, nullptr, &dwType, nullptr, &nBytes);
+			if (lRes == ERROR_SUCCESS && dwType == REG_BINARY && nBytes == sizeof(r)) {
+				lRes = ::RegQueryValueExA(key, name, nullptr, &dwType, reinterpret_cast<LPBYTE>(&r), &nBytes);
+				if (lRes == ERROR_SUCCESS) {
+					WINDOWPLACEMENT wp = { sizeof(WINDOWPLACEMENT) };
 
-		if (key.getBinaryLength(name) == sizeof(r) && key.getBinary(name, (char *)&r, sizeof r)) {
-			WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+					if (GetWindowPlacement(hwnd, &wp)) {
+						wp.length = sizeof(WINDOWPLACEMENT);
+						wp.flags = 0;
+						wp.showCmd = SW_SHOWNORMAL;
+						wp.rcNormalPosition = r;
 
-			if (GetWindowPlacement(hwnd, &wp)) {
-				wp.length			= sizeof(WINDOWPLACEMENT);
-				wp.flags			= 0;
-				wp.showCmd			= SW_SHOWNORMAL;
-				wp.rcNormalPosition	= r;
-
-				SetWindowPlacement(hwnd, &wp);
+						SetWindowPlacement(hwnd, &wp);
+					}
+				}
 			}
+			RegCloseKey(key);
 		}
 	}
 }
