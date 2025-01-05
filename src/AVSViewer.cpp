@@ -3,7 +3,7 @@
  * Copyright (C) 2002 Tobias Minich
  * Copyright (C) 200? christophe.paris@free.fr (Toff)
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -642,7 +642,7 @@ bool AVSEditor::Commit() noexcept
 		ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
 		ofn.nFilterIndex		= 1;
 		ofn.lpstrFile			= szName;
-		ofn.nMaxFile			= std::size(szName);
+		ofn.nMaxFile			= (DWORD)std::size(szName);
 		ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
 
 		if (GetSaveFileNameW(&ofn)) {
@@ -927,7 +927,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
 			ofn.nFilterIndex		= 1;
 			ofn.lpstrFile			= szName;
-			ofn.nMaxFile			= std::size(szName);
+			ofn.nMaxFile			= (DWORD)std::size(szName);
 			ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
 
 			if (GetOpenFileNameW(&ofn)) {
@@ -1587,8 +1587,8 @@ void AVSEditor::FindNext(bool reverse)
 		return;
 	}
 
-	int len = (int)SendMessageSci(SCI_GETLENGTH);
-	int pos = (int)SendMessageSci(SCI_GETCURRENTPOS);
+	long len = (int)SendMessageSci(SCI_GETLENGTH);
+	long pos = (int)SendMessageSci(SCI_GETCURRENTPOS);
 
 	std::string findstr_u8 = ConvertWideToUtf8(mFind.szFindString);
 
@@ -1598,11 +1598,11 @@ void AVSEditor::FindNext(bool reverse)
 	int flags = 0;
 
 	if	(reverse) {
-		ft.chrg.cpMin = pos-1-findstr_u8.length();
+		ft.chrg.cpMin = pos - 1 - (long)findstr_u8.length();
 		ft.chrg.cpMax = 0;
 		flags = 0;
 	} else {
-		ft.chrg.cpMin = pos+1;
+		ft.chrg.cpMin = pos + 1;
 		ft.chrg.cpMax = len;
 		flags = 1;
 	}
@@ -1619,7 +1619,7 @@ void AVSEditor::FindNext(bool reverse)
 			ft.chrg.cpMax = pos;
 		} else {
 			ft.chrg.cpMin = 0;
-			ft.chrg.cpMax = pos-1;
+			ft.chrg.cpMax = pos - 1;
 		}
 		ret = SendMessageSci(SCI_FINDTEXT, (WPARAM) flags, (LPARAM) &ft);
 	}
