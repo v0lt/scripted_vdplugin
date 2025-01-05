@@ -6,7 +6,6 @@
  */
 
 #include "stdafx.h"
-#include <vd2/system/VDString.h>
 #include <vd2/system/registry.h>
 #include <vd2/plugin/vdtool.h>
 #include <vd2/VDXFrame/Unknown.h>

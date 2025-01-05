@@ -12,6 +12,9 @@
     <Filter Include="vd2">
       <UniqueIdentifier>{67aeec2d-203b-405e-b5c1-d01f4ce5daf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{fc41aad7-98a4-4adb-9d8f-8adf0bcf2da2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="accel.cpp">
@@ -65,6 +68,9 @@
     <ClCompile Include="..\vd2\system\source\VDString.cpp">
       <Filter>vd2</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\StringUtil.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accel.h">
@@ -90,6 +96,12 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StringUtil.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

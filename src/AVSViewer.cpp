@@ -49,7 +49,6 @@
 //#include "virtualdubmod_messages.h"
 #include "accel.h"
 #include <vd2/system/vdtypes.h>
-#include <vd2/system/text.h>
 //#include "avisynth.h"
 //#include "avisynth_interface.h"
 //#include "Tdll.h"
@@ -57,6 +56,9 @@
 
 //#include "I18N.h"
 //#include "modplus.h"
+
+#include "Helper.h"
+#include "Utils/StringUtil.h"
 
 extern HINSTANCE g_hInst;
 
@@ -491,8 +493,7 @@ void AVSEditor::Open(const wchar_t* path)
 	}
 	free(lpszBuf);
 
-	VDStringW windowtitle;
-	windowtitle.sprintf(L"VirtualDub2 Script Editor - [%s]", lpszFileName);
+	std::wstring windowtitle = string_format(L"VirtualDub2 Script Editor - [%s]", lpszFileName);
 	SetWindowTextW(hwnd, windowtitle.c_str());
 
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
@@ -705,8 +706,7 @@ void AVSEditor::UpdateStatus() noexcept
 	int c    = (int)SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 	int posy = (int)SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
 	int posx = c - (int)SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
-	VDStringA status_pos;
-	status_pos.sprintf("%d:%d", posy + 1, posx + 1);
+	std::string status_pos = string_format("%d:%d", posy + 1, posx + 1);
 	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
 	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[scriptType]);
 }
@@ -719,7 +719,7 @@ void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, con
 		SendMessageSci(SCI_STYLESETSIZE, style, size);
 	}
 	if (face) {
-		VDStringA font_u8 = VDTextWToU8(face, -1);
+		std::string font_u8 = ConvertWideToUtf8(face);
 		SendMessageSci(SCI_STYLESETFONT, style, (LPARAM)font_u8.c_str());
 	}
 }
@@ -934,12 +934,12 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
 
 			if (GetOpenFileNameW(&ofn)) {
-				VDStringA filepath_u8;
+				std::string filepath_u8;
 				if (scriptType == SCRIPTTYPE_NONE) {
-					filepath_u8 = VDTextWToU8(szName, -1);
+					filepath_u8 = ConvertWideToUtf8(szName);
 				} else {
 					filepath_u8.assign("\"");
-					filepath_u8.append(VDTextWToU8(szName, -1));
+					filepath_u8.append(ConvertWideToUtf8(szName));
 					filepath_u8.append("\"");
 				}
 				SendMessageSci(SCI_REPLACESEL, 0, (LPARAM)filepath_u8.c_str());
@@ -1593,7 +1593,7 @@ void AVSEditor::FindNext(bool reverse)
 	int len = (int)SendMessageSci(SCI_GETLENGTH);
 	int pos = (int)SendMessageSci(SCI_GETCURRENTPOS);
 
-	VDStringA findstr_u8 = VDTextWToU8(mFind.szFindString, -1);
+	std::string findstr_u8 = ConvertWideToUtf8(mFind.szFindString);
 
 	TextToFind ft = {{0, 0}, 0, {0, 0}};
 	ft.lpstrText = findstr_u8.c_str();

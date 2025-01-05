@@ -169,6 +169,7 @@
     <ClCompile Include="CAvisynth.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="prefs.cpp" />
+    <ClCompile Include="Utils\StringUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accel.h" />
@@ -176,9 +177,11 @@
     <ClInclude Include="avisynth.h" />
     <ClInclude Include="AVSViewer.h" />
     <ClInclude Include="CAvisynth.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="prefs.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Tdll.h" />
+    <ClInclude Include="Utils\StringUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External.xpm" />
