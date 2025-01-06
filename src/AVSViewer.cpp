@@ -664,17 +664,17 @@ bool AVSEditor::Commit() noexcept
 //	gt.lpUsedDefChar = NULL;
 //	SendMessage(hwndView, EM_GETTEXTEX, (WPARAM) &gt, (LPARAM) lpszBuf);
 	SendMessageSci(SCI_GETTEXT, s+1, (LPARAM) lpszBuf);
+
 	errno_t err = _wfopen_s(&f, lpszFileName, L"wb");
 	if (err) {
+		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);		
+	} else {
 		fwrite(lpszBuf, sizeof(char), s, f);
 		fclose(f);
+		bModified = false;
 	}
-	else {
-		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);
-	}
-	free(lpszBuf);
 
-	bModified = false;
+	free(lpszBuf);
 
 	return true;
 }
