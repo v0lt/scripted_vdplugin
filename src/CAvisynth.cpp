@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2002 Milan Cutka
  * Copyright (C) 2003 Tobias Minich
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -11,6 +11,8 @@
 #include "CAviSynth.h"
 #include "Tdll.h"
 #include <set>
+
+const AVS_Linkage* AVS_linkage = nullptr;
 
 using namespace std;
 
@@ -566,11 +568,12 @@ void CAviSynth::LoadDll(const char *path)
 	avisynth->loadFunction((void**)&CreateScriptEnvironment,"CreateScriptEnvironment");
 	if (avisynth->ok) {
 		ok = true;
-		env = CreateScriptEnvironment(2);
+		env = CreateScriptEnvironment(6);
 		if (!env) {
 			ok = false;
 		} else {
-			InterfaceVer = 2;
+			AVS_linkage = m_Linkage = env->GetAVSLinkage();
+			InterfaceVer = 6;
 			AVSValue a;
 			try {
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
@@ -734,6 +737,9 @@ CAviSynth::~CAviSynth()
 		delete coAllScintilla;
 		coAllScintilla = nullptr;
 	}
+
+	AVS_linkage = m_Linkage;
+
 	if (clip) {
 		delete clip;
 		clip = nullptr;
@@ -742,6 +748,10 @@ CAviSynth::~CAviSynth()
 		delete env;
 		env = nullptr;
 	}
+
+	AVS_linkage = nullptr;
+	m_Linkage = nullptr;
+
 	if (avisynth) {
 		delete avisynth;
 		avisynth = nullptr;

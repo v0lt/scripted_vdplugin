@@ -40,9 +40,6 @@
     <ClInclude Include="api.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="avisynth.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="AVSViewer.h">
       <Filter>Source Files</Filter>
     </ClInclude>

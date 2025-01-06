@@ -1,11 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35122.118
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35425.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scripted", "src\scripted.vcxproj", "{6C41CD68-89D4-4EA4-8CEC-D3F70A8EB278}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scintilla", "scintilla\scintilla.vcxproj", "{FA7A9B8E-EE0F-4EE1-ADCF-949B679B9551}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{AA9A4D16-5754-4161-8636-DA7EDAE2D39F}"
+	ProjectSection(SolutionItems) = preProject
+		include\avisynth.h = include\avisynth.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "avs", "avs", "{5F53A66C-B04D-4883-9EBD-8B01BDD00FC8}"
+	ProjectSection(SolutionItems) = preProject
+		include\avs\capi.h = include\avs\capi.h
+		include\avs\config.h = include\avs\config.h
+		include\avs\cpuid.h = include\avs\cpuid.h
+		include\avs\types.h = include\avs\types.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +47,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F53A66C-B04D-4883-9EBD-8B01BDD00FC8} = {AA9A4D16-5754-4161-8636-DA7EDAE2D39F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B541F29C-E5AB-4063-9C42-83A3C3910988}
