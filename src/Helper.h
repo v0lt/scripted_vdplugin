@@ -1,56 +1,32 @@
+/*
+ * Copyright (C) 2024-2025 v0lt
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #pragma once
 
 #include <memory>
 #include <string>
+#include <format>
 #include <stdexcept>
 
 #if _DEBUG
 template <typename... Args>
-void DLog(const char* format, Args ...args)
+void DLog(const std::string_view format, Args ...args)
 {
-	char buf[2000];
+	std::string str = std::vformat(format, std::make_format_args(args...)) + '\n';
 
-	sprintf_s(buf, format, args...);
-	strcat_s(buf, "\n");
-
-	OutputDebugStringA(buf);
+	OutputDebugStringA(str.c_str());
 };
 
 template <typename... Args>
-void DLog(const wchar_t* format, Args ...args)
+void DLog(const std::wstring_view format, Args ...args)
 {
-	wchar_t buf[2000];
+	std::wstring str = std::vformat(format, std::make_wformat_args(args...)) + L'\n';
 
-	swprintf_s(buf, format, args...);
-	wcscat_s(buf, L"\n");
-
-	OutputDebugStringW(buf);
+	OutputDebugStringW(str.c_str());
 };
 #else
 #define DLog(...) __noop
 #endif
-
-// std::string formatting like sprintf (C++11)
-// https://stackoverflow.com/a/26221725
-
-template<typename ... Args>
-std::string string_format(const std::string& format, Args ... args)
-{
-	int size_s = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
-	if (size_s <= 0) { throw std::runtime_error("Error during formatting."); }
-	auto size = static_cast<size_t>(size_s);
-	std::unique_ptr<char[]> buf(new char[size]);
-	std::snprintf(buf.get(), size, format.c_str(), args ...);
-	return std::string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
-}
-
-template<typename ... Args>
-std::wstring string_format(const std::wstring& format, Args ... args)
-{
-	int size_s = std::swprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
-	if (size_s <= 0) { throw std::runtime_error("Error during formatting."); }
-	auto size = static_cast<size_t>(size_s);
-	std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
-	std::swprintf(buf.get(), size, format.c_str(), args ...);
-	return std::wstring(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
-}

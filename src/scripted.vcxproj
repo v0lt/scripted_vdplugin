@@ -78,7 +78,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)scintilla\include;$(SolutionDir)vd2\h;$(SolutionDir)vd2\system\h\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>

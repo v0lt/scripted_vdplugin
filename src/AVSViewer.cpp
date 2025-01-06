@@ -490,7 +490,7 @@ void AVSEditor::Open(const wchar_t* path)
 	}
 	free(lpszBuf);
 
-	std::wstring windowtitle = string_format(L"VirtualDub2 Script Editor - [%s]", lpszFileName);
+	std::wstring windowtitle = std::format(L"VirtualDub2 Script Editor - [{}]", lpszFileName);
 	SetWindowTextW(hwnd, windowtitle.c_str());
 
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
@@ -703,7 +703,7 @@ void AVSEditor::UpdateStatus() noexcept
 	int c    = (int)SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 	int posy = (int)SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
 	int posx = c - (int)SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
-	std::string status_pos = string_format("%d:%d", posy + 1, posx + 1);
+	std::string status_pos = std::format("{}:{}", posy + 1, posx + 1);
 	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
 	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[scriptType]);
 }

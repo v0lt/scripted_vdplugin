@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -137,7 +137,7 @@ INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM 
 
 void VDDialogPrefsScriptEditor::SetFontLabel()
 {
-	std::wstring font_label = string_format(L"%s, %u pt", mPrefs.mAVSViewerFontFace.c_str(), mPrefs.mAVSViewerFontSize);
+	std::wstring font_label = std::format(L"{}, {} pt", mPrefs.mAVSViewerFontFace.c_str(), mPrefs.mAVSViewerFontSize);
 
 	SetDlgItemTextW(mhwnd, IDC_FONT_TEXT, font_label.c_str());
 }
