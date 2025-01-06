@@ -2,7 +2,7 @@
  * Copyright (C) 1998-2002 VirtualDubMod Developers
  * Copyright (C) 2002 Tobias Minich
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -226,7 +226,7 @@ HACCEL CreateAVSAccelerators() {
 	return CreateAcceleratorTableW(avsAccel, c+1);
 }
 
-wchar_t* GetVirtualKeyName(WORD key)
+const wchar_t* GetVirtualKeyName(WORD key)
 {
 	switch (key) {
 	case VK_BACK:    return L"Backspace";
@@ -322,7 +322,7 @@ void GetKeyString(BYTE fVirt, WORD key, wchar_t *buffer, int len) {
 		*(buffer + (wcslen(buffer) - 1)) = '-';
 	}
 	if (fVirt & FVIRTKEY) {
-		wchar_t* vkn = GetVirtualKeyName(key);
+		const wchar_t* vkn = GetVirtualKeyName(key);
 		if (vkn) {
 			wcscat_s(buffer, len, vkn);
 		}

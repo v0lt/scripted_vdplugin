@@ -453,7 +453,7 @@ void AVSEditor::Init() noexcept
 void AVSEditor::UpdateLineNumbers()
 {
 	SendMessageSci(SCI_SETMARGINTYPEN, 1, SC_MARGIN_NUMBER);
-	char *gw = "9";
+	const char *gw = "9";
 	sptr_t pixelWidth = 4 + 5 * SendMessageSci(SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM) gw);
 	SendMessageSci(SCI_SETMARGINWIDTHN, 1, bLineNumbers ? pixelWidth : 0);
 }
