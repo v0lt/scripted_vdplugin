@@ -14,14 +14,12 @@
 
 const AVS_Linkage* AVS_linkage = nullptr;
 
-using namespace std;
-
 struct less_nocase {
 	static bool compare_chars(char x, char y) {
-		return toupper(x) < toupper(y);
+		return std::toupper(x) < std::toupper(y);
 	}
-	bool operator()(const string& x, const string& y) const {
-		return lexicographical_compare(x.begin(), x.end(),
+	bool operator()(const std::string& x, const std::string& y) const {
+		return std::lexicographical_compare(x.begin(), x.end(),
 			y.begin(), y.end(),
 			compare_chars);
 	}
@@ -551,7 +549,7 @@ CAviSynth::CAviSynth(const char *path)
 
 void CAviSynth::LoadDll(const char *path)
 {
-	string s;
+	std::string s;
 
 	ok = false;
 	if (env) {
@@ -606,7 +604,7 @@ void CAviSynth::LoadDll(const char *path)
 				coAllScintilla = nullptr;
 			}
 
-			const size_t tmpsize = max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
+			const size_t tmpsize = std::max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
 			char* temp = new char[tmpsize];
 
 			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2;
@@ -615,10 +613,10 @@ void CAviSynth::LoadDll(const char *path)
 			char *token;
 			char *token2;
 			//string *c;
-			string c;
+			std::string c;
 			char sci[3];
-			set<string,less_nocase> AVSToken;
-			set<string,less_nocase> AVSTokenSci;
+			std::set<std::string,less_nocase> AVSToken;
+			std::set<std::string,less_nocase> AVSTokenSci;
 
 /*			strcpy(temp, coKeywords);
 			token = strtok(temp, " ");
@@ -668,7 +666,7 @@ void CAviSynth::LoadDll(const char *path)
 				}
 			}
 
-			set<string,less_nocase>::iterator walkit;
+			std::set<std::string,less_nocase>::iterator walkit;
 			walkit = AVSToken.begin();
 			strcpy_s(coAll, coAll_size, walkit->c_str());
 			for(walkit++; walkit!=AVSToken.end();walkit++) {

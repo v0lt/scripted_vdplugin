@@ -74,8 +74,6 @@ void AVSViewerChangePrefs(HWND parent);
 void init_avs();
 void clear_avs();
 
-using namespace std;
-
 //////////////////////////////////////////////////////////////////////////////
 
 extern const wchar_t szAVSEditorClassName[]=L"birdyAVSEditor";
@@ -895,7 +893,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 				break;
 			}
 
-			string buffer;
+			std::string buffer;
 			char buf[50];
 			for(int i = 0; i<set.count; i++) {
 				vd_basic_range range = set.ranges[i];
@@ -1077,7 +1075,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 		{
 			init_avs();
 			if (g_dllAviSynth->ok) {
-				string v;
+				std::string v;
 				v = g_dllAviSynth->Version;
 				if (g_dllAviSynth->coExternal) {
 					v += "\n\nExternal Commands: ";
