@@ -1,5 +1,11 @@
 scripted.vdplugin history
 
+0.2.1.xx dev
+----------------------
+Fixed script saving.
+Now uses Avisynth+ header files. Minimum supported version of Avisynth is 2.6.
+Code refactoring for modern compilers.
+
 0.2.0.60 - 2024-11-10
 ----------------------
 The "VirtualDub2 scripted" code (https://git.code.sf.net/p/vdfiltermod/scripted) from 2019-05-10 was forked and adapted for Visual Studio 2017/2019/2022.
