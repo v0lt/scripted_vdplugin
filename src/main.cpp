@@ -240,23 +240,23 @@ void VDSendReopen(const wchar_t* fileName, void* userData)
 	g_context->mpCallbacks->Reopen(fileName, 0, userData);
 }
 
-int64 VDRequestPos()
+int64_t VDRequestPos()
 {
 	IVDTimeline* t = g_context->mpCallbacks->GetTimeline();
 	return t->GetTimelinePos();
 }
 
-void VDSetPos(int64 pos)
+void VDSetPos(int64_t pos)
 {
 	IVDTimeline* t = g_context->mpCallbacks->GetTimeline();
 	t->SetTimelinePos(pos);
 }
 
-void VDRequestRange(int64& r0, int64& r1)
+void VDRequestRange(int64_t& r0, int64_t& r1)
 {
 	IVDTimeline* t = g_context->mpCallbacks->GetTimeline();
-	int64 start;
-	int64 end;
+	int64_t start;
+	int64_t end;
 	t->GetSelection(start, end);
 	r0 = start;
 	r1 = end;

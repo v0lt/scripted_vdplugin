@@ -821,7 +821,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 
 	case ID_AVS_INSERT_POS:
 		{
-			int64 pos = VDRequestPos();
+			int64_t pos = VDRequestPos();
 			std::string str = std::to_string(pos);
 			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM)str.c_str());
 		}
@@ -834,7 +834,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			if (LOWORD(wParam) == ID_AVS_INSERT_TRIM) {
 				trim = true;
 			}
-			int64 r0,r1;
+			int64_t r0,r1;
 			VDRequestRange(r0,r1);
 			if (r1-r0<=0) {
 				guiMessageBox(hwnd, IDS_ERR_AVS_NORANGE, IDS_ERR_CAPTION, MB_OK|MB_ICONERROR);
@@ -1520,7 +1520,7 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 
 			std::string str;
 
-			int64 frame = VDRequestPos();
+			int64_t frame = VDRequestPos();
 			str = std::to_string(frame);
 			SetDlgItemTextA(hwnd, IDC_FRAMENUMBER, str.c_str());
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
@@ -1547,7 +1547,7 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			if (IsDlgButtonChecked(hwnd, IDC_JUMPTOFRAME)) {
 				char buf[64];
 				GetDlgItemTextA(hwnd,IDC_FRAMENUMBER,buf,64);
-				int64 frame;
+				int64_t frame;
 				if(sscanf_s(buf,"%I64d",&frame)==1)
 					VDSetPos(frame);
 			} else {
