@@ -858,14 +858,26 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 				if (r0 == 0 && r1 == 1) {
 					str = trim ? "Trim(0,-1)" : "0,-1";// special case of very first frame
 				} else {
-					str = std::format(trim ? "Trim({},{})" : "{},{}", r0, r1 - 1);
+					if (trim) {
+						str = std::format("Trim({},{})", r0, r1 - 1);
+					} else {
+						str = std::format("{},{}", r0, r1 - 1);
+					}
 				}
 			}
 			if (scriptType == SCRIPTTYPE_VPS) {
 				if (r1 == r0 + 1) {
-					str = std::format(trim ? "clip[{}]" : "{}", r0);
+					if (trim) {
+						str = std::format("clip[{}]", r0);
+					} else {
+						str = std::to_string(r0);
+					}
 				} else {
-					str = std::format(trim ? "clip[{}:{}]" : "{}:{}", r0, r1);
+					if (trim) {
+						str = std::format("clip[{}:{}]", r0, r1);
+					} else {
+						str = std::format("{}:{}", r0, r1);
+					}
 				}
 			}
 			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM)str.c_str());
