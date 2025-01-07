@@ -823,10 +823,9 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 
 	case ID_AVS_INSERT_POS:
 		{
-			int64 p = VDRequestPos();
-			char buf[50];
-			wsprintfA(buf, "%I64d", p);
-			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			int64 pos = VDRequestPos();
+			std::string str = std::to_string(pos);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM)str.c_str());
 		}
 		break;
 
@@ -834,7 +833,9 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 	case ID_AVS_INSERT_TRIM:
 		{
 			bool trim = false;
-			if(LOWORD(wParam)==ID_AVS_INSERT_TRIM) trim = true;
+			if (LOWORD(wParam) == ID_AVS_INSERT_TRIM) {
+				trim = true;
+			}
 			int64 r0,r1;
 			VDRequestRange(r0,r1);
 			if (r1-r0<=0) {
@@ -842,29 +843,32 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 				break;
 			}
 
-			char buf[50];
+			std::string str;
 			if (scriptType == SCRIPTTYPE_NONE) {
-				wsprintfA(buf, "%I64d-%I64d", r0, r1);
+				str = std::format("{}-{}", r0, r1);
 			}
 			if (scriptType == SCRIPTTYPE_VDSCRIPT) {
-				if (trim) 
-					wsprintfA(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", r0, r1);
-				else
-					wsprintfA(buf, "%I64d,%I64d", r0, r1);
+				if (trim) {
+					str = std::format("VirtualDub.subset.AddRange({},{});", r0, r1);
+				} else {
+					str = std::format("{},{}", r0, r1);
+				}
 			}
 			if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
-				if (r0 == 0 && r1 == 1)
-					wsprintfA(buf, (trim)?"Trim(%d,%d)":"%d,%d", 0, -1);// special case of very first frame
-				else
-					wsprintfA(buf, (trim)?"Trim(%I64d,%I64d)":"%I64d,%I64d", r0, r1 -1);
+				if (r0 == 0 && r1 == 1) {
+					str = trim ? "Trim(0,-1)" : "0,-1";// special case of very first frame
+				} else {
+					str = std::format(trim ? "Trim({},{})" : "{},{}", r0, r1 - 1);
+				}
 			}
 			if (scriptType == SCRIPTTYPE_VPS) {
-				if (r1 == r0+1)
-					wsprintfA(buf, (trim)?"clip[%d]":"%d", r0);
-				else
-					wsprintfA(buf, (trim)?"clip[%I64d:%I64d]":"%I64d:%I64d", r0, r1);
+				if (r1 == r0 + 1) {
+					str = std::format(trim ? "clip[{}]" : "{}", r0);
+				} else {
+					str = std::format(trim ? "clip[{}:{}]" : "{}:{}", r0, r1);
+				}
 			}
-			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM)str.c_str());
 		}
 		break;
 
