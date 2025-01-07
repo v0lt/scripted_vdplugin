@@ -591,7 +591,7 @@ void CAviSynth::LoadDll(const char *path)
 
 			if (avsPluginFunctions && avsPluginFunctions[0]) {
 				if (coExternal) {
-					delete coExternal;
+					free(coExternal);
 					coExternal = nullptr;
 				}
 				coExternal = _strdup(avsPluginFunctions);
@@ -718,15 +718,15 @@ void CAviSynth::LoadDll(const char *path)
 CAviSynth::~CAviSynth()
 {
 	if (coKeywords) {
-		delete coKeywords;
+		free(coKeywords);
 		coKeywords = nullptr;
 	}
 	if (coInternal) {
-		delete coInternal;
+		free(coInternal);
 		coInternal = nullptr;
 	}
 	if (coExternal) {
-		delete coExternal;
+		free(coExternal);
 		coExternal = nullptr;
 	}
 	if (coAll) {
