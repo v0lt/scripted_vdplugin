@@ -894,37 +894,48 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			}
 
 			std::string buffer;
-			char buf[50];
-			for(int i = 0; i<set.count; i++) {
+
+			for(int i = 0; i < set.count; i++) {
+				std::string str;
 				vd_basic_range range = set.ranges[i];
 
 				if (scriptType == SCRIPTTYPE_NONE) {
-					wsprintfA(buf, "Trim(%I64d,%I64d)", range.from, range.to);
-					if (i>0) buffer += " + ";
+					str = std::format("Trim({},{})", range.from, range.to);
+					if (i > 0) {
+						buffer += " + ";
+					}
 				}
 
 				if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
-					if (range.from == 0 && range.to == 1)
-						wsprintfA(buf, "Trim(%d,%d)", 0, -1); // special case of one very first frame
-					else
-						wsprintfA(buf, "Trim(%I64d,%I64d)", range.from, range.to - 1);
-					if (i>0) buffer += " ++ ";
+					if (range.from == 0 && range.to == 1) {
+						str = "Trim(0,-1)"; // special case of one very first frame
+					} else {
+						str = std::format("Trim({},{})", range.from, range.to - 1);
+					}
+					if (i > 0) {
+						buffer += " ++ ";
+					}
 				}
 
 				if (scriptType == SCRIPTTYPE_VPS) {
-					if (range.to==range.from+1)
-						wsprintfA(buf, "clip[%I64d]", range.from);
-					else
-						wsprintfA(buf, "clip[%I64d:%I64d]", range.from, range.to);
-					if (i>0) buffer += " + ";
+					if (range.to == range.from + 1) {
+						str = std::format("clip[{}]", range.from);
+					} else {
+						str = std::format("clip[{}:{}]", range.from, range.to);
+					}
+					if (i > 0) {
+						buffer += " + ";
+					}
 				}
 
 				if (scriptType == SCRIPTTYPE_VDSCRIPT) {
-					wsprintfA(buf, "VirtualDub.subset.AddRange(%I64d,%I64d);", range.from, range.to);
-					if (i>0) buffer += "\r\n";
+					str = std::format("VirtualDub.subset.AddRange({},{});", range.from, range.to);
+					if (i > 0) {
+						buffer += "\r\n";
+					}
 				}
 
-				buffer += buf;
+				buffer += str;
 			}
 			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) buffer.c_str());
 		}
@@ -962,9 +973,8 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 		{
 			vd_framesize frame;
 			VDRequestFrameSize(frame);
-			char buf[50];
-			wsprintfA(buf, "Crop(%d,%d,%d,%d)", frame.frame.left, frame.frame.top, frame.frame.right, frame.frame.bottom);
-			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM) &buf);
+			std::string str = std::format("Crop({},{},{},{})", frame.frame.left, frame.frame.top, frame.frame.right, frame.frame.bottom);
+			SendMessageA(hwndView, SCI_REPLACESEL, 0, (LPARAM)str.c_str());
 		}
 		break;
 
@@ -1508,17 +1518,18 @@ INT_PTR CALLBACK AVSEditor::JumpDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 			g_dialogs.push_back(hwnd);
 			AVSViewerLoadSettings(hwnd,REG_WINDOW_JUMPTO);
 
-			char buf[64];
+			std::string str;
+
 			int64 frame = VDRequestPos();
-			wsprintfA(buf, "%I64d", frame);
-			SetDlgItemTextA(hwnd, IDC_FRAMENUMBER, buf);
+			str = std::to_string(frame);
+			SetDlgItemTextA(hwnd, IDC_FRAMENUMBER, str.c_str());
 			SetFocus(GetDlgItem(hwnd, IDC_FRAMENUMBER));
 			SendDlgItemMessageW(hwnd, IDC_FRAMENUMBER, EM_SETSEL, 0, -1);
 
 			int c    = (int)pcd->SendMessageSci(SCI_GETCURRENTPOS, 0, 0);
 			int line = (int)pcd->SendMessageSci(SCI_LINEFROMPOSITION, c, 0);
-			wsprintfA(buf, "%d", line+1);
-			SetDlgItemTextA(hwnd, IDC_LINENUMBER, buf);
+			str = std::to_string(line+1);
+			SetDlgItemTextA(hwnd, IDC_LINENUMBER, str.c_str());
 
 			CheckDlgButton(hwnd, IDC_JUMPTOFRAME, BST_CHECKED);
 			CheckDlgButton(hwnd, IDC_JUMPTOLINE, BST_UNCHECKED);
