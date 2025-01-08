@@ -1063,7 +1063,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 				} else {
 					thelen = strlen(bline);
 				}
-				SendMessageSci(SCI_AUTOCSHOW, thelen, (LPARAM) g_dllAviSynth->coAllScintilla);
+				SendMessageSci(SCI_AUTOCSHOW, thelen, (LPARAM) g_dllAviSynth->coAllScintilla.c_str());
 				delete [] bline;
 			}
 		}

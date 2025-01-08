@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <algorithm>
 #include <cctype>
 #include <locale>

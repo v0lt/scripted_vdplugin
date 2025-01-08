@@ -11,6 +11,7 @@
 #include "CAviSynth.h"
 #include "Tdll.h"
 #include <set>
+#include "Utils/StringUtil.h"
 
 const AVS_Linkage* AVS_linkage = nullptr;
 
@@ -595,18 +596,6 @@ void CAviSynth::LoadDll(const char *path)
 				coExternal = _strdup(avsPluginFunctions);
 			}
 
-			if (coAll) {
-				delete coAll;
-				coAll = nullptr;
-			}
-			if (coAllScintilla) {
-				delete coAllScintilla;
-				coAllScintilla = nullptr;
-			}
-
-			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2;
-			coAll = new char[coAll_size];
-
 			std::set<std::string,less_nocase> AVSToken;
 			std::set<std::string,less_nocase> AVSTokenSci;
 			const char* sci = nullptr;
@@ -653,26 +642,23 @@ void CAviSynth::LoadDll(const char *path)
 				} while (0 != *pos++);
 			}
 
-			std::set<std::string,less_nocase>::iterator walkit;
-			walkit = AVSToken.begin();
-			strcpy_s(coAll, coAll_size, walkit->c_str());
-			for(walkit++; walkit!=AVSToken.end();walkit++) {
-				strcat_s(coAll, coAll_size, " ");
-				strcat_s(coAll, coAll_size, walkit->c_str());
+			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 3;
+			coAll.clear();
+			coAll.reserve(coAll_size);
+			for (const auto& token : AVSToken) {
+				coAll.append(token);
+				coAll += ' ';
 			}
+			str_trim_end(coAll, ' ');
 
-			const size_t coAllScintilla_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2 + (AVSTokenSci.size() * 2);
-			coAllScintilla = new char[coAllScintilla_size];
-
-			walkit = AVSTokenSci.begin();
-			strcpy_s(coAllScintilla, coAllScintilla_size, walkit->c_str());
-			for(walkit++; walkit!=AVSTokenSci.end();walkit++) {
-				strcat_s(coAllScintilla, coAllScintilla_size, " ");
-				strcat_s(coAllScintilla, coAllScintilla_size, walkit->c_str());
+			const size_t coAllScintilla_size = coAll_size + (AVSTokenSci.size() * 2);
+			coAllScintilla.clear();
+			coAllScintilla.reserve(coAllScintilla_size);
+			for (const auto& token : AVSTokenSci) {
+				coAllScintilla.append(token);
+				coAllScintilla += ' ';
 			}
- 
-			AVSToken.clear();
-			AVSTokenSci.clear();
+			str_trim_end(coAllScintilla, ' ');
 		}
 /*		if (env) {
 			env->AddFunction("ffdshow_source","",Tffdshow_source::Create,this);
@@ -712,14 +698,6 @@ CAviSynth::~CAviSynth()
 	if (coExternal) {
 		free(coExternal);
 		coExternal = nullptr;
-	}
-	if (coAll) {
-		delete coAll;
-		coAll = nullptr;
-	}
-	if (coAllScintilla) {
-		delete coAllScintilla;
-		coAllScintilla = nullptr;
 	}
 
 	AVS_linkage = m_Linkage;
