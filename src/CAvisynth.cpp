@@ -604,66 +604,53 @@ void CAviSynth::LoadDll(const char *path)
 				coAllScintilla = nullptr;
 			}
 
-			const size_t tmpsize = std::max(strlen(coInternal), (coExternal ? strlen(coExternal) : 0)) + 1;
-			char* temp = new char[tmpsize];
-
 			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 2;
 			coAll = new char[coAll_size];
 
-			char *token;
-			char *token2;
-			//string *c;
-			std::string c;
-			char sci[3];
 			std::set<std::string,less_nocase> AVSToken;
 			std::set<std::string,less_nocase> AVSTokenSci;
+			const char* sci = nullptr;
+			const char* pos = nullptr;
 
-/*			strcpy(temp, coKeywords);
-			token = strtok(temp, " ");
-			sprintf(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
-			while (token != nullptr) {
-				c = new string;
-				*c = token;
-				AVSToken.insert(*c);
-				*c += sci;
-				AVSTokenSci.insert(*c);
-				token = strtok(nullptr, " ");
-				delete c;
-			}
-*/
-			strcpy_s(temp, tmpsize, coKeywords);
-			token = strtok(temp, " ");
-			sprintf_s(sci, "?%d", ICO_SCI_AVS_KEYWORDS);
-			while (token != nullptr) {
-				c = token;
-				AVSToken.insert(c);
-				c += sci;
-				AVSTokenSci.insert(c);
-				token = strtok(nullptr, " ");
-			}
+			sci = "?" _CRT_STRINGIZE(ICO_SCI_AVS_KEYWORDS);
+			pos = coKeywords;
+			do {
+				const char* begin = pos;
+				while (*pos != ' ' && *pos) {
+					pos++;
+				}
+				std::string str(begin, pos);
+				AVSToken.insert(str);
+				str += sci;
+				AVSTokenSci.insert(str);
+			} while (0 != *pos++);
 
-			strcpy_s(temp, tmpsize, coInternal);
-			token2 = strtok(temp, " ");
-			sprintf_s(sci, "?%d", ICO_SCI_AVS_INTERNAL);
-			while (token2 != nullptr) {
-				c = token2;
-				AVSToken.insert(c);
-				c += sci;
-				AVSTokenSci.insert(c);
-				token2 = strtok(nullptr, " ");
-			}
+			sci = "?" _CRT_STRINGIZE(ICO_SCI_AVS_INTERNAL);
+			pos = coInternal;
+			do {
+				const char* begin = pos;
+				while (*pos != ' ' && *pos) {
+					pos++;
+				}
+				std::string token(begin, pos);
+				AVSToken.insert(token);
+				token += sci;
+				AVSTokenSci.insert(token);
+			} while (0 != *pos++);
 
 			if (coExternal) {
-				strcpy_s(temp, tmpsize, coExternal);
-				token = strtok(temp, " ");
-				sprintf_s(sci, "?%d", ICO_SCI_AVS_EXTERNAL);
-				while (token != nullptr) {
-					c = token;
-					AVSToken.insert(c);
-					c += sci;
-					AVSTokenSci.insert(c);
-					token = strtok(nullptr, " ");
-				}
+				sci = "?" _CRT_STRINGIZE(ICO_SCI_AVS_EXTERNAL);
+				pos = coExternal;
+				do {
+					const char* begin = pos;
+					while (*pos != ' ' && *pos) {
+						pos++;
+					}
+					std::string token(begin, pos);
+					AVSToken.insert(token);
+					token += sci;
+					AVSTokenSci.insert(token);
+				} while (0 != *pos++);
 			}
 
 			std::set<std::string,less_nocase>::iterator walkit;
@@ -686,7 +673,6 @@ void CAviSynth::LoadDll(const char *path)
  
 			AVSToken.clear();
 			AVSTokenSci.clear();
-			delete [] temp;
 		}
 /*		if (env) {
 			env->AddFunction("ffdshow_source","",Tffdshow_source::Create,this);
