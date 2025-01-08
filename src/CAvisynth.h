@@ -34,7 +34,6 @@ class CAviSynth {
 		char *coKeywords;
 		char *coInternal;
 		char *coExternal;
-		std::string coAll;
 		std::string coAllScintilla;
 		bool ok = false;
 		int InterfaceVer = 0;

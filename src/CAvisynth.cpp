@@ -596,7 +596,6 @@ void CAviSynth::LoadDll(const char *path)
 				coExternal = _strdup(avsPluginFunctions);
 			}
 
-			std::set<std::string,less_nocase> AVSToken;
 			std::set<std::string,less_nocase> AVSTokenSci;
 			const char* sci = nullptr;
 			const char* pos = nullptr;
@@ -608,10 +607,9 @@ void CAviSynth::LoadDll(const char *path)
 				while (*pos != ' ' && *pos) {
 					pos++;
 				}
-				std::string str(begin, pos);
-				AVSToken.insert(str);
-				str += sci;
-				AVSTokenSci.insert(str);
+				std::string token(begin, pos);
+				token.append(sci);
+				AVSTokenSci.insert(token);
 			} while (0 != *pos++);
 
 			sci = "?" _CRT_STRINGIZE(ICO_SCI_AVS_INTERNAL);
@@ -622,8 +620,7 @@ void CAviSynth::LoadDll(const char *path)
 					pos++;
 				}
 				std::string token(begin, pos);
-				AVSToken.insert(token);
-				token += sci;
+				token.append(sci);
 				AVSTokenSci.insert(token);
 			} while (0 != *pos++);
 
@@ -636,22 +633,12 @@ void CAviSynth::LoadDll(const char *path)
 						pos++;
 					}
 					std::string token(begin, pos);
-					AVSToken.insert(token);
-					token += sci;
+					token.append(sci);
 					AVSTokenSci.insert(token);
 				} while (0 != *pos++);
 			}
 
-			const size_t coAll_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 3;
-			coAll.clear();
-			coAll.reserve(coAll_size);
-			for (const auto& token : AVSToken) {
-				coAll.append(token);
-				coAll += ' ';
-			}
-			str_trim_end(coAll, ' ');
-
-			const size_t coAllScintilla_size = coAll_size + (AVSTokenSci.size() * 2);
+			const size_t coAllScintilla_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 3 + (AVSTokenSci.size() * 2);
 			coAllScintilla.clear();
 			coAllScintilla.reserve(coAllScintilla_size);
 			for (const auto& token : AVSTokenSci) {
