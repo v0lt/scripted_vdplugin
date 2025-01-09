@@ -259,7 +259,6 @@ bool AVSEditor::CommentUncommentLine(int lineNumber, bool comment)
 void AVSEditor::RemoveLineCommentInRange(int line)
 {
 //	CHARRANGE chr;
-	char *buff = nullptr;
 	int charIndex = 0;
 	int charStart = 0;
 	int charEnd = 0;
@@ -277,24 +276,22 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 //	lineNumber = SendMessage(hwndView, EM_LINEFROMCHAR, charIndex, 0);
 	lineNumber = (int)SendMessageSci(SCI_LINEFROMPOSITION, charIndex, 0);
 
+	std::string str;
+
 	// Go up and find the "#StartTweaking" line
 	const char* startLineText = "#StartTweaking";
 	size_t startLineLen = strlen(startLineText);
 
-	for( ;lineNumber>=0;lineNumber--) {
-//		if (SendMessage(hwndView, EM_LINELENGTH, lineNumber, 0) != startLineLen) continue;
-		buff = new char[SendMessageSci(SCI_LINELENGTH, lineNumber)];
-		SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)buff);
-		if (strncmp(startLineText,buff,startLineLen) != 0 ) {
-			delete [] buff;
-			buff = nullptr;
-			continue;
+	for (; lineNumber >= 0; lineNumber--) {
+		intptr_t len = SendMessageSci(SCI_LINELENGTH, lineNumber);
+		if (len > 0) {
+			str.resize(len);
+			SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)str.data());
+			if (!str.starts_with(startLineText)) {
+				continue;
+			}
 		}
 		break;
-	}
-	if (buff) {
-		delete[] buff;
-		buff = nullptr;
 	}
 
 	if (lineNumber < 0) {
@@ -309,19 +306,17 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 	int lastLine = -1;
 
 	for( ;lineNumber<totalLineNumber;lineNumber++) {
-		buff = new char[SendMessageSci(SCI_LINELENGTH, lineNumber)];
-		SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)buff);
-		if (strncmp(stopLineText,buff,stopLineLen) == 0) {
-			lastLine = lineNumber;
-			break;
+		intptr_t len = SendMessageSci(SCI_LINELENGTH, lineNumber);
+		if (len > 0) {
+			str.resize(len);
+			SendMessageSci(SCI_GETLINE, lineNumber, (LPARAM)str.data());
+			if (str.starts_with(stopLineText)) {
+				lastLine = lineNumber;
+				break;
+			}
 		}
-		//CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
-		delete [] buff;
-		buff = nullptr;
 	}
-	if (buff) {
-		delete[] buff;
-	}
+
 	for (lineNumber = firstLine; lineNumber < lastLine; lineNumber++) {
 		CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
 	}
