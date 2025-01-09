@@ -297,7 +297,9 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 		buff = nullptr;
 	}
 
-	if (lineNumber<0) return;
+	if (lineNumber < 0) {
+		return;
+	}
 
 	lineNumber++;
 	int firstLine = lineNumber;
@@ -317,7 +319,9 @@ void AVSEditor::RemoveLineCommentInRange(int line)
 		delete [] buff;
 		buff = nullptr;
 	}
-	if (buff) delete [] buff;
+	if (buff) {
+		delete[] buff;
+	}
 	for (lineNumber = firstLine; lineNumber < lastLine; lineNumber++) {
 		CommentUncommentLine(lineNumber, ((lineNumber - firstLine) != line));
 	}
@@ -982,7 +986,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 		{
 			bLineNumbers = !bLineNumbers;
 			UpdateLineNumbers();
-			CheckMenuItem(GetMenu(hwnd), ID_AVS_EDIT_LINE, MF_BYCOMMAND | bLineNumbers?MF_CHECKED:MF_UNCHECKED);
+			CheckMenuItem(GetMenu(hwnd), ID_AVS_EDIT_LINE, MF_BYCOMMAND | (bLineNumbers ? MF_CHECKED : MF_UNCHECKED));
 		}
 		break;
 

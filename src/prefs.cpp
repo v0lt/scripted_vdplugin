@@ -102,7 +102,7 @@ void ShowPrefs(HWND parent)
 
 INT_PTR CALLBACK VDDialogPrefsScriptEditor::DlgProc(HWND hdlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	VDDialogPrefsScriptEditor *obj = (VDDialogPrefsScriptEditor *)GetWindowLongPtr(hdlg, DWLP_USER);
+	VDDialogPrefsScriptEditor *obj = (VDDialogPrefsScriptEditor *)GetWindowLongPtrW(hdlg, DWLP_USER);
 
 	switch(msg) {
 	case WM_INITDIALOG:

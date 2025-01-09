@@ -577,8 +577,11 @@ void CAviSynth::LoadDll(const char *path)
 			try {
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
 				s = r.AsString();
-			} catch (...) {s = "VersionString not implemented";}
-			Version = s.c_str();
+			}
+			catch (...) {
+				s = "VersionString not implemented";
+			}
+			Version = s;
 
 			const char* avsPluginFunctions = nullptr;
 			try {
