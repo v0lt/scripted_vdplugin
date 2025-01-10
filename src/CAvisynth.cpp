@@ -539,7 +539,7 @@ PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 }
 
 //======================================= ffdshow =======================================
-CAviSynth::CAviSynth(const char *path)
+CAviSynth::CAviSynth(const wchar_t* path)
 {
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
@@ -548,7 +548,7 @@ CAviSynth::CAviSynth(const char *path)
 	LoadDll(path);
 }
 
-void CAviSynth::LoadDll(const char *path)
+void CAviSynth::LoadDll(const wchar_t* path)
 {
 	std::string s;
 

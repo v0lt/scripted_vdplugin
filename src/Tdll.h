@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2002 Milan Cutka
  * Copyright (c) 2003 Tobias Minich
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -12,40 +12,41 @@
 class Tdll
 {
 public:
+    HMODULE hdll;
     bool ok;
-    Tdll(const char* dllName1, const char* pth)
+
+    Tdll(const wchar_t* dllName1, const wchar_t* pth)
     {
-        hdll = LoadLibraryA(dllName1);
+        hdll = LoadLibraryW(dllName1);
         if (!hdll) {
-            char name[MAX_PATH], ext[MAX_PATH];
-            _splitpath_s(dllName1, nullptr, 0, nullptr, 0, name, MAX_PATH, ext, MAX_PATH);
+            wchar_t name[MAX_PATH], ext[MAX_PATH];
+            _wsplitpath_s(dllName1, nullptr, 0, nullptr, 0, name, MAX_PATH, ext, MAX_PATH);
 
-            char dllName2[MAX_PATH];
-            _makepath_s(dllName2, nullptr, nullptr, name, ext);
+            wchar_t dllName2[MAX_PATH];
+            _wmakepath_s(dllName2, nullptr, nullptr, name, ext);
 
-            hdll = LoadLibraryA(dllName2);
+            hdll = LoadLibraryW(dllName2);
             if (!hdll && pth) {
-                char pomS[MAX_PATH];
-                strcpy_s(pomS, pth);
-                strcat_s(pomS, dllName2);
-                //sprintf(pomS,"%s%s",pth,dllName2);
-                hdll = LoadLibraryA(pomS);
+                wchar_t pomS[MAX_PATH];
+                wcscpy_s(pomS, pth);
+                wcscat_s(pomS, dllName2);
+                hdll = LoadLibraryW(pomS);
             }
         }
         ok = (hdll != NULL);
     }
+
     ~Tdll()
     {
         if (hdll) {
             FreeLibrary(hdll);
         }
     }
-    HMODULE hdll;
+
     void loadFunction(void** fnc, const char* name)
     {
-        *fnc = NULL;
         *fnc = (void*)GetProcAddress(hdll, name);
-        ok &= (*fnc != NULL);
+        ok &= (*fnc != nullptr);
     }
 };
 

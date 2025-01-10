@@ -38,8 +38,8 @@ class CAviSynth {
 		bool ok = false;
 		int InterfaceVer = 0;
 
-		CAviSynth(const char *path);
-		void LoadDll(const char *path);
+		CAviSynth(const wchar_t* path);
+		void LoadDll(const wchar_t* path);
 		virtual ~CAviSynth();
 };
 

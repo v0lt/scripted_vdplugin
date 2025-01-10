@@ -94,7 +94,7 @@ void init_avs()
 	if (g_dllAviSynth) {
 		return;
 	}
-	g_dllAviSynth = new CAviSynth("avisynth.dll");
+	g_dllAviSynth = new CAviSynth(L"avisynth.dll");
 }
 
 void clear_avs()
