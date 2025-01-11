@@ -543,6 +543,7 @@ CAviSynth::CAviSynth(const wchar_t* path)
 {
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
+	_strlwr(coInternal);
 	coExternal = _strdup(coExternalDefault);
 	oldscript[0] = '\0';
 	LoadDll(path);
@@ -597,6 +598,10 @@ void CAviSynth::LoadDll(const wchar_t* path)
 					coExternal = nullptr;
 				}
 				coExternal = _strdup(avsPluginFunctions);
+			}
+
+			if (coExternal) {
+				_strlwr(coExternal);
 			}
 
 			std::set<std::string,less_nocase> AVSTokenSci;
@@ -667,11 +672,6 @@ void CAviSynth::LoadDll(const wchar_t* path)
 				deci->drawOSD(0,50,err.msg); 
 			} 
 		} */
-	}
-
-	_strlwr(coInternal);
-	if (coExternal) {
-		_strlwr(coExternal);
 	}
 }
 
