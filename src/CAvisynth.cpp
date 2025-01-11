@@ -538,14 +538,13 @@ PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 */	return frame;
 }
 
-//======================================= ffdshow =======================================
 CAviSynth::CAviSynth(const wchar_t* path)
 {
 	coKeywords = _strdup(coKeywordsDefault);
 	coInternal = _strdup(coInternalDefault);
 	_strlwr(coInternal);
 	coExternal = _strdup(coExternalDefault);
-	oldscript[0] = '\0';
+
 	LoadDll(path);
 }
 
@@ -655,23 +654,6 @@ void CAviSynth::LoadDll(const wchar_t* path)
 			}
 			str_trim_end(coAllScintilla, ' ');
 		}
-/*		if (env) {
-			env->AddFunction("ffdshow_source","",Tffdshow_source::Create,this);
-			char script[2048];
-			sprintf(script,"ffdshow_source()\n%s",oldscript);
-			AVSValue eval_args[]={script,"ffdshow_avisynth_script"};
-			try {
-				AVSValue val=env->Invoke("Eval",AVSValue(eval_args,2));
-				if (val.IsClip()) {
-					clip=new PClip;
-					*clip=val.AsClip();
-					framenum=0;
-				} 
-				deci->drawOSD(0,50,""); 
-			} catch (AvisynthError &err) {
-				deci->drawOSD(0,50,err.msg); 
-			} 
-		} */
 	}
 }
 
@@ -709,26 +691,3 @@ CAviSynth::~CAviSynth()
 		avisynth = nullptr;
 	}
 }
-
-/*
-bool TimgFilterAvisynth::process(TffPict3* &pict,const TpresetSettings *cfg)
-{
- if (!cfg->avisynth.script[0]) return false;
- if (strcmp(oldscript,cfg->avisynth.script)!=0)
-  {
-   strcpy(oldscript,cfg->avisynth.script);
-   done();
-  }
- Trect3 *r=init(pict,cfg->fullAvisynth);
- if (!clip) return false;
- srcY=getCur(pict,0);srcU=getCur(pict,1);srcV=getCur(pict,2);
- unsigned char *dstY=getNext(pict,0),*dstU=getNext(pict,1),*dstV=getNext(pict,2);
-
- PVideoFrame frame=(*clip)->GetFrame(framenum++,env); //TODO: replace with actual frame number (when MPEG frame counting will be finished)
- pict->data[0]=(unsigned char*)frame->GetReadPtr(PLANAR_Y);pict->stride[0]=frame->GetPitch(PLANAR_Y);pict->ro[0]=true;
- pict->data[1]=(unsigned char*)frame->GetReadPtr(PLANAR_U);pict->stride[1]=frame->GetPitch(PLANAR_U);pict->ro[1]=true;
- pict->data[2]=(unsigned char*)frame->GetReadPtr(PLANAR_V);pict->stride[2]=frame->GetPitch(PLANAR_V);pict->ro[2]=true;
- //pict->calcDiff();
- return true;
-}
-*/

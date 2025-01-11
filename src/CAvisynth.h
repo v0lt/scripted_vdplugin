@@ -24,7 +24,6 @@ class CAviSynth {
 		const AVS_Linkage* m_Linkage = nullptr;
 		PClip *clip = nullptr;
 		const unsigned char *srcY,*srcU,*srcV;
-		char oldscript[2048];
 		unsigned int framenum;
 
 		friend class Cvdub_source;
