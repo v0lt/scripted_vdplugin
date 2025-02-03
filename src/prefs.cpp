@@ -83,7 +83,7 @@ void SavePrefs()
 		lRes = ::RegSetValueExA(key, "fontsize", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
 
 		std::wstring str(g_VDMPrefs.mAVSViewerFontFace);
-		lRes = ::RegSetValueExW(key, L"fontface", 0, REG_SZ, reinterpret_cast<const BYTE*>(str.c_str()), (DWORD)(str.size() + 1) * sizeof(wchar_t));
+		lRes = ::RegSetValueExW(key, L"fontface", 0, REG_SZ, reinterpret_cast<const BYTE*>(str.c_str()), (DWORD)((str.size() + 1) * sizeof(wchar_t)));
 
 		RegCloseKey(key);
 	}
