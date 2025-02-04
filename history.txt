@@ -1,6 +1,6 @@
 scripted.vdplugin history
 
-0.2.1.92 - 2025-01-03
+0.2.1.92 - 2025-02-03
 ----------------------
 Fixed script saving.
 Now uses Avisynth+ header files. Minimum supported version of Avisynth is 2.6.
