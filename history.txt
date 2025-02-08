@@ -2,6 +2,8 @@ scripted.vdplugin history
 
 0.2.2.xx dev
 ----------------------
+Scintilla 5.5.4 updated.
+Lexilla 5.4.2 updated.
 
 0.2.1.92 - 2025-02-03
 ----------------------
