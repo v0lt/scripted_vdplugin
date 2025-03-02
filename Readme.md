@@ -55,3 +55,7 @@ You may change plugin specific options from Script Editor menu or from VirtualDu
 
 ### Links:
 [Description on VirtualDub2 Wiki](https://sourceforge.net/p/vdfiltermod/wiki/scripted/)
+
+## Donate
+
+ЮMoney - https://yoomoney.ru/to/4100115126389817
