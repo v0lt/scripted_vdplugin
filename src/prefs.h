@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -10,7 +10,7 @@
 
 #include <string>
 
-#define REG_KEY_APP "Software\\VirtualDub.org\\Script Editor"
+#define REG_KEY_APP "Software\\VirtualDub2\\Script Editor"
 
 struct VDubModPreferences2 {
 	char         m_bScriptEditorSingleInstance;
