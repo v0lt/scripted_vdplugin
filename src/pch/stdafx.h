@@ -8,6 +8,7 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include <set>
 #include <string>
 #include <format>
 

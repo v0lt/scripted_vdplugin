@@ -9,7 +9,6 @@
 #include "stdafx.h"
 #include "CAviSynth.h"
 #include "Tdll.h"
-#include <set>
 #include "Utils/StringUtil.h"
 
 const AVS_Linkage* AVS_linkage = nullptr;

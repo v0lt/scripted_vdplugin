@@ -12,17 +12,7 @@
 
 #include "stdafx.h"
 
-#define f_AVSVIEWER_CPP
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <crtdbg.h>
-
 #include <shellapi.h>
-#include <tchar.h>
-
-#include <set>
 
 #define INCLUDE_DEPRECATED_FEATURES
 #include "Scintilla.h"
