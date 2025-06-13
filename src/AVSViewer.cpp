@@ -19,15 +19,10 @@
 #include <ctype.h>
 #include <crtdbg.h>
 
-#include <commctrl.h>
-#include <commdlg.h>
 #include <shellapi.h>
 #include <tchar.h>
 
-#include <vector>
 #include <set>
-#include <algorithm>
-#include <string>
 
 #define INCLUDE_DEPRECATED_FEATURES
 #include "Scintilla.h"

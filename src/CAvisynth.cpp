@@ -7,7 +7,6 @@
  */
 
 #include "stdafx.h"
-#define _ASSERTE
 #include "CAviSynth.h"
 #include "Tdll.h"
 #include <set>

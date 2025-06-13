@@ -46,14 +46,11 @@
 
 #pragma warning(disable : 4786)
 
-#define f_ACCEL_CPP
-
 #include "stdafx.h"
 
 #include "resource.h"
 #include "accel.h"
 //#include "gui.h"
-#include <string>
 
 extern HINSTANCE g_hInst;
 

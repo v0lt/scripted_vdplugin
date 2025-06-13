@@ -8,8 +8,6 @@
 #ifndef prefs_header
 #define prefs_header
 
-#include <string>
-
 #define REG_KEY_APP "Software\\VirtualDub2\\Script Editor"
 
 struct VDubModPreferences2 {

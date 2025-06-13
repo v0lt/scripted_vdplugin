@@ -8,7 +8,6 @@
 #ifndef _CAVISYNTH_H_
 #define _CAVISYNTH_H_
 
-#include <string>
 #include "../include/avisynth.h"
 
 #define ICO_SCI_AVS_KEYWORDS 1

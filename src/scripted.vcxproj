@@ -74,11 +74,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)scintilla\include;$(SolutionDir)vd2\h;$(SolutionDir)vd2\system\h\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader />
+      <AdditionalIncludeDirectories>$(SolutionDir)src\pch;$(SolutionDir)scintilla\include;$(SolutionDir)vd2\h;$(SolutionDir)vd2\system\h\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -155,6 +156,9 @@
     <ClCompile Include="AVSViewer.cpp" />
     <ClCompile Include="CAvisynth.cpp" />
     <ClCompile Include="main.cpp" />
+	<ClCompile Include="pch\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="prefs.cpp" />
     <ClCompile Include="Utils\StringUtil.cpp" />
   </ItemGroup>
@@ -164,6 +168,7 @@
     <ClInclude Include="AVSViewer.h" />
     <ClInclude Include="CAvisynth.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="pch\stdafx.h" />
     <ClInclude Include="prefs.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Tdll.h" />

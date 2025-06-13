@@ -6,7 +6,6 @@
  */
 
 #include "stdafx.h"
-#include <commdlg.h>
 #include "prefs.h"
 #include "AVSViewer.h"
 #include "resource.h"

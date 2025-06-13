@@ -12,6 +12,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{fc41aad7-98a4-4adb-9d8f-8adf0bcf2da2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{fbbe1ec7-099b-4585-a1af-0d81f9a9de42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="accel.cpp">
@@ -31,6 +34,9 @@
     </ClCompile>
     <ClCompile Include="Utils\StringUtil.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="pch\stdafx.cpp">
+      <Filter>pch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +66,9 @@
     </ClInclude>
     <ClInclude Include="Utils\StringUtil.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="pch\stdafx.h">
+      <Filter>pch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
