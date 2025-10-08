@@ -609,8 +609,6 @@ void AVSEditor::SetScriptType(int type)
 bool AVSEditor::Commit() noexcept
 {
 	int s;
-	char *lpszBuf;
-	FILE *f;
 	//GETTEXTLENGTHEX gte;
 	//GETTEXTEX gt;
 
@@ -638,7 +636,7 @@ bool AVSEditor::Commit() noexcept
 //	s = SendMessage(hwndView, WM_GETTEXTLENGTH, 0, 0);
 	int cp = (int)SendMessageSci(SCI_GETCODEPAGE);
 	s = (int)SendMessageSci(SCI_GETTEXTLENGTH, 0, 0);
-	lpszBuf = (char *) malloc(s+1);
+	char* lpszBuf = (char *) malloc(s+1);
 //	gt.cb = s;
 //	gt.flags = GT_USECRLF;
 //	gt.codepage = CP_ACP;
@@ -647,8 +645,8 @@ bool AVSEditor::Commit() noexcept
 //	SendMessage(hwndView, EM_GETTEXTEX, (WPARAM) &gt, (LPARAM) lpszBuf);
 	SendMessageSci(SCI_GETTEXT, s+1, (LPARAM) lpszBuf);
 
-	errno_t err = _wfopen_s(&f, lpszFileName, L"wb");
-	if (err) {
+	FILE* f = _wfsopen(lpszFileName, L"wb", _SH_DENYWR);
+	if (!f) {
 		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);		
 	} else {
 		fwrite(lpszBuf, sizeof(char), s, f);
