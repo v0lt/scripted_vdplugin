@@ -155,8 +155,9 @@
     <ClCompile Include="accel.cpp" />
     <ClCompile Include="AVSViewer.cpp" />
     <ClCompile Include="CAvisynth.cpp" />
+    <ClCompile Include="CVapourSynth.cpp" />
     <ClCompile Include="main.cpp" />
-	<ClCompile Include="pch\stdafx.cpp">
+    <ClCompile Include="pch\stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="prefs.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="api.h" />
     <ClInclude Include="AVSViewer.h" />
     <ClInclude Include="CAvisynth.h" />
+    <ClInclude Include="CVapourSynth.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="pch\stdafx.h" />
     <ClInclude Include="prefs.h" />

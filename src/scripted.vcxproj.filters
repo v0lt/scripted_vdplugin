@@ -38,6 +38,9 @@
     <ClCompile Include="pch\stdafx.cpp">
       <Filter>pch</Filter>
     </ClCompile>
+    <ClCompile Include="CVapourSynth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accel.h">
@@ -69,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="pch\stdafx.h">
       <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="CVapourSynth.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

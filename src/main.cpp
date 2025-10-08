@@ -9,15 +9,17 @@
 #include <vd2/plugin/vdtool.h>
 #include <vd2/VDXFrame/Unknown.h>
 #include "CAviSynth.h"
+#include "CVapourSynth.h"
 #include "AVSViewer.h"
 #include "accel.h"
 #include "prefs.h"
 #include "api.h"
 
-HINSTANCE g_hInst;
-ATOM		g_classAVS;
-CAviSynth	*g_dllAviSynth;
-HACCEL		g_hAccelAVS;
+HINSTANCE     g_hInst;
+ATOM          g_classAVS;
+CAviSynth*    g_dllAviSynth;
+CVapourSynth* g_VapourSynth;
+HACCEL        g_hAccelAVS;
 
 extern "C" bool Scintilla_RegisterClasses(void *hInstance);
 extern "C" bool Scintilla_ReleaseResources();
@@ -100,7 +102,21 @@ void init_avs()
 void clear_avs()
 {
 	delete g_dllAviSynth;
-	g_dllAviSynth = 0;
+	g_dllAviSynth = nullptr;
+}
+
+void init_vpy()
+{
+	if (g_VapourSynth) {
+		return;
+	}
+	g_VapourSynth = new CVapourSynth();
+}
+
+void clear_vpy()
+{
+	delete g_VapourSynth;
+	g_VapourSynth = nullptr;
 }
 
 bool initialize()
@@ -119,6 +135,7 @@ void uninitialize()
 {
 	Scintilla_ReleaseResources();
 	clear_avs();
+	clear_vpy();
 	DestroyAcceleratorTable(g_hAccelAVS);
 }
 

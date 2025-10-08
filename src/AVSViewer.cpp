@@ -35,6 +35,7 @@
 //#include "avisynth_interface.h"
 //#include "Tdll.h"
 #include "CAviSynth.h"
+#include "CVapourSynth.h"
 
 //#include "I18N.h"
 //#include "modplus.h"
@@ -46,7 +47,8 @@ extern HINSTANCE g_hInst;
 
 //extern HMODULE g_hAVSLexer;
 //extern Tdll	*g_dllAVSLexer;
-extern CAviSynth *g_dllAviSynth;
+extern CAviSynth*    g_dllAviSynth;
+extern CVapourSynth* g_VapourSynth;
 HWND g_ScriptEditor = (HWND) -1;
 std::vector<class AVSEditor*> g_windows;
 std::vector<HWND> g_dialogs;
@@ -58,6 +60,9 @@ void AVSViewerChangePrefs(HWND parent);
 
 void init_avs();
 void clear_avs();
+
+void init_vpy();
+void clear_vpy();
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -563,7 +568,7 @@ void AVSEditor::SetScriptType(int type)
 
 			SendMessageSci(SCI_AUTOCSETIGNORECASE, TRUE);
 			SendMessageSci(SCI_AUTOCSETFILLUPS, 0, (LPARAM) " (,.");
-		} 
+		}
 		break;
 
 		case SCRIPTTYPE_DECOMB: {
@@ -573,8 +578,15 @@ void AVSEditor::SetScriptType(int type)
 		break;
 
 		case SCRIPTTYPE_VPS: {
+			init_vpy();
 			scriptType = SCRIPTTYPE_VPS;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("python"));
+
+			SendMessageSci(SCI_CLEARREGISTEREDIMAGES);
+			SendMessageSci(SCI_REGISTERIMAGE, ICO_SCI_VPY_KEYWORDS, (LPARAM)imKeywords);
+
+			SendMessageSci(SCI_SETKEYWORDS, 0, (LPARAM)g_VapourSynth->coKeywords);
+
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 			SetAStyle(SCE_P_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 			SendMessageSci(SCI_STYLESETBOLD, SCE_P_DEFAULT, 1);
@@ -1226,7 +1238,10 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 		delete pcd;
 		SetWindowLongPtrW(hwnd, 0, 0);
 		g_ScriptEditor = (HWND) -1;
-		if (g_windows.empty()) clear_avs();
+		if (g_windows.empty()) {
+			clear_avs();
+			clear_vpy();
+		}
 		break;
 
 	case WM_SETFOCUS:
