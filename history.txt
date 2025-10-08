@@ -1,6 +1,8 @@
 scripted.vdplugin history
 0.2.3.xx dev
 ----------------------
+Settings are now saved in HKEY_CURRENT_USER\SOFTWARE\VirtualDub2\Script Editor.
+Implemented the ability to save scripts opened in other programs with read access.
 
 0.2.2.100 - 2025-04-13
 ----------------------
