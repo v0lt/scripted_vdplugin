@@ -3,6 +3,7 @@ scripted.vdplugin history
 ----------------------
 Settings are now saved in HKEY_CURRENT_USER\SOFTWARE\VirtualDub2\Script Editor.
 Implemented the ability to save scripts opened in other programs with read access.
+Fixed the display of error text when opening an AviSynth script file fails.
 
 0.2.2.100 - 2025-04-13
 ----------------------
