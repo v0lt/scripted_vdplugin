@@ -156,6 +156,7 @@
     <ClCompile Include="AVSViewer.cpp" />
     <ClCompile Include="CAvisynth.cpp" />
     <ClCompile Include="CVapourSynth.cpp" />
+    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch\stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

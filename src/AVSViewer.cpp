@@ -1404,9 +1404,8 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 
 	case WM_DEFER_ERROR:
 		{
-			char* s = (char*)lParam;
-			MessageBoxA(hwnd, s, "File open error", MB_OK);
-			free(s);
+			std::wstring errstr = ConvertUtf8OrAnsiLinesToWide((char*)lParam);
+			MessageBoxW(hwnd, errstr.c_str(), L"File open error", MB_OK);
 		}
 		return 0;
 

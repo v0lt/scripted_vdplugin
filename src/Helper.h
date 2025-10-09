@@ -27,3 +27,5 @@ void DLog(const std::wstring_view format, Args ...args)
 #else
 #define DLog(...) __noop
 #endif
+
+std::wstring ConvertUtf8OrAnsiLinesToWide(const std::string_view sv);
