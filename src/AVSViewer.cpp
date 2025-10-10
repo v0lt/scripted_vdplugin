@@ -486,6 +486,7 @@ const COLORREF color_keyword  = RGB(  0,   0, 127); // bold
 const COLORREF color_filter   = RGB(  0,   0, 127); // bold
 const COLORREF color_pluggin  = RGB(  0, 128, 192); // bold
 const COLORREF color_function = RGB(  0, 127, 127);
+const COLORREF color_clipprop = RGB(  0,   0, 127);
 
 void AVSEditor::SetScriptType(int type)
 {
@@ -517,18 +518,19 @@ void AVSEditor::SetScriptType(int type)
 			SendMessageSci(SCI_REGISTERIMAGE, ICO_SCI_AVS_EXTERNAL, (LPARAM)imExternal);
 
 			// AviSynth SCI_SETKEYWORDS indexes (see LexAVS.cxx)
-			// 0 - "Keywords"
-			// 1 - "Filters"
-			// 2 - "Plugins"
-			// 3 - "Functions"
-			// 4 - "Clip properties"
-			// 5 - "User defined functions"
+			// 0 - Keywords
+			// 1 - Filters
+			// 2 - Plugins
+			// 3 - Functions
+			// 4 - Clip properties
+			// 5 - User defined functions
 			SendMessageSci(SCI_SETKEYWORDS, 0, (LPARAM)g_dllAviSynth->coKeywords);
 			SendMessageSci(SCI_SETKEYWORDS, 1, (LPARAM)g_dllAviSynth->coFilters);
 			if (g_dllAviSynth->coExternal) {
 				SendMessageSci(SCI_SETKEYWORDS, 2, (LPARAM)g_dllAviSynth->coExternal);
 			}
 			SendMessageSci(SCI_SETKEYWORDS, 3, (LPARAM)g_dllAviSynth->coFunctions);
+			SendMessageSci(SCI_SETKEYWORDS, 4, (LPARAM)g_dllAviSynth->coClipProperties);
 
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 
@@ -539,12 +541,14 @@ void AVSEditor::SetScriptType(int type)
 			SetStyle(SCE_AVS_COMMENTLINE,   color_comment);
 			SetStyle(SCE_AVS_NUMBER,        color_number);
 			SetStyle(SCE_AVS_OPERATOR,      color_operator);
+			// SCE_AVS_IDENTIFIER like SCE_AVS_DEFAULT
 			SetStyle(SCE_AVS_STRING,        color_string);
 			SetStyle(SCE_AVS_TRIPLESTRING,  color_string);
 			SetStyle(SCE_AVS_KEYWORD,       color_keyword, SCI_STYLESETBOLD);
 			SetStyle(SCE_AVS_FILTER,        color_filter,  SCI_STYLESETBOLD);
 			SetStyle(SCE_AVS_PLUGIN,        color_pluggin, SCI_STYLESETBOLD);
 			SetStyle(SCE_AVS_FUNCTION,      color_function);
+			SetStyle(SCE_AVS_CLIPPROP,      color_clipprop);
 
 			SetAStyle(34, white, black);
 			SetAStyle(35, white, red);

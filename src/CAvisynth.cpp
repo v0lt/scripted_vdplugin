@@ -287,6 +287,60 @@ const char coAvsInternalFunctions[] =
 	"BuildPixelType "
 	"ColorSpaceNameToPixelType ";
 
+const char coAvsClipProperties[] =
+	"Width "
+	"Height "
+	"FrameCount "
+	"FrameRate "
+	"FrameRateNumerator "
+	"FrameRateDenominator "
+	"AudioRate "
+	"AudioLength "
+	"AudioLengthLo "
+	"AudioLengthHi "
+	"AudioLengthS "
+	"AudioLengthF "
+	"AudioDuration "
+	"AudioChannels "
+	"AudioBits "
+	"IsAudioFloat "
+	"IsAudioInt "
+	"IsRGB "
+	"IsPlanarRGB "
+	"IsPlanarRGBA "
+	"IsRGB24 "
+	"IsRGB32 "
+	"IsRGB48 "
+	"IsRGB64 "
+	"IsYUV "
+	"IsYUVA "
+	"IsY8 "
+	"IsY "
+	"IsYUY2 "
+	"IsYV12 "
+	"Is420 "
+	"IsYV16 "
+	"Is422 "
+	"IsYV24 "
+	"Is444 "
+	"IsYV411 "
+	"PixelType "
+	"IsFieldBased "
+	"IsFrameBased "
+	"IsPlanar "
+	"IsInterleaved "
+	"GetParity "
+	"HasAudio "
+	"HasVideo "
+	"HasVideo "
+	"ComponentSize "
+	"BitsPerComponent "
+	"NumComponents "
+	"HasAlpha "
+	"IsPackedRGB "
+	"IsChannelMaskKnown "
+	"GetChannelMask ";
+
 const char coAvsInternalFilters[] =
 	//
 	// http://avisynth.nl/index.php/Internal_filters
@@ -544,6 +598,9 @@ CAviSynth::CAviSynth(const wchar_t* path)
 	coFunctions = _strdup(coAvsInternalFunctions);
 	_strlwr(coFunctions);
 
+	coClipProperties = _strdup(coAvsClipProperties);
+	_strlwr(coClipProperties);
+
 	coFilters = _strdup(coAvsInternalFilters);
 	_strlwr(coFilters);
 
@@ -675,6 +732,10 @@ CAviSynth::~CAviSynth()
 	if (coFilters) {
 		free(coFilters);
 		coFilters = nullptr;
+	}
+	if (coClipProperties) {
+		free(coClipProperties);
+		coClipProperties = nullptr;
 	}
 	if (coExternal) {
 		free(coExternal);

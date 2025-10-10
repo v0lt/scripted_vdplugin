@@ -32,6 +32,7 @@ class CAviSynth {
 		char *coKeywords;
 		char *coFunctions;
 		char* coFilters;
+		char* coClipProperties;
 		char *coExternal;
 		std::string coAllScintilla;
 		bool ok = false;
