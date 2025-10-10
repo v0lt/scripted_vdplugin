@@ -25,7 +25,7 @@ struct less_nocase {
 };
 
 // http://avisynth.nl/index.php/The_full_AviSynth_grammar#Keywords
-const char coKeywordsDefault[] =
+const char coAvsKeywords[] =
 	"function "
 	"global "
 	"return "
@@ -43,7 +43,7 @@ const char coKeywordsDefault[] =
 	"bool "
 	"val";
 
-const char coInternalDefault[] =
+const char coAvsInternalFunctions[] =
 	//
 	// http://avisynth.nl/index.php/Internal_functions
 	//
@@ -285,7 +285,9 @@ const char coInternalDefault[] =
 	"ArraySet "
 	// Other helper functions
 	"BuildPixelType "
-	"ColorSpaceNameToPixelType "
+	"ColorSpaceNameToPixelType ";
+
+const char coAvsInternalFilters[] =
 	//
 	// http://avisynth.nl/index.php/Internal_filters
 	//
@@ -496,10 +498,9 @@ const char coInternalDefault[] =
 	"StackVertical "
 	"Subtitle "
 	"Tone "
-	"Version "
-;
+	"Version ";
 
-const char coExternalDefault[] =
+const char coAvsExternal[] =
 	"FFIndex "
 	"FFAudioSource "
 	"FFVideoSource "
@@ -538,10 +539,15 @@ PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 
 CAviSynth::CAviSynth(const wchar_t* path)
 {
-	coKeywords = _strdup(coKeywordsDefault);
-	coInternal = _strdup(coInternalDefault);
-	_strlwr(coInternal);
-	coExternal = _strdup(coExternalDefault);
+	coKeywords = _strdup(coAvsKeywords);
+
+	coFunctions = _strdup(coAvsInternalFunctions);
+	_strlwr(coFunctions);
+
+	coFilters = _strdup(coAvsInternalFilters);
+	_strlwr(coFilters);
+
+	coExternal = _strdup(coAvsExternal);
 
 	LoadDll(path);
 }
@@ -618,7 +624,7 @@ void CAviSynth::LoadDll(const wchar_t* path)
 			} while (0 != *pos++);
 
 			sci = "?" _CRT_STRINGIZE(ICO_SCI_AVS_INTERNAL);
-			pos = coInternal;
+			pos = coFunctions;
 			do {
 				const char* begin = pos;
 				while (*pos != ' ' && *pos) {
@@ -643,7 +649,8 @@ void CAviSynth::LoadDll(const wchar_t* path)
 				} while (0 != *pos++);
 			}
 
-			const size_t coAllScintilla_size = strlen(coKeywords) + strlen(coInternal) + (coExternal ? strlen(coExternal) : 0) + 3 + (AVSTokenSci.size() * 2);
+			const size_t coAllScintilla_size = strlen(coKeywords) + strlen(coFunctions) + strlen(coFilters)
+				+ (coExternal ? strlen(coExternal) : 0) + 3 + (AVSTokenSci.size() * 2);
 			coAllScintilla.clear();
 			coAllScintilla.reserve(coAllScintilla_size);
 			for (const auto& token : AVSTokenSci) {
@@ -661,9 +668,13 @@ CAviSynth::~CAviSynth()
 		free(coKeywords);
 		coKeywords = nullptr;
 	}
-	if (coInternal) {
-		free(coInternal);
-		coInternal = nullptr;
+	if (coFunctions) {
+		free(coFunctions);
+		coFunctions = nullptr;
+	}
+	if (coFilters) {
+		free(coFilters);
+		coFilters = nullptr;
 	}
 	if (coExternal) {
 		free(coExternal);

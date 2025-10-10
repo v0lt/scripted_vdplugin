@@ -146,6 +146,8 @@ private:
 	void SetStatus(const char *format, ...) noexcept;
 	void UpdateStatus() noexcept;
 	void UpdateLineNumbers();
+	// font_style can be SCI_STYLESETBOLD, SCI_STYLESETITALIC
+	void SetStyle(int style, COLORREF text_color, int font_style = 0);
 	void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(0xff,0xff,0xff), int size = 0, const wchar_t *face = nullptr);
 
 	LRESULT Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept;
@@ -153,8 +155,9 @@ private:
 	LRESULT Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) noexcept;
 	LRESULT Handle_WM_DROPFILES(WPARAM wParam, LPARAM lParam);
 
-	sptr_t SendMessageSci(int Message, WPARAM wParam = 0, LPARAM lParam = 0) 
-		{return fnScintilla(ptrScintilla, Message, wParam, lParam);}
+	sptr_t SendMessageSci(int Message, WPARAM wParam = 0, LPARAM lParam = 0) {
+		return fnScintilla(ptrScintilla, Message, wParam, lParam);
+	}
 
 	void SetScriptType(int type);
 	void CheckBracing();
@@ -474,6 +477,16 @@ void AVSEditor::HandleError(const char* s, int line)
 	PostMessageW(hwnd,WM_DEFER_ERROR,0,(LPARAM)s1);
 }
 
+const COLORREF color_default  = RGB(  0,   0,   0);
+const COLORREF color_comment  = RGB(  0, 127,   0);
+const COLORREF color_number   = RGB(  0, 127, 127);
+const COLORREF color_operator = RGB(  0,   0,   0);
+const COLORREF color_string   = RGB(127,   0, 127);
+const COLORREF color_keyword  = RGB(  0,   0, 127); // bold
+const COLORREF color_filter   = RGB(  0,   0, 127); // bold
+const COLORREF color_pluggin  = RGB(  0, 128, 192); // bold
+const COLORREF color_function = RGB(  0, 127, 127);
+
 void AVSEditor::SetScriptType(int type)
 {
 	const COLORREF black      = RGB(0, 0, 0);
@@ -496,47 +509,42 @@ void AVSEditor::SetScriptType(int type)
 			/*if (!g_dllAVSLexer->ok) {
 				guiMessageBox(hwnd, IDS_ERR_NO_AVSLEXER, IDS_ERR_NO_AVSLEXER_CAP, MB_OK|MB_ICONERROR);
 			}*/
-			//SendMessageSci(SCI_SETLEXERLANGUAGE, 0, (int) "avslex");
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("avs"));
-			//SendMessageSci(SCI_SETSTYLEBITS, 7);
 
 			SendMessageSci(SCI_CLEARREGISTEREDIMAGES);
 			SendMessageSci(SCI_REGISTERIMAGE, ICO_SCI_AVS_KEYWORDS, (LPARAM)imKeywords);
 			SendMessageSci(SCI_REGISTERIMAGE, ICO_SCI_AVS_INTERNAL, (LPARAM)imInternal);
 			SendMessageSci(SCI_REGISTERIMAGE, ICO_SCI_AVS_EXTERNAL, (LPARAM)imExternal);
 
-			SendMessageSci(SCI_SETKEYWORDS, 0, (LPARAM) g_dllAviSynth->coKeywords);
-			SendMessageSci(SCI_SETKEYWORDS, 1, (LPARAM) g_dllAviSynth->coInternal);
+			// AviSynth SCI_SETKEYWORDS indexes (see LexAVS.cxx)
+			// 0 - "Keywords"
+			// 1 - "Filters"
+			// 2 - "Plugins"
+			// 3 - "Functions"
+			// 4 - "Clip properties"
+			// 5 - "User defined functions"
+			SendMessageSci(SCI_SETKEYWORDS, 0, (LPARAM)g_dllAviSynth->coKeywords);
+			SendMessageSci(SCI_SETKEYWORDS, 1, (LPARAM)g_dllAviSynth->coFilters);
 			if (g_dllAviSynth->coExternal) {
 				SendMessageSci(SCI_SETKEYWORDS, 2, (LPARAM)g_dllAviSynth->coExternal);
 			}
+			SendMessageSci(SCI_SETKEYWORDS, 3, (LPARAM)g_dllAviSynth->coFunctions);
 
 			SendMessageSci(SCI_SETTABWIDTH, 4, 0);
 
-			SetAStyle(SCE_AVS_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
+			SetAStyle(SCE_AVS_DEFAULT, color_default, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 
-			SetAStyle(SCE_AVS_NUMBER, darkBlue);
-
-			// Commands
-			SetAStyle(SCE_AVS_DEFAULT, black);
-			SendMessageSci(SCI_STYLESETBOLD, SCE_AVS_DEFAULT, 1);
-			SetAStyle(SCE_AVS_KEYWORD, darkGreen);
-			SendMessageSci(SCI_STYLESETBOLD, SCE_AVS_KEYWORD, 1);
-			SetAStyle(SCE_AVS_PLUGIN, darkViolet);
-			SendMessageSci(SCI_STYLESETBOLD, SCE_AVS_PLUGIN, 1);
-			SetAStyle(SCE_AVS_FILTER, darkViolet);
-			SendMessageSci(SCI_STYLESETBOLD, SCE_AVS_FILTER, 1);
-
-			// Comment
-			SetAStyle(SCE_AVS_COMMENTBLOCK, darkGray);
-			SetAStyle(SCE_AVS_COMMENTBLOCKN, darkGray);
-			SetAStyle(SCE_AVS_COMMENTLINE, darkGray);
-			//SendMessageSci(SCI_STYLESETITALIC, SCE_AVS_COMMENT, 1);
-
-			SetAStyle(SCE_AVS_OPERATOR, darkBlue);
-			SetAStyle(SCE_AVS_STRING, darkRed);
-			//SetAStyle(SCE_AVS_FUZZY, red);
-			//SetAStyle(SCE_AVS_ERROR, white, red);
+			SetStyle(SCE_AVS_COMMENTBLOCK,  color_comment);
+			SetStyle(SCE_AVS_COMMENTBLOCKN, color_comment);
+			SetStyle(SCE_AVS_COMMENTLINE,   color_comment);
+			SetStyle(SCE_AVS_NUMBER,        color_number);
+			SetStyle(SCE_AVS_OPERATOR,      color_operator);
+			SetStyle(SCE_AVS_STRING,        color_string);
+			SetStyle(SCE_AVS_TRIPLESTRING,  color_string);
+			SetStyle(SCE_AVS_KEYWORD,       color_keyword, SCI_STYLESETBOLD);
+			SetStyle(SCE_AVS_FILTER,        color_filter,  SCI_STYLESETBOLD);
+			SetStyle(SCE_AVS_PLUGIN,        color_pluggin, SCI_STYLESETBOLD);
+			SetStyle(SCE_AVS_FUNCTION,      color_function);
 
 			SetAStyle(34, white, black);
 			SetAStyle(35, white, red);
@@ -673,6 +681,15 @@ void AVSEditor::UpdateStatus() noexcept
 	std::string status_pos = std::format("{}:{}", posy + 1, posx + 1);
 	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
 	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[m_scriptType]);
+}
+
+void AVSEditor::SetStyle(int style, COLORREF text_color, int font_style)
+{
+	SendMessageSci(SCI_STYLESETFORE, style, text_color);
+	SendMessageSci(SCI_STYLESETBACK, style, RGB(255, 255, 255));
+	if (font_style) {
+		SendMessageSci(font_style, style, 1);
+	}
 }
 
 void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face)

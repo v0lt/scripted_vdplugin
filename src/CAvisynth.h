@@ -30,7 +30,8 @@ class CAviSynth {
 	public:
 		std::string Version;
 		char *coKeywords;
-		char *coInternal;
+		char *coFunctions;
+		char* coFilters;
 		char *coExternal;
 		std::string coAllScintilla;
 		bool ok = false;
@@ -38,7 +39,7 @@ class CAviSynth {
 
 		CAviSynth(const wchar_t* path);
 		void LoadDll(const wchar_t* path);
-		virtual ~CAviSynth();
+		~CAviSynth();
 };
 
 class Cvdub_source :public IClip {

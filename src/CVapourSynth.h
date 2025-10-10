@@ -8,8 +8,9 @@
 
 class CVapourSynth
 {
-	public:
-		char *coKeywords;
+public:
+	char* coKeywords;
 
-		CVapourSynth();
+	CVapourSynth();
+	~CVapourSynth();
 };

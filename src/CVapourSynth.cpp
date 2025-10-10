@@ -8,7 +8,7 @@
 #include "CVapourSynth.h"
 
 // https://docs.python.org/3.14/reference/lexical_analysis.html#keywords
-const char coKeywordsDefault[] =
+const char coVpyKeywords[] =
 	"None "
 	"True "
 	"and "
@@ -46,5 +46,13 @@ const char coKeywordsDefault[] =
 
 CVapourSynth::CVapourSynth()
 {
-	coKeywords = _strdup(coKeywordsDefault);
+	coKeywords = _strdup(coVpyKeywords);
+}
+
+CVapourSynth::~CVapourSynth()
+{
+	if (coKeywords) {
+		free(coKeywords);
+		coKeywords = nullptr;
+	}
 }
