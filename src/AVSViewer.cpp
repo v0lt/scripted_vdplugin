@@ -19,44 +19,26 @@
 #include "SciLexer.h"
 #include "ILexer.h"
 #include "Lexilla.h"
-//#include "avsconst.h"
 
 #include "resource.h"
-//#include "oshelper.h"
-//#include "gui.h"
 #include "prefs.h"
 
 #include "AVSViewer.h"
 #include "api.h"
-//#include "ProgressDialog.h"
-//#include "virtualdubmod_messages.h"
 #include "accel.h"
-//#include "avisynth.h"
-//#include "avisynth_interface.h"
-//#include "Tdll.h"
 #include "CAviSynth.h"
 #include "CVapourSynth.h"
-
-//#include "I18N.h"
-//#include "modplus.h"
 
 #include "Helper.h"
 #include "Utils/StringUtil.h"
 
 extern HINSTANCE g_hInst;
 
-//extern HMODULE g_hAVSLexer;
-//extern Tdll	*g_dllAVSLexer;
 extern CAviSynth*    g_dllAviSynth;
 extern CVapourSynth* g_VapourSynth;
 HWND g_ScriptEditor = (HWND) -1;
 std::vector<class AVSEditor*> g_windows;
 std::vector<HWND> g_dialogs;
-//extern VDubModPreferences		g_VDMPrefs;
-
-
-void AVSViewerOpen(HWND hwnd);
-void AVSViewerChangePrefs(HWND parent);
 
 void init_avs();
 void clear_avs();
@@ -123,28 +105,25 @@ const int WM_DEFER_ERROR = WM_USER+1;
 
 class AVSEditor {
 private:
-	const HWND	hwnd;
-	HWND	hwndStatus;
-	//HWND	hwndRef;
-	wchar_t	lpszFileName[MAX_PATH];
-	HFONT	hfont;
-	void*	coloredit;
+	const HWND	hwnd = NULL;
+	HWND	hwndStatus = NULL;
+	//HWND	hwndRef = NULL;
+	HWND	hwndView = NULL;
+	WNDPROC OldAVSViewWinProc = NULL; // Toff
+	HWND	hwndFind = NULL;
 
-	HWND	hwndView;
-	WNDPROC OldAVSViewWinProc; // Toff
+	wchar_t	m_lpszFileName[MAX_PATH];
 
-	bool	bEnableWrite;
-//	bool	bTrim;
-	bool	bLineNumbers;
+	HFONT	m_hfont = NULL;
+	bool	bLineNumbers = true;
 	SciFnDirect fnScintilla;
-	sptr_t ptrScintilla;
-	int		scriptType;
+	sptr_t	ptrScintilla = NULL;
+	int		m_scriptType = SCRIPTTYPE_NONE;
 
-	HWND	hwndFind;
 	//ModelessDlgNode mdnFind;
-	FindTextOption mFind;
+	FindTextOption mFind = {};
 
-	bool	bModified;
+	bool	m_bModified = false;
 
 public:
 	AVSEditor(HWND);
@@ -155,7 +134,7 @@ public:
 	void UpdatePreferences();
 	HWND GetHwnd(){ return hwnd; }
 	bool CheckFilename(const wchar_t* path) {
-		return _wcsicmp(path,lpszFileName)==0;
+		return _wcsicmp(path,m_lpszFileName)==0;
 	}
 	void Open(const wchar_t* path);
 	void HandleError(const char* s, int line);
@@ -195,7 +174,8 @@ private:
 
 ////////////////////////////
 
-AVSEditor::AVSEditor(HWND _hwnd) : hwnd(_hwnd), hfont(0)
+AVSEditor::AVSEditor(HWND _hwnd)
+	: hwnd(_hwnd)
 {
 }
 
@@ -204,8 +184,8 @@ AVSEditor::~AVSEditor()
 	if (hwndFind) {
 		DestroyWindow(hwndFind);
 	}
-	if (hfont) {
-		DeleteObject(hfont);
+	if (m_hfont) {
+		DeleteObject(m_hfont);
 	}
 }
 
@@ -374,7 +354,7 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 				{
 					pcd->RemoveLineCommentInRange((int)wParam - VK_F1);
 					if (pcd->Commit())
-						VDSendReopen(pcd->lpszFileName, pcd);
+						VDSendReopen(pcd->m_lpszFileName, pcd);
 				}
 			}
 			break;
@@ -400,12 +380,12 @@ void AVSEditor::Init() noexcept
 		g_hInst,
 		nullptr);
 
-	lpszFileName[0] = 0;
+	m_lpszFileName[0] = 0;
 
 	fnScintilla = (SciFnDirect)SendMessageW(hwndView,SCI_GETDIRECTFUNCTION,0,0);
 	ptrScintilla = (sptr_t)SendMessageW(hwndView,SCI_GETDIRECTPOINTER,0,0);
 
-	bLineNumbers = TRUE;
+	bLineNumbers = true;
 	UpdateLineNumbers();
 
 //	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), 11, "Courier New");
@@ -428,13 +408,13 @@ void AVSEditor::Init() noexcept
 	mFind.bRegexp = false;
 	mFind.bWrap = true;
 
-	bModified = false;
+	m_bModified = false;
 
 	DragAcceptFiles(hwnd, TRUE);
 
 	AVSViewerLoadSettings(hwnd,REG_WINDOW_MAIN);
 
-	SetScriptType(scriptType);
+	SetScriptType(m_scriptType);
 }
 
 void AVSEditor::UpdateLineNumbers()
@@ -448,7 +428,7 @@ void AVSEditor::UpdateLineNumbers()
 void AVSEditor::Open(const wchar_t* path)
 {
 	if (path) {
-		wcscpy_s(lpszFileName, path);
+		wcscpy_s(m_lpszFileName, path);
 	}
 
 	unsigned char *lpszBuf;
@@ -456,7 +436,7 @@ void AVSEditor::Open(const wchar_t* path)
 	size_t n, r;
 
 	lpszBuf = nullptr;
-	errno_t err = _wfopen_s(&f, lpszFileName, L"rb");
+	errno_t err = _wfopen_s(&f, m_lpszFileName, L"rb");
 	if (err) {
 		return;
 	}
@@ -477,19 +457,14 @@ void AVSEditor::Open(const wchar_t* path)
 	}
 	free(lpszBuf);
 
-	std::wstring windowtitle = std::format(L"VirtualDub2 Script Editor - [{}]", lpszFileName);
+	std::wstring windowtitle = std::format(L"VirtualDub2 Script Editor - [{}]", m_lpszFileName);
 	SetWindowTextW(hwnd, windowtitle.c_str());
 
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
 	SetAStyle(STYLE_DEFAULT, RGB(0,0,0), RGB(0xff,0xff,0xff), g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 	SendMessageSci(SCI_STYLECLEARALL);	// Copies global style to all others
 
-/*	if (!_stricmp(strrchr((lpszFileName), (int) '.'), ".avs")) {
-		SetScriptType(SCRIPTTYPE_AVS);
-	} else {
-		SetScriptType(SCRIPTTYPE_NONE);
-	}*/
-	SetScriptType(GetScriptType(lpszFileName));
+	SetScriptType(GetScriptType(m_lpszFileName));
 }
 
 void AVSEditor::HandleError(const char* s, int line)
@@ -511,7 +486,7 @@ void AVSEditor::SetScriptType(int type)
 	const COLORREF darkRed    = RGB(0x80, 0, 0);
 	const COLORREF darkViolet = RGB(0x80, 0, 0x80);
 
-	scriptType = type;
+	m_scriptType = type;
 	SendMessageSci(SCI_SETWRAPMODE, g_VDMPrefs.m_bWrapLines ? SC_WRAP_WORD:SC_WRAP_NONE);
 	SetAStyle(STYLE_DEFAULT, black, white, g_VDMPrefs.mAVSViewerFontSize, g_VDMPrefs.mAVSViewerFontFace.c_str());
 	SendMessageSci(SCI_STYLECLEARALL);	// Copies global style to all others
@@ -572,14 +547,14 @@ void AVSEditor::SetScriptType(int type)
 		break;
 
 		case SCRIPTTYPE_DECOMB: {
-			scriptType = SCRIPTTYPE_DECOMB;
+			m_scriptType = SCRIPTTYPE_DECOMB;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 		break;
 
 		case SCRIPTTYPE_VPS: {
 			init_vpy();
-			scriptType = SCRIPTTYPE_VPS;
+			m_scriptType = SCRIPTTYPE_VPS;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("python"));
 
 			SendMessageSci(SCI_CLEARREGISTEREDIMAGES);
@@ -603,13 +578,13 @@ void AVSEditor::SetScriptType(int type)
 		break;
 
 		case SCRIPTTYPE_VDSCRIPT: {
-			scriptType = SCRIPTTYPE_VDSCRIPT;
+			m_scriptType = SCRIPTTYPE_VDSCRIPT;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 		break;
 
 		default: {
-			scriptType = SCRIPTTYPE_NONE;
+			m_scriptType = SCRIPTTYPE_NONE;
 			SendMessageSci(SCI_SETILEXER, 0, (LPARAM)CreateLexer("null"));
 		}
 	}
@@ -624,7 +599,7 @@ bool AVSEditor::Commit() noexcept
 	//GETTEXTLENGTHEX gte;
 	//GETTEXTEX gt;
 
-	if (lpszFileName[0] == 0) {
+	if (m_lpszFileName[0] == 0) {
 		wchar_t szName[MAX_PATH];
 		szName[0] = 0;
 		OPENFILENAMEW ofn = {};
@@ -638,7 +613,7 @@ bool AVSEditor::Commit() noexcept
 		ofn.Flags				= OFN_EXPLORER | OFN_ENABLESIZING;
 
 		if (GetSaveFileNameW(&ofn)) {
-			wcscpy_s(lpszFileName, szName);
+			wcscpy_s(m_lpszFileName, szName);
 		} else {
 			return false;
 		}
@@ -657,13 +632,13 @@ bool AVSEditor::Commit() noexcept
 //	SendMessage(hwndView, EM_GETTEXTEX, (WPARAM) &gt, (LPARAM) lpszBuf);
 	SendMessageSci(SCI_GETTEXT, s+1, (LPARAM) lpszBuf);
 
-	FILE* f = _wfsopen(lpszFileName, L"wb", _SH_DENYWR);
+	FILE* f = _wfsopen(m_lpszFileName, L"wb", _SH_DENYWR);
 	if (!f) {
 		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);		
 	} else {
 		fwrite(lpszBuf, sizeof(char), s, f);
 		fclose(f);
-		bModified = false;
+		m_bModified = false;
 	}
 
 	free(lpszBuf);
@@ -697,7 +672,7 @@ void AVSEditor::UpdateStatus() noexcept
 	int posx = c - (int)SendMessageSci(SCI_POSITIONFROMLINE, posy, 0);
 	std::string status_pos = std::format("{}:{}", posy + 1, posx + 1);
 	SendMessageA(hwndStatus, SB_SETTEXTA, 2, (LPARAM)status_pos.c_str());
-	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[scriptType]);
+	SendMessageA(hwndStatus, SB_SETTEXTA, 1, (LPARAM)scripttypeName[m_scriptType]);
 }
 
 void AVSEditor::SetAStyle(int style, COLORREF fore, COLORREF back, int size, const wchar_t*face)
@@ -728,12 +703,9 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 	case ID_FILE_OPEN:
 		{
 			wchar_t szName[MAX_PATH];
-			OPENFILENAMEW ofn;
-
 			szName[0] = 0;
 
-			memset(&ofn, 0, sizeof ofn);
-
+			OPENFILENAMEW ofn = {};
 			ofn.lStructSize			= sizeof(OPENFILENAMEW);
 			ofn.hwndOwner			= hwnd;
 			ofn.lpstrFilter			= L"All files (*.*)\0*.*\0";
@@ -748,15 +720,13 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			ofn.lpstrDefExt			= nullptr;
 
 			if (GetOpenFileNameW(&ofn)) {
-				//VDTextAToW(lpszFileName, MAX_PATH, szName, MAX_PATH);
-				//wcscpy(lpszFileName, VDTextAToW(szName).c_str());
 				Open(szName);
 			}
 		}
 		break;
 	case ID_FILE_NEW:
 		{
-			lpszFileName[0] = 0;
+			m_lpszFileName[0] = 0;
 			SendMessageSci(SCI_CLEARALL, 0, 0);
 //			SetScriptType(SCRIPTTYPE_NONE);
 			SetScriptType(SCRIPTTYPE_AVS);
@@ -766,13 +736,13 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 	case ID_REFRESH:
 		{
 			if (Commit())
-				VDSendReopen(lpszFileName, this);
+				VDSendReopen(m_lpszFileName, this);
 		}
 		break;
 	case ID_AVS_SAVE_OPEN:
 		{
 			if (Commit()) {
-				VDSetFilename(lpszFileName,this);
+				VDSetFilename(m_lpszFileName,this);
 			}
 		}
 		break;
@@ -836,17 +806,17 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 			}
 
 			std::string str;
-			if (scriptType == SCRIPTTYPE_NONE) {
+			if (m_scriptType == SCRIPTTYPE_NONE) {
 				str = std::format("{}-{}", r0, r1);
 			}
-			if (scriptType == SCRIPTTYPE_VDSCRIPT) {
+			if (m_scriptType == SCRIPTTYPE_VDSCRIPT) {
 				if (trim) {
 					str = std::format("VirtualDub.subset.AddRange({},{});", r0, r1);
 				} else {
 					str = std::format("{},{}", r0, r1);
 				}
 			}
-			if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
+			if (m_scriptType == SCRIPTTYPE_AVS || m_scriptType == SCRIPTTYPE_DECOMB) {
 				if (r0 == 0 && r1 == 1) {
 					str = trim ? "Trim(0,-1)" : "0,-1";// special case of very first frame
 				} else {
@@ -857,7 +827,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 					}
 				}
 			}
-			if (scriptType == SCRIPTTYPE_VPS) {
+			if (m_scriptType == SCRIPTTYPE_VPS) {
 				if (r1 == r0 + 1) {
 					if (trim) {
 						str = std::format("clip[{}]", r0);
@@ -893,14 +863,14 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 				std::string str;
 				vd_basic_range range = set.ranges[i];
 
-				if (scriptType == SCRIPTTYPE_NONE) {
+				if (m_scriptType == SCRIPTTYPE_NONE) {
 					str = std::format("Trim({},{})", range.from, range.to);
 					if (i > 0) {
 						buffer += " + ";
 					}
 				}
 
-				if (scriptType == SCRIPTTYPE_AVS || scriptType == SCRIPTTYPE_DECOMB) {
+				if (m_scriptType == SCRIPTTYPE_AVS || m_scriptType == SCRIPTTYPE_DECOMB) {
 					if (range.from == 0 && range.to == 1) {
 						str = "Trim(0,-1)"; // special case of one very first frame
 					} else {
@@ -911,7 +881,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 					}
 				}
 
-				if (scriptType == SCRIPTTYPE_VPS) {
+				if (m_scriptType == SCRIPTTYPE_VPS) {
 					if (range.to == range.from + 1) {
 						str = std::format("clip[{}]", range.from);
 					} else {
@@ -922,7 +892,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 					}
 				}
 
-				if (scriptType == SCRIPTTYPE_VDSCRIPT) {
+				if (m_scriptType == SCRIPTTYPE_VDSCRIPT) {
 					str = std::format("VirtualDub.subset.AddRange({},{});", range.from, range.to);
 					if (i > 0) {
 						buffer += "\r\n";
@@ -951,7 +921,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 
 			if (GetOpenFileNameW(&ofn)) {
 				std::string filepath_u8;
-				if (scriptType == SCRIPTTYPE_NONE) {
+				if (m_scriptType == SCRIPTTYPE_NONE) {
 					filepath_u8 = ConvertWideToUtf8(szName);
 				} else {
 					filepath_u8.assign("\"");
@@ -1039,7 +1009,7 @@ LRESULT AVSEditor::Handle_WM_COMMAND(WPARAM wParam, LPARAM lParam) noexcept
 		break;
 
 	case ID_AVS_STARTCOMPLETE:
-		if (scriptType==SCRIPTTYPE_AVS) {
+		if (m_scriptType==SCRIPTTYPE_AVS) {
 			if (SendMessageSci(SCI_AUTOCACTIVE)){
 				SendMessageSci(SCI_AUTOCCANCEL);
 			} else {
@@ -1139,7 +1109,7 @@ LRESULT AVSEditor::Handle_WM_NOTIFY(HWND hwndFrom, UINT code, NMHDR *phdr) noexc
 			CheckBracing();
 			break;*/
 		case SCN_MODIFIED:
-			bModified = true;
+			m_bModified = true;
 			break;
 		}
 	}
@@ -1266,17 +1236,17 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 			dwEnableFlags = (SendMessageW(pcd->hwndView, SCI_CANREDO, 0, 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_EDIT_REDO, dwEnableFlags);
 
-			dwEnableFlags = (!(pcd->lpszFileName[0] == 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
+			dwEnableFlags = (!(pcd->m_lpszFileName[0] == 0) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_AVS_INSERT_TRIM, dwEnableFlags);
 			EnableMenuItem(hMenu,ID_AVS_INSERT_FRAMESET, dwEnableFlags);
 			//EnableMenuItem(hMenu,ID_AVS_INSERT_CROP, dwEnableFlags);
 
-			dwEnableFlags = ((pcd->scriptType != SCRIPTTYPE_DECOMB) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
+			dwEnableFlags = ((pcd->m_scriptType != SCRIPTTYPE_DECOMB) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu,ID_AVS_INSERT_FILENAME, dwEnableFlags);
 
-			CheckMenuRadioItem(hMenu, ID_AVS_SCRIPT_NONE, ID_AVS_SCRIPT_VDSCRIPT, ID_AVS_SCRIPT_NONE+pcd->scriptType, MF_BYCOMMAND);
+			CheckMenuRadioItem(hMenu, ID_AVS_SCRIPT_NONE, ID_AVS_SCRIPT_VDSCRIPT, ID_AVS_SCRIPT_NONE+pcd->m_scriptType, MF_BYCOMMAND);
 
-			dwEnableFlags = (((pcd->scriptType == SCRIPTTYPE_AVS) || (pcd->scriptType == SCRIPTTYPE_VPS)) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
+			dwEnableFlags = (((pcd->m_scriptType == SCRIPTTYPE_AVS) || (pcd->m_scriptType == SCRIPTTYPE_VPS)) ? (MF_BYCOMMAND|MF_ENABLED) : (MF_BYCOMMAND|MF_GRAYED));
 			EnableMenuItem(hMenu, ID_AVS_SAVE_OPEN, dwEnableFlags);
 
 		/*	EnableMenuItem(hMenu,ID_FILE_SAVE, dwEnableFlags);
@@ -1429,7 +1399,7 @@ LRESULT APIENTRY AVSEditor::AVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam,
 void AVSEditor::UpdatePreferences()
 {
 	SetMenu(hwnd, CreateAVSMenu());
-	SetScriptType(scriptType);
+	SetScriptType(m_scriptType);
 	Handle_WM_SIZE(0, 0);
 }
 
@@ -1659,13 +1629,13 @@ int GetScriptType(const wchar_t *fn)
 	const wchar_t* p = wcsrchr(fn, '.');
 	if (!p) return SCRIPTTYPE_NONE;
 	if (!_wcsicmp(p, L".avs")) return SCRIPTTYPE_AVS;
-	if (!_wcsicmp(p, L".tel")) return SCRIPTTYPE_DECOMB;
-	if (!_wcsicmp(p, L".fd")) return SCRIPTTYPE_DECOMB;
-	if (!_wcsicmp(p, L".dec")) return SCRIPTTYPE_DECOMB;
 	if (!_wcsicmp(p, L".vpy")) return SCRIPTTYPE_VPS;
 	if (!_wcsicmp(p, L".vdscript")) return SCRIPTTYPE_VDSCRIPT;
 	if (!_wcsicmp(p, L".vdproject")) return SCRIPTTYPE_VDSCRIPT;
 	if (!_wcsicmp(p, L".jobs")) return SCRIPTTYPE_VDSCRIPT;
+	if (!_wcsicmp(p, L".tel")) return SCRIPTTYPE_DECOMB;
+	if (!_wcsicmp(p, L".fd")) return SCRIPTTYPE_DECOMB;
+	if (!_wcsicmp(p, L".dec")) return SCRIPTTYPE_DECOMB;
 	return SCRIPTTYPE_NONE;
 }
 
