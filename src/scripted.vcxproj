@@ -163,6 +163,7 @@
     </ClCompile>
     <ClCompile Include="prefs.cpp" />
     <ClCompile Include="Utils\StringUtil.cpp" />
+    <ClCompile Include="Utils\WindowsDPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accel.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Tdll.h" />
     <ClInclude Include="Utils\StringUtil.h" />
+    <ClInclude Include="Utils\WindowsDPI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External.xpm" />

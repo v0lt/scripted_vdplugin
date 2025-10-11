@@ -31,6 +31,7 @@
 
 #include "Helper.h"
 #include "Utils/StringUtil.h"
+#include "Utils/WindowsDPI.h"
 
 extern HINSTANCE g_hInst;
 
@@ -1094,9 +1095,11 @@ LRESULT AVSEditor::Handle_WM_SIZE(WPARAM wParam, LPARAM lParam) noexcept
 	DeferWindowPos(hdwp, hwndView, NULL, 0, 0, r.right, r.bottom-sh, SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE);
 	EndDeferWindowPos(hdwp);
 
+	UINT dpi = CWindowsDPI::GetInstance().DpiForWindow(hwndStatus);
+
 	int st[3];
-	st[0] = r.right-200;
-	st[1] = r.right-100;
+	st[0] = r.right - MulDiv(200, dpi, USER_DEFAULT_SCREEN_DPI);
+	st[1] = r.right - MulDiv(100, dpi, USER_DEFAULT_SCREEN_DPI);
 	st[2] = -1;
 	SendMessageW(hwndStatus, SB_SETPARTS, 3, (LPARAM) &st);
 	UpdateStatus();

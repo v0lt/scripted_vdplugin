@@ -44,6 +44,9 @@
     <ClCompile Include="Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\WindowsDPI.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accel.h">
@@ -78,6 +81,9 @@
     </ClInclude>
     <ClInclude Include="CVapourSynth.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\WindowsDPI.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
