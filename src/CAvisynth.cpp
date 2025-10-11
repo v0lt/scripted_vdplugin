@@ -602,13 +602,13 @@ CAviSynth::CAviSynth(const wchar_t* path)
 	coKeywords = _strdup(coAvsKeywords);
 
 	coFunctions = _strdup(coAvsInternalFunctions);
-	_strlwr(coFunctions);
+	_strlwr_s(coFunctions, std::size(coAvsInternalFunctions));
 
 	coClipProperties = _strdup(coAvsClipProperties);
-	_strlwr(coClipProperties);
+	_strlwr_s(coClipProperties, std::size(coAvsClipProperties));
 
 	coFilters = _strdup(coAvsInternalFilters);
-	_strlwr(coFilters);
+	_strlwr_s(coFilters, std::size(coAvsInternalFilters));
 
 	coExternal = _strdup(coAvsExternal);
 
@@ -664,10 +664,9 @@ void CAviSynth::LoadDll(const wchar_t* path)
 					coExternal = nullptr;
 				}
 				coExternal = _strdup(avsPluginFunctions);
-			}
-
-			if (coExternal) {
-				_strlwr(coExternal);
+				if (coExternal) {
+					_strlwr_s(coExternal, strlen(avsPluginFunctions));
+				}
 			}
 
 			std::set<std::string,less_nocase> AVSTokenSci;
