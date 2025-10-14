@@ -57,5 +57,5 @@ class Cvdub_source :public IClip {
 		static AVSValue __cdecl Create(AVSValue args, void *self, IScriptEnvironment *env) {
 			return new Cvdub_source((CAviSynth*)self,env);
 		}
-}; 
+};
 #endif

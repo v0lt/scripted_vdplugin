@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 1998-2002 VirtualDubMod Developers
  * Copyright (C) 2016-2019 Anton Shekhovtsov
- * Copyright (C) 2024 v0lt
+ * Copyright (C) 2024-2025 v0lt
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -51,9 +51,9 @@
 
 #define ID_COMMAND_DEPRECATED	0
 
-typedef struct tagACCELKEY { 
-    BYTE   fVirt; 
-    WORD   key; 
+typedef struct tagACCELKEY {
+	BYTE   fVirt;
+	WORD   key;
 } ACCELKEY, *LPACCELKEY;
 
 typedef struct tagACCELKEYS {

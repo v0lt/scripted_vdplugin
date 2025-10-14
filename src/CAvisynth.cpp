@@ -217,7 +217,7 @@ const char coAvsInternalFunctions[] =
 	"_SARDen "
 	"_SceneChangeNext "
 	"_SceneChangePrev "
-	// - Property set 
+	// - Property set
 	"propSet "
 	"propSetInt "
 	"propSetFloat "
@@ -232,7 +232,7 @@ const char coAvsInternalFunctions[] =
 	"propGetAsArray "
 	"propGetClip "
 	"propGetAll "
-	// - Deleting properties 
+	// - Deleting properties
 	"propDelete "
 	"propClearAll "
 	// - Other property functions
@@ -291,7 +291,7 @@ const char coAvsClipProperties[] =
 	//
 	// http://avisynth.nl/index.php/Clip_properties
 	//
-	// Content Properties 
+	// Content Properties
 	"HasAudio "
 	"HasVideo "
 	// Video: Resolution
@@ -302,11 +302,11 @@ const char coAvsClipProperties[] =
 	"FrameRate "
 	"FrameRateNumerator "
 	"FrameRateDenominator "
-	// Video: Interlacing 
+	// Video: Interlacing
 	"IsFieldBased "
 	"IsFrameBased "
 	"GetParity "
-	// Video: Color Format 
+	// Video: Color Format
 	"PixelType "
 	"IsPlanar "
 	"IsInterleaved "
@@ -578,21 +578,21 @@ Cvdub_source::Cvdub_source(CAviSynth *Iself, IScriptEnvironment* env)
 	vi.pixel_type=VideoInfo::CS_YV12;
 */}
 
-PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env) 
+PVideoFrame __stdcall Cvdub_source::GetFrame(int n, IScriptEnvironment* env)
 {
 	PVideoFrame frame = env->NewVideoFrame(vi);
 /*	unsigned char *p = frame->GetWritePtr(PLANAR_Y);
 	int stride = frame->GetPitch(PLANAR_Y);
 	int y;
-	for (y=0; y<self->dyY; y++) 
+	for (y=0; y<self->dyY; y++)
 		memcpy(p+stride*y, self->srcY+self->strideY*y, self->dxY);
 	p = frame->GetWritePtr(PLANAR_U);
 	stride = frame->GetPitch(PLANAR_U);
-	for (y=0; y<self->dyY/2; y++) 
+	for (y=0; y<self->dyY/2; y++)
 		memcpy(p+stride*y, self->srcU+self->strideUV*y, self->dxUV);
 	p = frame->GetWritePtr(PLANAR_V);
 	stride = frame->GetPitch(PLANAR_V);
-	for (y=0; y<self->dyY/2; y++) 
+	for (y=0; y<self->dyY/2; y++)
 		memcpy(p+stride*y, self->srcV+self->strideUV*y, self->dxUV);
 */	return frame;
 }

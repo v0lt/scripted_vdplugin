@@ -68,7 +68,7 @@ void SavePrefs()
 	LSTATUS lRes = RegCreateKeyA(HKEY_CURRENT_USER, REG_KEY_APP, &key);
 	if (lRes == ERROR_SUCCESS) {
 		DWORD dwValue;
-		
+
 		dwValue = g_VDMPrefs.m_bScriptEditorSingleInstance;
 		lRes = ::RegSetValueExA(key, "singleInstance", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
 

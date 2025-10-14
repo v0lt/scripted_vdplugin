@@ -364,7 +364,7 @@ LRESULT AVSEditor::SubAVSEditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			break;
 	}
 
-	return CallWindowProcW(pcd->OldAVSViewWinProc, hwnd, msg, wParam, lParam); 
+	return CallWindowProcW(pcd->OldAVSViewWinProc, hwnd, msg, wParam, lParam);
 }
 
 // <----- Toff
@@ -637,7 +637,7 @@ bool AVSEditor::Commit() noexcept
 
 	FILE* f = _wfsopen(m_lpszFileName, L"wb", _SH_DENYWR);
 	if (!f) {
-		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);		
+		MessageBoxA(hwnd, "The file cannot be opened for writing.", "Error", MB_OK);
 	} else {
 		fwrite(lpszBuf, sizeof(char), s, f);
 		fclose(f);
