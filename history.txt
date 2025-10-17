@@ -1,4 +1,8 @@
 scripted.vdplugin history
+
+0.3.2.x dev
+----------------------
+
 0.3.1.123 - 2025-10-14
 ----------------------
 Settings are now saved in HKEY_CURRENT_USER\SOFTWARE\VirtualDub2\Script Editor.
