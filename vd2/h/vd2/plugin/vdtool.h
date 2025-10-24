@@ -16,8 +16,8 @@ public:
 	virtual void VDXAPIENTRY Attach(VDXHWND hwndParent) = 0;
 	virtual void VDXAPIENTRY Detach(VDXHWND hwndParent) = 0;
 
-	// version 2
-	virtual bool VDXAPIENTRY HandleFileOpenError(const wchar_t* fileName, const wchar_t* driverName, VDXHWND hwndParent, const char* s, int source) = 0;
+	// version 2, errText in utf-8
+	virtual bool VDXAPIENTRY HandleFileOpenError(const wchar_t* fileName, const wchar_t* driverName, VDXHWND hwndParent, const char* errText, int source) = 0;
 };
 
 class IVDTimeline {
