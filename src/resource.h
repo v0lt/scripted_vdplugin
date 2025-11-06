@@ -1,8 +1,7 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by resource.rc
+// Used by scripted.rc
 //
-
 #define IDD_FIND                        102
 #define IDD_JUMPTO                      103
 #define IDD_OPTIONS                     104
@@ -45,7 +44,7 @@
 #define ID_EDIT_FINDPREV                507
 #define ID_AVS_INSERT_POS               508
 #define ID_AVS_INSERT_RANGE             509
-#define ID_AVS_INSERT_TRIM              500
+#define ID_AVS_INSERT_TRIM              510
 #define ID_AVS_INSERT_FRAMESET          511
 #define ID_AVS_INSERT_FILENAME          512
 #define ID_AVS_INSERT_CROP              513

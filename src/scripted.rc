@@ -19,7 +19,6 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -205,14 +204,9 @@ BEGIN
     IDS_INFO_AVSEDITOR_TOFF_CAP "[Toff]s Tweaking Mod"
     IDS_INFO_AVS_VERSION_CAP "AviSynth Version"
     IDS_ERR_AVS_NOFRAMESET  "No frameset"
-END
-
-STRINGTABLE
-BEGIN
     IDS_ERR_CAPTION         "Error"
     IDS_ERR_AVS_NORANGE     "No range"
 END
-
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
