@@ -40,6 +40,7 @@ class CAviSynth {
 
 		CAviSynth(const wchar_t* path);
 		void LoadDll(const wchar_t* path);
+		void Clear();
 		~CAviSynth();
 };
 

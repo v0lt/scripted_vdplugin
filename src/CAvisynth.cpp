@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "CAviSynth.h"
 #include "Tdll.h"
+#include "Helper.h"
 #include "Utils/StringUtil.h"
 
 const AVS_Linkage* AVS_linkage = nullptr;
@@ -617,30 +618,38 @@ CAviSynth::CAviSynth(const wchar_t* path)
 
 void CAviSynth::LoadDll(const wchar_t* path)
 {
-	std::string s;
-
-	ok = false;
-	if (env) {
-		delete env;
-		env = nullptr;
-	}
-	if (avisynth) {
-		delete avisynth;
-		avisynth = nullptr;
-	}
-	Version.clear();
+	Clear();
 
 	avisynth = new Tdll(path, nullptr);
 	avisynth->loadFunction((void**)&CreateScriptEnvironment,"CreateScriptEnvironment");
 	if (avisynth->ok) {
-		ok = true;
-		env = CreateScriptEnvironment(6);
-		if (!env) {
-			ok = false;
-		} else {
+		ok = false;
+		try {
+			env = CreateScriptEnvironment(6);
+			if (env) {
+				ok = true;
+			}
+		}
+		catch (const std::system_error& e) {
+			DLog("AviSynth caught std::system_error: {}\n  Code: {}", e.what(), e.code().value());
+			Clear();
+		}
+		catch (const std::exception& e) {
+			DLog("AviSynth caught a general std::exception: {}", e.what());
+			Clear();
+		}
+		catch (...) {
+			DLog("AviSynth caught an unknown exception.");
+			Clear();
+		}
+
+		if (env) {
 			AVS_linkage = m_Linkage = env->GetAVSLinkage();
 			InterfaceVer = 6;
+
 			AVSValue a;
+			std::string s;
+
 			try {
 				AVSValue r = env->Invoke("VersionString", AVSValue(&a,0));
 				s = r.AsString();
@@ -724,6 +733,29 @@ void CAviSynth::LoadDll(const wchar_t* path)
 	}
 }
 
+void CAviSynth::Clear()
+{
+	ok = false;
+	Version.clear();
+
+	if (clip) {
+		delete clip;
+		clip = nullptr;
+	}
+	if (env) {
+		delete env;
+		env = nullptr;
+	}
+
+	AVS_linkage = nullptr;
+	m_Linkage = nullptr;
+
+	if (avisynth) {
+		delete avisynth;
+		avisynth = nullptr;
+	}
+}
+
 CAviSynth::~CAviSynth()
 {
 	if (coKeywords) {
@@ -749,20 +781,5 @@ CAviSynth::~CAviSynth()
 
 	AVS_linkage = m_Linkage;
 
-	if (clip) {
-		delete clip;
-		clip = nullptr;
-	}
-	if (env) {
-		delete env;
-		env = nullptr;
-	}
-
-	AVS_linkage = nullptr;
-	m_Linkage = nullptr;
-
-	if (avisynth) {
-		delete avisynth;
-		avisynth = nullptr;
-	}
+	Clear();
 }
