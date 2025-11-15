@@ -11,3 +11,4 @@ ECHO Building the scripted_vdplugin Release Win32.
 
 ENDLOCAL
 TIMEOUT /T 5
+EXIT /B
