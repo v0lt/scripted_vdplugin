@@ -1,3 +1,12 @@
+// VirtualDub - Video processing and capture application
+// Plugin headers
+//
+// Copyright (C) 2016-2019 Anton Shekhovtsov
+// Copyright (C) 2025 v0lt
+//
+// SPDX-License-Identifier: Zlib
+//
+
 #ifndef f_VD2_PLUGIN_VDTOOL_H
 #define f_VD2_PLUGIN_VDTOOL_H
 
