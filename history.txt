@@ -1,6 +1,6 @@
 scripted.vdplugin history
 
-0.3.2.x dev
+0.3.3.136 - 2025-12-11
 ----------------------
 Fixed a crash when opening AviSynth+ scripts in some rare situations.
 
